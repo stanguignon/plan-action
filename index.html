@@ -1,0 +1,2593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan d'Action — ONET × REVIMA</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<style>
+/* ============================================================
+   PLAN D'ACTION ONET × REVIMA — v3
+   Thème clair professionnel, inspiration Trello/Atlassian
+   ============================================================ */
+:root{
+  --bg:#f4f5f7;
+  --bg-2:#ebedf0;
+  --panel:#ffffff;
+  --panel-2:#f7f8fa;
+  --line:#dfe3e8;
+  --line-soft:#ebedf0;
+  --txt:#172b4d;
+  --muted:#5e6c84;
+  --muted-2:#97a0af;
+
+  --primary:#0c66e4;
+  --primary-dark:#0055cc;
+  --primary-soft:#e9f2ff;
+  --red:#e34935;
+  --red-soft:#ffedeb;
+  --green:#22a06b;
+  --green-soft:#e7f7ef;
+  --orange:#e77b1e;
+  --orange-soft:#fdf0e3;
+  --violet:#6554c0;
+  --violet-soft:#f0edff;
+  --navy:#172b4d;
+
+  --radius:8px;
+  --shadow-sm:0 1px 2px rgba(23,43,77,.12), 0 0 1px rgba(23,43,77,.16);
+  --shadow-md:0 4px 12px rgba(23,43,77,.14), 0 0 1px rgba(23,43,77,.14);
+  --shadow-lg:0 14px 40px rgba(23,43,77,.22);
+  --topbar-h:58px;
+  --drawer-w:470px;
+  --font:'Inter',-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family:var(--font);background:var(--bg);color:var(--txt);
+  overflow:hidden;-webkit-font-smoothing:antialiased;font-size:13.5px;
+}
+button,input,select,textarea{font-family:inherit;color:inherit;font-size:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--primary);outline-offset:1px;border-radius:4px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c4cad3;border-radius:5px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--muted-2)}
+.hidden{display:none !important}
+.mono{font-family:var(--mono)}
+
+/* ============ LOGO ============ */
+.logo-lockup{display:flex;align-items:center;gap:8px;user-select:none}
+.logo-mark{
+  width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--primary),#1d7afc);
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);flex-shrink:0;
+}
+.logo-mark svg{display:block}
+.logo-words{line-height:1.05}
+.logo-l1{font-weight:800;font-size:14px;letter-spacing:.01em}
+.logo-l1 .x{color:var(--primary);font-weight:700;padding:0 2px}
+.logo-l2{font-size:9.5px;color:var(--muted-2);letter-spacing:.18em;text-transform:uppercase;font-weight:600;margin-top:1px}
+
+/* ============ GATE ============ */
+#gate{
+  position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#f7f9fc 0%, #eef2f8 55%, #e6ecf5 100%);
+}
+#gate::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(700px 400px at 85% 8%, rgba(12,102,228,.08), transparent 60%);
+}
+#gate .box{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:36px 40px;width:400px;box-shadow:var(--shadow-lg);position:relative;
+}
+#gate .box .logo-lockup{margin-bottom:20px}
+#gate h1{font-size:21px;margin:0 0 6px;letter-spacing:-.02em;font-weight:800}
+#gate p{color:var(--muted);font-size:12.5px;margin:0 0 20px;line-height:1.55}
+#gate label{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;font-weight:600}
+#gate input{
+  width:100%;background:var(--panel-2);border:1.5px solid var(--line);border-radius:8px;
+  padding:11px 13px;font-size:14px;margin-bottom:14px;transition:border-color .12s;
+}
+#gate input:focus{outline:none;border-color:var(--primary);background:#fff}
+#gate button.enter{
+  width:100%;background:var(--primary);color:#fff;border:none;border-radius:8px;
+  padding:12px;font-weight:700;font-size:14px;letter-spacing:.01em;transition:background .12s;
+}
+#gate button.enter:hover{background:var(--primary-dark)}
+#gate .err{margin-top:10px;min-height:0}
+#gate .err:not(:empty){
+  color:#8a2a1d;background:var(--red-soft);border:1px solid #f5c6c0;border-radius:8px;
+  padding:10px 12px;font-size:12px;font-weight:600;line-height:1.5;word-break:break-word;
+}
+.gate-config{border-top:1px solid var(--line-soft);margin-top:16px;padding-top:13px}
+#gate button.gate-config-toggle{
+  background:none;border:none;color:var(--muted-2);font-size:11.5px;padding:0;font-weight:600;
+}
+#gate button.gate-config-toggle:hover{color:var(--primary)}
+#gate-config-body{margin-top:12px}
+#gate-config-body input{font-size:11.5px;font-family:var(--mono)}
+.gate-status{margin-top:15px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--muted-2)}
+.gate-status.ready{color:var(--green)}
+.gate-noscript{
+  margin-top:14px;background:var(--red-soft);border:1px solid #f5c6c0;border-radius:8px;padding:10px 12px;
+  font-size:11.5px;line-height:1.5;color:#8a2a1d;
+}
+
+/* ============ APP SHELL ============ */
+.app{display:flex;flex-direction:column;height:100%}
+.topbar{
+  height:var(--topbar-h);display:flex;align-items:center;gap:14px;padding:0 18px;
+  background:var(--panel);border-bottom:1px solid var(--line);z-index:500;flex-shrink:0;
+}
+.crumb{display:flex;align-items:center;gap:8px;min-width:0}
+.crumb .sep{color:var(--muted-2)}
+.crumb .b-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.crumb .b-type{
+  font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:12px;white-space:nowrap;
+}
+.crumb .b-type.actions{background:var(--green-soft);color:var(--green)}
+.crumb .b-type.projet{background:var(--violet-soft);color:var(--violet)}
+.btn-home{
+  display:flex;align-items:center;gap:6px;background:none;border:1px solid transparent;border-radius:7px;
+  padding:6px 10px;color:var(--muted);font-weight:600;font-size:12.5px;
+}
+.btn-home:hover{background:var(--panel-2);color:var(--txt)}
+
+.topbar .spacer{flex:1}
+.search-box{
+  display:flex;align-items:center;gap:7px;background:var(--panel-2);border:1.5px solid var(--line);
+  border-radius:8px;padding:7px 12px;min-width:200px;
+}
+.search-box input{background:none;border:none;outline:none;font-size:12.5px;width:100%}
+.search-box svg{flex-shrink:0;opacity:.5}
+
+.presence-row{display:flex;align-items:center}
+.presence-avatar{
+  width:27px;height:27px;border-radius:50%;background:var(--primary-soft);border:2px solid #fff;
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--primary);
+  margin-left:-7px;box-shadow:var(--shadow-sm);
+}
+.presence-avatar:first-child{margin-left:0}
+.presence-avatar.me{background:var(--primary);color:#fff}
+
+.btn{
+  border:1px solid var(--line);background:var(--panel);color:var(--txt);
+  padding:8px 13px;border-radius:8px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;
+  white-space:nowrap;transition:all .1s;box-shadow:var(--shadow-sm);
+}
+.btn:hover{background:var(--panel-2)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn.primary:hover{background:var(--primary-dark)}
+.btn.ghost{background:none;border-color:transparent;box-shadow:none}
+.btn.ghost:hover{background:var(--panel-2)}
+.btn.danger{color:var(--red);border-color:#f2c4bd}
+.btn.danger:hover{background:var(--red-soft)}
+.btn.small{padding:5px 10px;font-size:11.5px;border-radius:6px}
+
+.conn-badge{
+  display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono);
+  color:var(--muted);letter-spacing:.03em;padding:6px 10px;border:1px solid var(--line);border-radius:7px;background:var(--panel-2);
+}
+.conn-badge .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.conn-badge.live .dot{background:var(--green)}
+.conn-badge.local .dot{background:var(--orange)}
+
+#btn-presentation.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ============ MAIN ============ */
+.main{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column}
+
+/* ====== ACCUEIL : galerie des plans ====== */
+.home{padding:28px 34px 60px;overflow-y:auto;height:100%}
+.home-head{display:flex;align-items:flex-end;gap:16px;margin-bottom:6px}
+.home-head h1{font-size:23px;font-weight:800;letter-spacing:-.02em;margin:0}
+.home-sub{color:var(--muted);font-size:13px;margin:4px 0 24px}
+.home-kpis{display:flex;gap:12px;margin-bottom:26px;flex-wrap:wrap}
+.home-kpi{
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 18px;min-width:130px;box-shadow:var(--shadow-sm);
+}
+.home-kpi .num{font-size:24px;font-weight:800;font-family:var(--mono)}
+.home-kpi .lbl{font-size:11px;color:var(--muted);margin-top:3px;font-weight:500}
+.home-kpi.late .num{color:var(--red)}
+.home-kpi.done .num{color:var(--green)}
+
+.section-label{
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  margin:0 0 12px;display:flex;align-items:center;gap:8px;
+}
+.boards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-bottom:34px}
+.board-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;overflow:hidden;cursor:pointer;
+  box-shadow:var(--shadow-sm);transition:box-shadow .15s, transform .15s;display:flex;flex-direction:column;
+}
+.board-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.board-card .bc-band{height:6px}
+.board-card .bc-body{padding:14px 16px 12px;flex:1}
+.board-card .bc-name{font-weight:700;font-size:14.5px;margin-bottom:5px;line-height:1.3}
+.board-card .bc-meta{font-size:11.5px;color:var(--muted)}
+.board-card .bc-foot{
+  display:flex;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--line-soft);background:var(--panel-2);
+}
+.board-card .bc-late{
+  font-size:10px;font-weight:700;color:var(--red);background:var(--red-soft);border-radius:10px;padding:2px 8px;
+}
+.board-card .bc-prog-track{flex:1;height:5px;background:var(--line-soft);border-radius:3px;overflow:hidden}
+.board-card .bc-prog-fill{height:100%;border-radius:3px;background:var(--green)}
+.board-card .bc-pct{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:600}
+.board-card.new{
+  border:2px dashed var(--line);background:none;box-shadow:none;display:flex;align-items:center;justify-content:center;
+  min-height:130px;color:var(--muted);font-weight:600;gap:8px;flex-direction:row;
+}
+.board-card.new:hover{border-color:var(--primary);color:var(--primary);transform:none;box-shadow:none}
+
+/* ====== VUE BOARD (commune) ====== */
+.board-toolbar{
+  display:flex;align-items:center;gap:10px;padding:10px 18px;background:var(--panel);
+  border-bottom:1px solid var(--line);flex-shrink:0;flex-wrap:wrap;
+}
+.seg{display:flex;gap:2px;background:var(--bg-2);border-radius:8px;padding:3px}
+.seg button{
+  background:none;border:none;color:var(--muted);padding:6px 13px;font-size:12px;font-weight:600;border-radius:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.seg button.active{background:#fff;color:var(--txt);box-shadow:var(--shadow-sm)}
+.chip{
+  font-size:11.5px;padding:5px 11px;border-radius:20px;border:1px solid var(--line);
+  color:var(--muted);background:var(--panel);cursor:pointer;user-select:none;font-weight:600;transition:all .1s;
+}
+.chip:hover{border-color:var(--muted-2)}
+.chip.active{color:#fff;background:var(--navy);border-color:var(--navy)}
+.chip.late-chip.active{background:var(--red);border-color:var(--red)}
+.filters-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.toolbar-spacer{flex:1}
+
+/* ====== PLAN D'ACTIONS : TABLE ====== */
+.pa-wrap{flex:1;overflow:auto;padding:18px}
+.pa-summary{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.pa-sum-item{
+  background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 14px;box-shadow:var(--shadow-sm);
+  display:flex;align-items:baseline;gap:7px;
+}
+.pa-sum-item .n{font-family:var(--mono);font-weight:700;font-size:16px}
+.pa-sum-item .l{font-size:11px;color:var(--muted);font-weight:600}
+.pa-sum-item.late .n{color:var(--red)}
+.pa-sum-item.done .n{color:var(--green)}
+.resp-late-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.resp-late{
+  display:flex;align-items:center;gap:7px;background:var(--red-soft);border:1px solid #f2c4bd;color:#a13124;
+  border-radius:20px;padding:4px 11px 4px 5px;font-size:11.5px;font-weight:600;
+}
+.resp-late .av{width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:800}
+
+.pa-table-card{background:var(--panel);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow-sm);overflow-x:auto}
+.pa-table{width:100%;border-collapse:collapse;min-width:840px}
+.pa-table th{
+  text-align:left;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);
+  font-weight:700;padding:11px 12px;border-bottom:2px solid var(--line);background:var(--panel-2);white-space:nowrap;
+  position:sticky;top:0;z-index:5;
+}
+.pa-table td{padding:10px 12px;border-bottom:1px solid var(--line-soft);vertical-align:middle;font-size:12.5px}
+.pa-table tbody tr{transition:background .08s;cursor:pointer}
+.pa-table tbody tr:hover{background:#f8faff}
+.pa-table tr.is-late td{background:#fff8f7}
+.pa-table tr.is-late:hover td{background:#ffefec}
+.pa-num{font-family:var(--mono);font-size:10.5px;color:var(--muted-2);font-weight:600}
+.pa-title{font-weight:600;min-width:220px}
+.pa-late-badge{
+  display:inline-flex;font-size:9px;font-weight:800;color:#fff;background:var(--red);border-radius:4px;
+  padding:2px 6px;margin-left:8px;letter-spacing:.05em;vertical-align:1px;
+}
+.pa-resp{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.pa-resp .av{
+  width:22px;height:22px;border-radius:50%;background:var(--primary-soft);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:800;flex-shrink:0;
+}
+.status-pill{
+  display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:4px 11px;border-radius:14px;white-space:nowrap;
+}
+.status-pill .d{width:6px;height:6px;border-radius:50%}
+.prio-flag{font-size:11px;font-weight:700;white-space:nowrap}
+.pa-date{font-family:var(--mono);font-size:11px;white-space:nowrap;font-weight:600}
+.pa-date.past{color:var(--red)}
+.pa-prog{display:flex;align-items:center;gap:8px;min-width:110px}
+.pa-prog-track{flex:1;height:6px;background:var(--line-soft);border-radius:3px;overflow:hidden}
+.pa-prog-fill{height:100%;border-radius:3px}
+.pa-prog-val{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:600;width:32px;text-align:right}
+.pa-add-row{
+  display:flex;align-items:center;gap:8px;padding:12px 14px;color:var(--muted);font-weight:600;font-size:12.5px;cursor:pointer;
+}
+.pa-add-row:hover{color:var(--primary);background:var(--primary-soft)}
+.pa-empty{padding:44px;text-align:center;color:var(--muted-2)}
+
+/* ====== KANBAN (commun actions & projets) ====== */
+.kanban{display:flex;gap:14px;padding:18px;overflow-x:auto;flex:1;align-items:flex-start}
+.kb-col{
+  min-width:270px;width:270px;background:var(--bg-2);border-radius:12px;
+  display:flex;flex-direction:column;max-height:100%;flex-shrink:0;
+}
+.kb-col-head{display:flex;align-items:center;gap:8px;padding:12px 14px 8px;flex-shrink:0}
+.kb-col-head .dot{width:8px;height:8px;border-radius:50%}
+.kb-col-head .kname{font-weight:700;font-size:12.5px}
+.kb-col-head .kcount{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--muted);background:#fff;padding:2px 8px;border-radius:10px;font-weight:600}
+.kb-cards{padding:6px 10px 12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:50px;flex:1}
+.kb-col.dragover{outline:2px dashed var(--primary);outline-offset:-4px}
+.kb-card{
+  background:#fff;border-radius:9px;padding:11px 13px;cursor:grab;box-shadow:var(--shadow-sm);
+  border:1px solid transparent;transition:border-color .1s, box-shadow .12s;
+}
+.kb-card:hover{border-color:var(--primary);box-shadow:var(--shadow-md)}
+.kb-card.dragging{opacity:.45;transform:rotate(2deg)}
+.kb-card .kc-name{font-size:12.5px;font-weight:600;line-height:1.4;margin-bottom:9px}
+.kb-card .kc-foot{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.kb-card .kc-late{font-size:9px;font-weight:800;color:#fff;background:var(--red);border-radius:4px;padding:2px 6px;letter-spacing:.04em}
+.kb-card .kc-date{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-left:auto;font-weight:600}
+.kb-card .kc-av{width:21px;height:21px;border-radius:50%;background:var(--primary-soft);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800}
+.kb-card .kc-prog{height:4px;background:var(--line-soft);border-radius:2px;overflow:hidden;margin-top:9px}
+.kb-card .kc-prog i{display:block;height:100%;border-radius:2px}
+.kb-card .kc-health{width:8px;height:8px;border-radius:50%}
+
+/* ====== GANTT (projets, thème clair) ====== */
+.gantt-scroll{flex:1;overflow:auto;position:relative;background:#fff}
+.gantt-inner{position:relative;min-height:100%}
+.gantt-canvas-bg{position:absolute;top:0;left:0;bottom:0;pointer-events:none;z-index:0}
+.we-band{position:absolute;top:0;bottom:0;background:#f5f6f8}
+.hol-band{position:absolute;top:0;bottom:0;background:var(--orange-soft)}
+.gantt-header{position:sticky;top:0;z-index:120;background:var(--panel-2);border-bottom:1px solid var(--line);height:46px}
+.gh-months{position:relative;height:23px;border-bottom:1px solid var(--line-soft)}
+.gh-month{
+  position:absolute;top:0;height:23px;border-right:1px solid var(--line-soft);font-size:10px;font-family:var(--mono);
+  color:var(--muted);display:flex;align-items:center;padding-left:7px;letter-spacing:.05em;text-transform:uppercase;
+  overflow:hidden;white-space:nowrap;font-weight:600;
+}
+.gh-days{position:relative;height:23px}
+.gh-day,.gh-week{
+  position:absolute;top:0;height:23px;border-right:1px solid var(--line-soft);font-size:9px;color:var(--muted-2);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;
+}
+.gh-week{justify-content:flex-start;padding-left:5px}
+.gh-day.today{color:var(--red);font-weight:700}
+.today-line{position:absolute;top:46px;bottom:0;width:2px;background:var(--red);z-index:90;opacity:.65}
+.today-line::before{
+  content:'AUJOURD\2019HUI';position:absolute;top:3px;left:6px;font-size:8px;font-family:var(--mono);
+  color:var(--red);letter-spacing:.08em;white-space:nowrap;font-weight:700;
+}
+.rows-area{position:relative;z-index:10}
+#dep-svg{position:absolute;top:0;left:0;pointer-events:none;z-index:55;overflow:visible}
+#dep-svg path{fill:none;stroke:var(--muted-2);stroke-width:1.4;stroke-dasharray:3 3;opacity:.8}
+#dep-svg .arrowhead{fill:var(--muted-2)}
+.proj-row{position:relative;height:44px;border-bottom:1px solid var(--line-soft)}
+.proj-row:hover{background:#fafbfd}
+.expand-toggle{
+  position:sticky;left:0;float:left;height:44px;width:26px;display:flex;align-items:center;justify-content:center;
+  color:var(--muted-2);z-index:70;background:#fff;border-right:1px solid var(--line-soft);cursor:pointer;
+}
+.expand-toggle:hover{color:var(--txt)}
+.expand-toggle svg{transition:transform .15s}
+.proj-row.expanded .expand-toggle svg{transform:rotate(90deg)}
+.strip{
+  position:absolute;top:8px;height:28px;border-radius:7px;display:flex;align-items:stretch;
+  cursor:grab;user-select:none;box-shadow:var(--shadow-sm);border:1px solid rgba(23,43,77,.14);
+}
+.strip:hover{box-shadow:var(--shadow-md)}
+.strip .tab{width:5px;border-radius:6px 0 0 6px;flex-shrink:0}
+.strip .strip-body{display:flex;align-items:center;gap:7px;padding:0 10px;overflow:hidden;white-space:nowrap;flex:1;position:relative;min-width:0}
+.strip .strip-body::after{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:var(--fill,0%);background:rgba(23,43,77,.08);z-index:0;pointer-events:none;
+}
+.strip .scode{font-family:var(--mono);font-size:9px;opacity:.65;position:relative;z-index:1;flex-shrink:0;font-weight:600}
+.strip .sname{font-size:11.5px;font-weight:700;position:relative;z-index:1;overflow:hidden;text-overflow:ellipsis}
+.strip .spct{margin-left:auto;font-family:var(--mono);font-size:9.5px;opacity:.8;position:relative;z-index:1;padding-left:6px;flex-shrink:0;font-weight:700}
+.strip .late-flag{
+  position:relative;z-index:1;flex-shrink:0;font-size:8.5px;font-weight:800;color:#fff;background:var(--red);
+  border-radius:4px;padding:1.5px 5px;margin-left:5px;letter-spacing:.04em;
+}
+.strip .eng-tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--orange);z-index:2;border-radius:1px}
+.strip .eng-tick::before{
+  content:'';position:absolute;top:-3px;left:-2.5px;border-left:3.5px solid transparent;border-right:3.5px solid transparent;
+  border-top:5px solid var(--orange);
+}
+.resize-handle{position:absolute;top:0;bottom:0;width:8px;cursor:ew-resize;z-index:5}
+.resize-handle.left{left:0}
+.resize-handle.right{right:0}
+.task-rows{display:none}
+.proj-row.expanded + .task-rows{display:block}
+.task-row{height:31px;position:relative;border-bottom:1px solid var(--line-soft);background:var(--panel-2)}
+.task-strip{
+  position:absolute;top:5px;height:21px;border-radius:5px;display:flex;align-items:center;padding:0 8px;
+  font-size:10px;gap:5px;cursor:grab;white-space:nowrap;overflow:hidden;border:1px solid rgba(23,43,77,.12);font-weight:600;
+}
+.task-strip .t-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(23,43,77,.08);pointer-events:none}
+.task-strip span{position:relative}
+.milestone{
+  position:absolute;top:8px;width:13px;height:13px;transform:rotate(45deg);cursor:pointer;
+  border:2px solid #fff;border-radius:2px;z-index:20;box-shadow:var(--shadow-sm);
+}
+.milestone.done::after{content:'';position:absolute;inset:2px;background:rgba(255,255,255,.65);border-radius:1px}
+.gantt-legend{display:flex;gap:13px;font-size:10.5px;color:var(--muted);flex-wrap:wrap;font-weight:600}
+.gantt-legend span{display:flex;align-items:center;gap:5px}
+.gantt-legend i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.gantt-legend .diam{transform:rotate(45deg);border-radius:1px}
+
+/* ====== DASHBOARD projet ====== */
+.dash{padding:20px 24px 46px;overflow-y:auto;flex:1}
+.dash-grid-top{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+.kpi-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:15px 17px;position:relative;
+  box-shadow:var(--shadow-sm);cursor:pointer;
+}
+.kpi-card::before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 3px 3px 0}
+.kpi-card.tot::before{background:var(--muted-2)}
+.kpi-card.cours::before{background:var(--primary)}
+.kpi-card.retard::before{background:var(--red)}
+.kpi-card.termine::before{background:var(--green)}
+.kpi-card.moy::before{background:var(--violet)}
+.kpi-card .num{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1}
+.kpi-card .lbl{font-size:11px;color:var(--muted);margin-top:6px;font-weight:600}
+.dash-grid-mid{display:grid;grid-template-columns:330px 1fr 1fr;gap:14px;margin-bottom:16px}
+.panel-card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:17px;box-shadow:var(--shadow-sm);min-width:0}
+.panel-card h3{font-size:13px;margin:0 0 14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.panel-card h3 .n{font-size:10px;color:var(--muted-2);font-family:var(--mono);font-weight:600;margin-left:auto}
+.donut-wrap{display:flex;align-items:center;gap:18px}
+.donut-legend{display:flex;flex-direction:column;gap:7px;font-size:11.5px}
+.donut-legend div{display:flex;align-items:center;gap:7px;color:var(--muted);font-weight:600}
+.donut-legend i{width:9px;height:9px;border-radius:2px}
+.donut-legend b{color:var(--txt);font-family:var(--mono);margin-left:auto}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.bar-row .who{font-size:11.5px;width:96px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-weight:600}
+.bar-track{flex:1;height:9px;background:var(--line-soft);border-radius:5px;overflow:hidden;display:flex}
+.bar-seg{height:100%}
+.bar-row .val{font-family:var(--mono);font-size:10.5px;color:var(--muted);width:20px;text-align:right;font-weight:600}
+.echeance-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line-soft);cursor:pointer}
+.echeance-item:last-child{border-bottom:none}
+.echeance-item:hover .ename{color:var(--primary)}
+.echeance-item .edate{font-family:var(--mono);font-size:10.5px;width:56px;flex-shrink:0;padding:3px 5px;border-radius:5px;text-align:center;font-weight:700}
+.echeance-item .ename{font-size:11.5px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.echeance-item .edays{font-family:var(--mono);font-size:9.5px;color:var(--muted-2);flex-shrink:0;font-weight:600}
+.risk-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;font-size:11.5px}
+.risk-item:last-child{border-bottom:none}
+.risk-item .r-sev{font-family:var(--mono);font-size:8.5px;font-weight:700;padding:3px 7px;border-radius:5px;flex-shrink:0;margin-top:1px;letter-spacing:.05em}
+.risk-item .r-txt{line-height:1.5;color:var(--muted)}
+.risk-item .r-txt b{color:var(--txt);font-weight:700}
+
+/* ====== JOURNAL ====== */
+.journal{padding:22px 28px 50px;overflow-y:auto;flex:1;max-width:860px}
+.journal h2{font-size:18px;margin:0 0 4px;font-weight:800}
+.journal .j-sub{color:var(--muted);font-size:12.5px;margin-bottom:20px}
+.j-day-sep{
+  font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);font-weight:700;
+  margin:20px 0 10px;display:flex;align-items:center;gap:10px;
+}
+.j-day-sep::after{content:'';flex:1;height:1px;background:var(--line)}
+.j-entry{display:flex;gap:12px;padding:9px 0;font-size:12.5px;align-items:flex-start}
+.j-time{font-family:var(--mono);font-size:10px;color:var(--muted-2);width:40px;flex-shrink:0;padding-top:3px;font-weight:600}
+.j-avatar{
+  width:25px;height:25px;border-radius:50%;background:var(--primary-soft);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--primary);
+}
+.j-txt{line-height:1.5;color:var(--muted)}
+.j-txt b{color:var(--txt);font-weight:700}
+.j-txt .j-action{color:var(--primary);font-weight:600}
+
+/* ====== DRAWER ====== */
+.overlay{position:fixed;inset:0;background:rgba(23,43,77,.32);z-index:800;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.show{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:var(--drawer-w);background:var(--panel);
+  z-index:900;transform:translateX(100%);transition:transform .25s cubic-bezier(.3,.9,.3,1);
+  display:flex;flex-direction:column;box-shadow:var(--shadow-lg);
+}
+.drawer.show{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;gap:11px;padding:17px 20px;border-bottom:1px solid var(--line);flex-shrink:0}
+.drawer-head .tab{width:5px;height:26px;border-radius:3px}
+.drawer-head h2{font-size:15px;margin:0;flex:1;line-height:1.3;font-weight:700}
+.drawer-head .code{font-family:var(--mono);font-size:9.5px;color:var(--muted-2);display:block;margin-top:2px;font-weight:600}
+.drawer-close{background:none;border:none;color:var(--muted);font-size:17px;padding:4px 9px;border-radius:6px}
+.drawer-close:hover{background:var(--panel-2);color:var(--txt)}
+.drawer-tabs{display:flex;gap:2px;padding:10px 19px 0;border-bottom:1px solid var(--line);flex-shrink:0}
+.drawer-tabs button{
+  background:none;border:none;color:var(--muted);font-size:12.5px;font-weight:600;padding:8px 13px;
+  border-bottom:2.5px solid transparent;margin-bottom:-1px;
+}
+.drawer-tabs button.active{color:var(--primary);border-bottom-color:var(--primary)}
+.drawer-body{flex:1;overflow-y:auto;padding:19px 20px}
+.drawer-foot{padding:13px 20px;border-top:1px solid var(--line);display:flex;gap:8px;flex-shrink:0;background:var(--panel-2)}
+
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--panel-2);border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--primary);background:#fff}
+.field textarea{resize:vertical;min-height:74px;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.health-picker{display:flex;gap:6px}
+.health-opt{
+  flex:1;border:1.5px solid var(--line);background:var(--panel-2);border-radius:8px;padding:8px;font-size:11.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);
+}
+.health-opt .hdot{width:8px;height:8px;border-radius:50%}
+.health-opt.sel{color:var(--txt);border-color:var(--navy);background:#fff}
+.progress-slider{display:flex;align-items:center;gap:11px}
+.progress-slider input[type=range]{flex:1;accent-color:var(--primary)}
+.progress-slider .pval{font-family:var(--mono);font-size:13px;width:42px;text-align:right;font-weight:700}
+.section-div{border-top:1px solid var(--line-soft);margin:16px 0 0;padding-top:15px}
+.section-div h4{font-size:12.5px;margin:0 0 12px;font-weight:700;display:flex;align-items:center;gap:8px}
+.section-div h4 .add-mini{margin-left:auto;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--muted);font-weight:600}
+.section-div h4 .add-mini:hover{color:var(--primary);border-color:var(--primary)}
+.task-item{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:11px;margin-bottom:8px}
+.task-item-top{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.task-item-top input[type=text]{flex:1;background:#fff;border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:12.5px;min-width:0}
+.jalon-btn{font-size:9.5px;padding:5px 8px;border-radius:6px;border:1.5px solid var(--line);background:#fff;color:var(--muted);flex-shrink:0;font-weight:800;letter-spacing:.03em}
+.jalon-btn.active{color:var(--orange);border-color:var(--orange);background:var(--orange-soft)}
+.del-task{color:var(--muted-2);background:none;border:none;font-size:14px;flex-shrink:0;padding:2px 5px}
+.del-task:hover{color:var(--red)}
+.task-item-grid{display:grid;grid-template-columns:1fr 1fr 60px;gap:6px;margin-bottom:6px}
+.task-item-grid input,.task-item select{background:#fff;border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:11.5px;width:100%}
+.task-dep-label{font-size:9.5px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:4px;font-weight:700}
+.comment-item{padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.comment-item:last-child{border-bottom:none}
+.comment-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.comment-meta .c-who{font-weight:700;font-size:12px}
+.comment-meta .c-when{font-family:var(--mono);font-size:9.5px;color:var(--muted-2);font-weight:600}
+.comment-txt{font-size:12.5px;line-height:1.55;color:var(--muted);white-space:pre-wrap}
+
+/* ====== MODAL ====== */
+.modal-overlay{position:fixed;inset:0;background:rgba(23,43,77,.4);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .15s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal{background:var(--panel);border-radius:14px;width:430px;box-shadow:var(--shadow-lg);max-height:88vh;overflow-y:auto}
+.modal-head{padding:17px 20px;border-bottom:1px solid var(--line);font-size:15px;font-weight:800}
+.modal-body{padding:19px 20px}
+.modal-foot{padding:13px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;background:var(--panel-2);border-radius:0 0 14px 14px}
+.type-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.type-opt{
+  border:2px solid var(--line);border-radius:11px;padding:14px;cursor:pointer;transition:all .12s;background:var(--panel);
+}
+.type-opt:hover{border-color:var(--muted-2)}
+.type-opt.sel{border-color:var(--primary);background:var(--primary-soft)}
+.type-opt .to-icon{font-size:19px;margin-bottom:7px}
+.type-opt .to-name{font-weight:800;font-size:13px;margin-bottom:4px}
+.type-opt .to-desc{font-size:11px;color:var(--muted);line-height:1.45}
+.color-row{display:flex;gap:8px;flex-wrap:wrap}
+.color-dot{width:26px;height:26px;border-radius:8px;cursor:pointer;border:2.5px solid transparent;transition:transform .1s}
+.color-dot:hover{transform:scale(1.12)}
+.color-dot.sel{border-color:var(--navy)}
+.col-config-item{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:7px;background:var(--panel-2);
+}
+.col-config-item input[type=checkbox]{accent-color:var(--primary);width:15px;height:15px}
+.col-config-item .cc-label{font-weight:600;font-size:12.5px;flex:1}
+.col-config-item .cc-sys{font-size:9px;color:var(--muted-2);font-weight:700;letter-spacing:.05em}
+.col-config-item .cc-del{background:none;border:none;color:var(--muted-2);font-size:13px}
+.col-config-item .cc-del:hover{color:var(--red)}
+
+.empty-hint{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted-2);gap:8px;padding:50px;text-align:center}
+.empty-hint .eh-title{font-size:14px;color:var(--muted);font-weight:700}
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--navy);color:#fff;
+  padding:11px 19px;border-radius:10px;font-size:12.5px;z-index:2500;opacity:0;transition:all .2s;pointer-events:none;
+  box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;font-weight:600;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast .t-dot{width:7px;height:7px;border-radius:50%;background:#4cd6a4}
+
+/* ====== SUPPRESSION DE PLAN ====== */
+.board-card{position:relative}
+.bc-del{
+  position:absolute;top:9px;right:9px;z-index:5;width:26px;height:26px;border-radius:7px;
+  background:rgba(255,255,255,.92);border:1px solid var(--line);color:var(--muted-2);
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .12s;font-size:12px;
+}
+.board-card:hover .bc-del{opacity:1}
+.bc-del:hover{color:var(--red);border-color:#f2c4bd;background:var(--red-soft)}
+
+/* ====== STUDIO D'INDICATEURS ====== */
+.kpix-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
+.kpix-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:15px 16px 13px;
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+}
+.kpix-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--kpix,#0c66e4)}
+.kpix-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:9px}
+.kpix-name{font-weight:700;font-size:12.5px;line-height:1.35;flex:1}
+.kpix-scope{font-size:9.5px;color:var(--muted-2);font-weight:600;margin-top:2px}
+.kpix-tools{display:flex;gap:3px;flex-shrink:0}
+.kpix-tools button{background:none;border:none;color:var(--muted-2);font-size:12px;padding:3px 5px;border-radius:5px}
+.kpix-tools button:hover{background:var(--panel-2);color:var(--txt)}
+.kpix-val-row{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.kpix-val{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1}
+.kpix-unit{font-size:13px;color:var(--muted);font-weight:600}
+.kpix-target{
+  font-size:10px;font-weight:800;padding:3px 9px;border-radius:11px;letter-spacing:.03em;margin-left:auto;
+}
+.kpix-target.ok{background:var(--green-soft);color:var(--green)}
+.kpix-target.ko{background:var(--red-soft);color:var(--red)}
+.kpix-sub{font-size:10.5px;color:var(--muted-2);margin-top:7px;font-weight:500}
+.kpix-bar{height:6px;background:var(--line-soft);border-radius:3px;overflow:hidden;margin-top:9px}
+.kpix-bar i{display:block;height:100%;border-radius:3px;background:var(--kpix,#0c66e4)}
+.kpix-spark{margin-top:9px}
+.kpix-entry{display:flex;gap:6px;margin-top:10px}
+.kpix-entry input{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:12px;min-width:0}
+.kpix-entry input[type=date]{flex:0 0 118px}
+.kpix-card.new-kpi{
+  border:2px dashed var(--line);background:none;box-shadow:none;display:flex;align-items:center;justify-content:center;
+  min-height:120px;color:var(--muted);font-weight:600;cursor:pointer;
+}
+.kpix-card.new-kpi::before{display:none}
+.kpix-card.new-kpi:hover{border-color:var(--primary);color:var(--primary)}
+.kpi-filter-box{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:11px;margin-bottom:12px}
+.kpi-filter-box .kfb-title{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.kpi-chips{display:flex;gap:5px;flex-wrap:wrap}
+.kpi-chips .chip{font-size:10.5px;padding:4px 9px}
+.kview{padding:24px 30px 60px;overflow-y:auto;height:100%}
+
+/* ====== MODE PRÉSENTATION ====== */
+body.presentation .search-box, body.presentation #btn-export, body.presentation .conn-badge,
+body.presentation #btn-share, body.presentation .bc-del, body.presentation .kpix-tools, body.presentation .kpix-entry, body.presentation .kpix-card.new-kpi,
+body.presentation #btn-new-item, body.presentation .expand-toggle, body.presentation .resize-handle,
+body.presentation .pa-add-row, body.presentation #btn-cols, body.presentation .board-card.new{display:none !important}
+body.presentation .strip,body.presentation .task-strip,body.presentation .kb-card,body.presentation .pa-table tbody tr{cursor:default}
+body.presentation{font-size:14.5px}
+
+@media (max-width:1100px){
+  .dash-grid-top{grid-template-columns:repeat(3,1fr)}
+  .dash-grid-mid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001s !important;transition-duration:.001s !important}
+}
+</style>
+</head>
+<body>
+
+<script>
+/* Détecteur d'erreurs global — placé en premier pour capter tout plantage
+   des blocs suivants (y compris erreurs de syntaxe) et l'afficher à l'écran. */
+window.__paErrors = [];
+(function(){
+  function show(msg){
+    window.__paErrors.push(msg);
+    try{
+      var el = document.getElementById('gate-err');
+      var gate = document.getElementById('gate');
+      if(el && gate && !gate.classList.contains('hidden')){
+        el.textContent = '✗ ' + window.__paErrors.join('  |  ');
+      } else {
+        var main = document.getElementById('main');
+        if(main && main.querySelector('.eh-title')){
+          var safe = String(msg).replace(/[&<>]/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});
+          main.innerHTML = '<div class="empty-hint" style="height:70%"><div class="eh-title" style="color:#e34935">Échec du chargement</div><div style="font-size:12px;max-width:460px">'+safe+'</div><button class="btn" onclick="location.reload()">Recharger la page</button></div>';
+        }
+      }
+    }catch(x){}
+  }
+  window.addEventListener('error', function(e){
+    show((e.message||'erreur') + (e.lineno?(' (ligne '+e.lineno+')'):''));
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    show('Erreur au chargement : ' + ((e.reason && (e.reason.message||e.reason)) || 'inconnue'));
+  });
+})();
+</script>
+
+<!-- ============ GATE ============ -->
+<div id="gate">
+  <div class="box">
+    <div class="logo-lockup">
+      <div class="logo-mark">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
+        </svg>
+      </div>
+      <div class="logo-words">
+        <div class="logo-l1">ONET<span class="x">×</span>REVIMA</div>
+        <div class="logo-l2">Plan d'action</div>
+      </div>
+    </div>
+    <h1>Bienvenue</h1>
+    <p>Plateforme de pilotage des plans d'action et projets du site. Indique ton prénom : chaque action est tracée dans le journal d'équipe.</p>
+    <label>Ton prénom</label>
+    <input type="text" id="gate-name" placeholder="ex : Stan" autocomplete="off">
+    <button class="enter" id="btn-enter" type="button" onclick="tryUnlock()">Entrer</button>
+    <div class="err" id="gate-err"></div>
+    <noscript><div class="gate-noscript">⚠ JavaScript est désactivé ou bloqué sur ce navigateur : l'application ne peut pas fonctionner. Essaie avec Microsoft Edge, ou héberge le fichier sur Netlify (voir guide).</div></noscript>
+    <div class="gate-config">
+      <div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px">⚙ Configuration Supabase</div>
+      <div id="gate-config-body">
+        <label>Project URL</label>
+        <input type="text" id="cfg-url" placeholder="https://xxxxx.supabase.co" autocomplete="off">
+        <label>Clé anon / publishable</label>
+        <input type="text" id="cfg-key" placeholder="eyJ… ou sb_publishable_…" autocomplete="off">
+        <div style="font-size:10.5px;color:var(--muted-2);line-height:1.5;margin-top:2px">Valeurs dans Supabase → Settings → API. Sauvegardées automatiquement pendant la saisie. Laisse vide pour le mode local (non partagé).</div>
+      </div>
+    </div>
+    <div class="gate-status" id="gate-status">● Chargement du moteur…</div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div class="app hidden" id="app">
+  <div class="topbar">
+    <div class="logo-lockup" style="cursor:pointer" onclick="goHome()">
+      <div class="logo-mark">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
+        </svg>
+      </div>
+      <div class="logo-words">
+        <div class="logo-l1">ONET<span class="x">×</span>REVIMA</div>
+        <div class="logo-l2">Plan d'action</div>
+      </div>
+    </div>
+
+    <div class="crumb" id="crumb"></div>
+
+    <div class="spacer"></div>
+
+    <div class="search-box">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="search-input" placeholder="Rechercher…" oninput="renderMain()">
+    </div>
+
+    <div class="presence-row" id="presence-row" title="Connectés en ce moment"></div>
+    <span class="conn-badge" id="conn-badge"><span class="dot"></span><span id="conn-text">…</span></span>
+
+    <button class="btn" id="btn-kpis" onclick="setRoute({view:'kpis'})" title="Studio d'indicateurs personnalisés">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg>
+      Indicateurs
+    </button>
+    <button class="btn" id="btn-capture" onclick="captureScreen()" title="Télécharger une image PNG de l'écran actuel">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      Capture
+    </button>
+    <button class="btn" id="btn-share" onclick="shareLink()" title="Copier un lien qui configure automatiquement l'application pour tes collègues">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/></svg>
+      Partager
+    </button>
+    <button class="btn" id="btn-journal" onclick="setRoute({view:'journal'})" title="Journal d'activité de l'équipe">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+      Journal
+    </button>
+    <button class="btn" id="btn-presentation" onclick="togglePresentation()" title="Masquer les contrôles d'édition pour projeter en réunion">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      Présentation
+    </button>
+    <button class="btn" id="btn-export" onclick="exportCSV()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      CSV
+    </button>
+  </div>
+
+  <div class="main" id="main"></div>
+</div>
+
+<!-- ============ DRAWER ============ -->
+<div class="overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="tab" id="drawer-tab"></div>
+    <h2 id="drawer-title">—<span class="code" id="drawer-code"></span></h2>
+    <button class="drawer-close" onclick="closeDrawer()" aria-label="Fermer">✕</button>
+  </div>
+  <div class="drawer-tabs" id="drawer-tabs"></div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-foot" id="drawer-foot"></div>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<div class="toast" id="toast"><span class="t-dot"></span><span id="toast-msg"></span></div>
+<script>
+/* ============================================================
+   CONFIGURATION
+   Option A (recommandée) : colle l'URL et la clé dans l'écran
+   d'accueil (⚙ Configuration Supabase) — mémorisées sur l'appareil.
+   Option B : renseigne-les ici en dur avant d'héberger le fichier,
+   ainsi l'équipe n'a rien à configurer.
+   ============================================================ */
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+/* ---- Référentiels ---- */
+const ACTION_STATUTS = ['À faire','En cours','Bloqué','Fait'];
+const ACTION_COLORS = {
+  'À faire':  {main:'#5e6c84', soft:'#eef0f3'},
+  'En cours': {main:'#0c66e4', soft:'#e9f2ff'},
+  'Bloqué':   {main:'#e34935', soft:'#ffedeb'},
+  'Fait':     {main:'#22a06b', soft:'#e7f7ef'},
+};
+const PROJ_STATUTS = ['Planifié','En cours','En retard','Terminé','En attente'];
+const PROJ_COLORS = {
+  'Planifié':   {main:'#5e6c84', soft:'#eef0f3'},
+  'En cours':   {main:'#0c66e4', soft:'#e9f2ff'},
+  'En retard':  {main:'#e34935', soft:'#ffedeb'},
+  'Terminé':    {main:'#22a06b', soft:'#e7f7ef'},
+  'En attente': {main:'#e77b1e', soft:'#fdf0e3'},
+};
+const HEALTH = {vert:'#22a06b', orange:'#e77b1e', rouge:'#e34935'};
+const PRIOS = {'Haute':'#e34935','Moyenne':'#e77b1e','Basse':'#5e6c84'};
+const BOARD_COLORS = ['#0c66e4','#22a06b','#e77b1e','#6554c0','#e34935','#00a3bf','#d6377b'];
+const DEFAULT_COLS = [
+  {key:'num',        label:'N°',           sys:true},
+  {key:'titre',      label:'Action',       sys:true},
+  {key:'responsable',label:'Responsable',  sys:true},
+  {key:'echeance',   label:'Échéance',     sys:true},
+  {key:'statut',     label:'Statut',       sys:true},
+  {key:'priorite',   label:'Priorité',     sys:true},
+  {key:'avancement', label:'Avancement',   sys:true},
+  {key:'notes',      label:'Commentaire',  sys:true},
+];
+const FRENCH_HOLIDAYS = new Set([
+  '2026-01-01','2026-04-06','2026-05-01','2026-05-08','2026-05-14','2026-05-25',
+  '2026-07-14','2026-08-15','2026-11-01','2026-11-11','2026-12-25',
+  '2027-01-01','2027-03-29','2027-05-01','2027-05-06','2027-05-08','2027-05-17',
+  '2027-07-14','2027-08-15','2027-11-01','2027-11-11','2027-12-25',
+]);
+
+let sbClient = null; // renommé : la librairie CDN crée déjà une globale « supabase »
+let USE_SUPABASE = false;
+let state = { boards: [], actions: [], projects: [], tasks: [], activity: [], comments: [] };
+let route = { view:'home', boardId:null, sub:'liste' }; // sub: liste|kanban (actions) / gantt|kanban|dash (projet)
+let ui = {
+  pxPerDay: 34, userName:'', drawer:{kind:null,id:null,tab:'infos'},
+  filterStatuts:new Set(), filterResp:new Set(), onlyLate:false,
+  expandedProjects:new Set(),
+};
+let undoStack = [];
+
+/* ---- Les erreurs sont captées par le détecteur global en tête de <body> ---- */
+
+/* ---- Clés Supabase effectives ---- */
+function getSupabaseConfig(){
+  let url = SUPABASE_URL, key = SUPABASE_ANON_KEY;
+  try{
+    if(url==='YOUR_SUPABASE_URL' || !url) url = (localStorage.getItem('pa_sb_url')||'').trim();
+    if(key==='YOUR_SUPABASE_ANON_KEY' || !key) key = (localStorage.getItem('pa_sb_key')||'').trim();
+  }catch(e){ if(url==='YOUR_SUPABASE_URL') url=''; if(key==='YOUR_SUPABASE_ANON_KEY') key=''; }
+  return {url, key};
+}
+
+/* ============ GATE ============ */
+function initials(name){ return (name||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+/* tryUnlock et le câblage des boutons du gate sont définis dans le
+   DERNIER bloc de script du fichier, à côté du voyant « Système prêt » :
+   si le voyant est vert, les boutons sont câblés — même bloc de code. */
+
+/* ============ STOCKAGE ============ */
+function uid(){ return 'id-'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
+const TABLES = ['boards','actions','projects','tasks','activity','comments','kpis','kpi_values'];
+
+async function init(){
+  try{
+    const cfg = getSupabaseConfig();
+    if(cfg.url && cfg.key){
+      try{
+        if(!window.supabase || !window.supabase.createClient){
+          throw new Error('librairie Supabase non chargée (unpkg.com bloqué par le réseau ?)');
+        }
+        sbClient = window.supabase.createClient(cfg.url, cfg.key);
+        const {error} = await sbClient.from('boards').select('id').limit(1);
+        if(error) throw error;
+        USE_SUPABASE = true;
+      }catch(e){
+        console.warn('Supabase indisponible — mode local.', e);
+        USE_SUPABASE = false;
+        showToast('Connexion Supabase impossible ('+(e.message||e)+') — mode local');
+      }
+    }
+    updateConnBadge();
+    await loadAll();
+    renderPresence([ui.userName]);
+    if(USE_SUPABASE){ subscribeRealtime(); joinPresence(); }
+    renderMain();
+  }catch(e){
+    console.error(e);
+    const main = document.getElementById('main');
+    if(main) main.innerHTML = '<div class="empty-hint" style="height:70%"><div class="eh-title" style="color:var(--red)">Échec du chargement</div><div style="font-size:12px;max-width:460px">'+escapeHtml(String(e.message||e))+'</div><button class="btn" onclick="location.reload()">Recharger la page</button></div>';
+  }
+}
+function updateConnBadge(){
+  const b = document.getElementById('conn-badge'), t = document.getElementById('conn-text');
+  if(USE_SUPABASE){ b.className='conn-badge live'; t.textContent='LIVE · partagé'; b.title='Connecté à Supabase — modifications partagées en direct avec l’équipe'; }
+  else { b.className='conn-badge local'; t.textContent='LOCAL'; b.title='Données stockées sur cet appareil uniquement. Configure Supabase (écran d’accueil) pour partager.'; }
+}
+async function loadAll(){
+  if(USE_SUPABASE){
+    const res = await Promise.all([
+      sbClient.from('boards').select('*').order('created_at'),
+      sbClient.from('actions').select('*').order('ordre'),
+      sbClient.from('projects').select('*'),
+      sbClient.from('tasks').select('*'),
+      sbClient.from('activity').select('*').order('ts',{ascending:false}).limit(400),
+      sbClient.from('comments').select('*').order('ts'),
+      sbClient.from('kpis').select('*').order('created_at'),
+      sbClient.from('kpi_values').select('*').order('ts'),
+    ]);
+    TABLES.forEach((t,i)=>{ state[t] = res[i].data || []; });
+  } else {
+    try{ TABLES.forEach(t=>{ state[t] = JSON.parse(localStorage.getItem('pa_'+t) || '[]'); }); }
+    catch(e){ TABLES.forEach(t=>{ state[t]=state[t]||[]; }); }
+    state.activity.sort((a,b)=> new Date(b.ts) - new Date(a.ts));
+  }
+}
+function persistLocal(){
+  try{ TABLES.forEach(t=>localStorage.setItem('pa_'+t, JSON.stringify(state[t]))); }catch(e){}
+}
+async function dbInsert(table, row){
+  row.id = row.id || uid();
+  if(USE_SUPABASE){
+    const {error} = await sbClient.from(table).insert(row);
+    if(error){ showToast('Erreur enregistrement : '+error.message); console.error(error); }
+    state[table].push(row);
+  } else { state[table].push(row); persistLocal(); }
+  return row;
+}
+async function dbUpdate(table, id, patch){
+  if(table!=='activity') patch.updated_at = new Date().toISOString();
+  const item = state[table].find(x=>x.id===id);
+  if(item) Object.assign(item, patch);
+  if(USE_SUPABASE){
+    const {error} = await sbClient.from(table).update(patch).eq('id', id);
+    if(error){ showToast('Erreur mise à jour : '+error.message); console.error(error); }
+  } else persistLocal();
+}
+async function dbDelete(table, id){
+  state[table] = state[table].filter(x=>x.id!==id);
+  if(USE_SUPABASE){
+    const {error} = await sbClient.from(table).delete().eq('id', id);
+    if(error){ showToast('Erreur suppression : '+error.message); console.error(error); }
+  } else persistLocal();
+}
+async function logActivity(action, cible, details, boardId){
+  const entry = { id: uid(), ts: new Date().toISOString(), auteur: ui.userName||'Anonyme', action, cible: cible||'', details: details||'', board_id: boardId||route.boardId||null };
+  if(USE_SUPABASE){ await sbClient.from('activity').insert(entry); }
+  else persistLocal();
+  state.activity.unshift(entry);
+}
+
+/* ============ REALTIME + PRÉSENCE ============ */
+let realtimeDebounce = null;
+function subscribeRealtime(){
+  sbClient.channel('pa-data')
+    .on('postgres_changes', {event:'*', schema:'public'}, ()=>{
+      clearTimeout(realtimeDebounce);
+      realtimeDebounce = setTimeout(async ()=>{ await loadAll(); renderMain(); }, 350);
+    }).subscribe();
+}
+function joinPresence(){
+  const ch = sbClient.channel('pa-presence', {config:{presence:{key: ui.userName+'-'+Math.random().toString(36).slice(2,6)}}});
+  ch.on('presence', {event:'sync'}, ()=>{
+    const st = ch.presenceState();
+    renderPresence([...new Set(Object.values(st).flat().map(x=>x.name))]);
+  }).subscribe(async (status)=>{ if(status==='SUBSCRIBED') await ch.track({name: ui.userName}); });
+}
+function renderPresence(names){
+  const row = document.getElementById('presence-row');
+  row.innerHTML = names.slice(0,6).map(n=>
+    `<div class="presence-avatar ${n===ui.userName?'me':''}" title="${escAttr(n)}">${initials(n)}</div>`
+  ).join('') + (names.length>6 ? `<div class="presence-avatar">+${names.length-6}</div>` : '');
+}
+
+/* ============ UNDO ============ */
+function pushUndo(table, id, before){ undoStack.push({table,id,before}); if(undoStack.length>30) undoStack.shift(); }
+async function undoLast(){
+  const u = undoStack.pop();
+  if(!u){ showToast('Rien à annuler'); return; }
+  await dbUpdate(u.table, u.id, u.before);
+  renderMain();
+  showToast('Modification annulée');
+}
+
+/* ============ DATES ============ */
+function dateFromStr(s){ return new Date(s+'T00:00:00'); }
+function fmtDate(dt){ const y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0'); return y+'-'+m+'-'+d; }
+function fmtFR(s){ if(!s) return '—'; return s.slice(8,10)+'/'+s.slice(5,7)+'/'+s.slice(2,4); }
+function addDays(dt,n){ const x=new Date(dt); x.setDate(x.getDate()+n); return x; }
+function dayIndex(a,origin){ return Math.round((a-origin)/86400000); }
+function todayMid(){ const t=new Date(); t.setHours(0,0,0,0); return t; }
+
+/* ---- Retards ---- */
+function actionLate(a){ return a.echeance && dateFromStr(a.echeance) < todayMid() && a.statut !== 'Fait'; }
+function projLate(p){ return p.date_fin && dateFromStr(p.date_fin) < todayMid() && (p.avancement||0) < 100 && p.statut !== 'Terminé'; }
+
+</script>
+<script>
+/* ============ ROUTING ============ */
+function currentBoard(){ return state.boards.find(b=>b.id===route.boardId) || null; }
+function setRoute(r){
+  route = {...route, ...r};
+  if(r.view==='home'){ route.boardId=null; }
+  ui.filterStatuts.clear(); ui.filterResp.clear(); ui.onlyLate=false;
+  document.getElementById('search-input').value='';
+  renderMain();
+}
+function goHome(){ setRoute({view:'home'}); }
+function openBoard(id){
+  const b = state.boards.find(x=>x.id===id);
+  if(!b) return;
+  setRoute({view:'board', boardId:id, sub: b.type==='actions' ? 'liste' : 'gantt'});
+}
+function setSub(sub){ route.sub = sub; renderMain(); }
+
+function renderCrumb(){
+  const c = document.getElementById('crumb');
+  if(route.view==='board' && currentBoard()){
+    const b = currentBoard();
+    c.innerHTML = `<button class="btn-home" onclick="goHome()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
+      <span class="sep">/</span>
+      <span class="b-name">${escapeHtml(b.nom)}</span>
+      <span class="b-type ${b.type}">${b.type==='actions'?'Plan d\u2019actions':'Espace projet'}</span>`;
+  } else if(route.view==='kpis'){
+    c.innerHTML = `<button class="btn-home" onclick="goHome()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
+      <span class="sep">/</span><span class="b-name">Studio d'indicateurs</span>`;
+  } else if(route.view==='journal'){
+    c.innerHTML = `<button class="btn-home" onclick="goHome()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
+      <span class="sep">/</span><span class="b-name">Journal d'activité</span>`;
+  } else c.innerHTML = '';
+}
+
+function renderMain(){
+  renderCrumb();
+  const main = document.getElementById('main');
+  if(route.view==='home') renderHome(main);
+  else if(route.view==='journal') renderJournal(main);
+  else if(route.view==='kpis') renderKpis(main);
+  else if(route.view==='board'){
+    const b = currentBoard();
+    if(!b){ goHome(); return; }
+    if(b.type==='actions') renderActionsBoard(main, b);
+    else renderProjectBoard(main, b);
+  }
+}
+
+/* ============ ACCUEIL ============ */
+function boardStats(b){
+  if(b.type==='actions'){
+    const items = state.actions.filter(a=>a.board_id===b.id);
+    const done = items.filter(a=>a.statut==='Fait').length;
+    const late = items.filter(actionLate).length;
+    return {n:items.length, done, late, pct: items.length?Math.round(done/items.length*100):0, meta: items.length+' action'+(items.length>1?'s':'')};
+  } else {
+    const items = state.projects.filter(p=>p.board_id===b.id);
+    const done = items.filter(p=>p.statut==='Terminé').length;
+    const late = items.filter(projLate).length;
+    const pct = items.length?Math.round(items.reduce((x,p)=>x+(p.avancement||0),0)/items.length):0;
+    return {n:items.length, done, late, pct, meta: items.length+' projet'+(items.length>1?'s':'')};
+  }
+}
+function renderHome(main){
+  const totalActions = state.actions.length, lateActions = state.actions.filter(actionLate).length;
+  const totalProj = state.projects.length, lateProj = state.projects.filter(projLate).length;
+  const doneActions = state.actions.filter(a=>a.statut==='Fait').length;
+  const dstr = new Date().toLocaleDateString('fr-FR',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+  const actionBoards = state.boards.filter(b=>b.type==='actions');
+  const projBoards = state.boards.filter(b=>b.type==='projet');
+
+  const cardHtml = (b)=>{
+    const s = boardStats(b);
+    return `<div class="board-card" onclick="openBoard('${b.id}')">
+      <button class="bc-del" title="Supprimer ce plan" onclick="deleteBoard(event,'${b.id}')">🗑</button>
+      <div class="bc-band" style="background:${b.couleur}"></div>
+      <div class="bc-body">
+        <div class="bc-name">${escapeHtml(b.nom)}</div>
+        <div class="bc-meta">${s.meta}${s.done?` · ${s.done} terminé${s.done>1?'s':''}`:''}</div>
+      </div>
+      <div class="bc-foot">
+        ${s.late?`<span class="bc-late">⚠ ${s.late} en retard</span>`:''}
+        <div class="bc-prog-track"><div class="bc-prog-fill" style="width:${s.pct}%"></div></div>
+        <span class="bc-pct">${s.pct}%</span>
+      </div>
+    </div>`;
+  };
+
+  main.innerHTML = `<div class="home">
+    <div class="home-head"><h1>Plans d'action &amp; projets</h1></div>
+    <div class="home-sub">${dstr} — vue d'ensemble du site.</div>
+    <div class="home-kpis">
+      <div class="home-kpi"><div class="num">${totalActions}</div><div class="lbl">Actions suivies</div></div>
+      <div class="home-kpi late"><div class="num">${lateActions+lateProj}</div><div class="lbl">Retards détectés</div></div>
+      <div class="home-kpi done"><div class="num">${doneActions}</div><div class="lbl">Actions soldées</div></div>
+      <div class="home-kpi"><div class="num">${totalProj}</div><div class="lbl">Projets pilotés</div></div>
+    </div>
+
+    ${state.kpis.length?`<div class="section-label">Indicateurs <button class="btn small ghost" style="margin-left:auto" onclick="setRoute({view:'kpis'})">Gérer →</button></div>
+    <div class="kpix-grid" style="margin-bottom:34px">${state.kpis.slice(0,8).map(k=>kpiCardHtml(k,true)).join('')}</div>`:''}
+
+    <div class="section-label">Plans d'actions</div>
+    <div class="boards-grid">
+      ${actionBoards.map(cardHtml).join('')}
+      <div class="board-card new" onclick="openBoardModal('actions')">＋ Nouveau plan d'actions</div>
+    </div>
+
+    <div class="section-label">Espaces projet</div>
+    <div class="boards-grid">
+      ${projBoards.map(cardHtml).join('')}
+      <div class="board-card new" onclick="openBoardModal('projet')">＋ Nouvel espace projet</div>
+    </div>
+  </div>`;
+}
+
+/* ============ FILTRES COMMUNS ============ */
+function filterChipsHtml(statuts, colors, respList){
+  return `<div class="filters-row">
+    ${statuts.map(s=>`<span class="chip ${ui.filterStatuts.has(s)?'active':''}" onclick="toggleFilterStatut('${s}')">${s}</span>`).join('')}
+    <span class="chip late-chip ${ui.onlyLate?'active':''}" onclick="ui.onlyLate=!ui.onlyLate;renderMain()">⚠ Retards</span>
+    ${respList.length?'<span style="color:var(--line);margin:0 2px">|</span>':''}
+    ${respList.map(r=>`<span class="chip ${ui.filterResp.has(r)?'active':''}" onclick="toggleFilterResp('${escAttr(r)}')">${escapeHtml(r)}</span>`).join('')}
+  </div>`;
+}
+function toggleFilterStatut(s){ ui.filterStatuts.has(s)?ui.filterStatuts.delete(s):ui.filterStatuts.add(s); renderMain(); }
+function toggleFilterResp(r){ ui.filterResp.has(r)?ui.filterResp.delete(r):ui.filterResp.add(r); renderMain(); }
+function searchQ(){ return (document.getElementById('search-input').value||'').toLowerCase(); }
+
+/* ============ PLAN D'ACTIONS ============ */
+function boardCols(b){
+  const cfg = (b.config && b.config.cols) ? b.config.cols : DEFAULT_COLS.map(c=>({...c, visible:true}));
+  return cfg;
+}
+function getFilteredActions(b){
+  const q = searchQ();
+  return state.actions.filter(a=>{
+    if(a.board_id!==b.id) return false;
+    if(ui.filterStatuts.size && !ui.filterStatuts.has(a.statut)) return false;
+    if(ui.filterResp.size && !ui.filterResp.has(a.responsable)) return false;
+    if(ui.onlyLate && !actionLate(a)) return false;
+    if(q && !((a.titre||'')+' '+(a.responsable||'')+' '+(a.notes||'')).toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((x,y)=>(x.ordre||0)-(y.ordre||0));
+}
+
+function renderActionsBoard(main, b){
+  const all = state.actions.filter(a=>a.board_id===b.id);
+  const items = getFilteredActions(b);
+  const resps = [...new Set(all.map(a=>a.responsable).filter(Boolean))].sort();
+  const late = all.filter(actionLate);
+  const done = all.filter(a=>a.statut==='Fait');
+  const lateByResp = {};
+  late.forEach(a=>{ const r=a.responsable||'—'; lateByResp[r]=(lateByResp[r]||0)+1; });
+
+  const toolbar = `<div class="board-toolbar">
+    <div class="seg">
+      <button class="${route.sub==='liste'?'active':''}" onclick="setSub('liste')">☰ Liste</button>
+      <button class="${route.sub==='kanban'?'active':''}" onclick="setSub('kanban')">▤ Tableau</button>
+    </div>
+    ${filterChipsHtml(ACTION_STATUTS, ACTION_COLORS, resps)}
+    <div class="toolbar-spacer"></div>
+    <button class="btn small" id="btn-cols" onclick="openColsModal()">⚙ Colonnes</button>
+    <button class="btn primary small" id="btn-new-item" onclick="openActionDrawer(null)">＋ Action</button>
+  </div>`;
+
+  const summary = `<div class="pa-summary">
+      <div class="pa-sum-item"><span class="n">${all.length}</span><span class="l">actions</span></div>
+      <div class="pa-sum-item late"><span class="n">${late.length}</span><span class="l">en retard</span></div>
+      <div class="pa-sum-item done"><span class="n">${done.length}</span><span class="l">soldées</span></div>
+      <div class="pa-sum-item"><span class="n">${all.length?Math.round(done.length/all.length*100):0}%</span><span class="l">taux de solde</span></div>
+    </div>
+    ${Object.keys(lateByResp).length?`<div class="resp-late-chips">
+      ${Object.entries(lateByResp).sort((a,c)=>c[1]-a[1]).map(([r,n])=>
+        `<span class="resp-late" title="Cliquer pour filtrer" onclick="ui.filterResp=new Set(['${escAttr(r)}']);ui.onlyLate=true;renderMain()"><span class="av">${initials(r)}</span>${escapeHtml(r)} · ${n} retard${n>1?'s':''}</span>`).join('')}
+    </div>`:''}`;
+
+  let content;
+  if(route.sub==='kanban'){
+    content = `<div class="kanban">${ACTION_STATUTS.map(s=>{
+      const col = ACTION_COLORS[s];
+      const cards = items.filter(a=>a.statut===s);
+      return `<div class="kb-col" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="actionDrop(event,'${s}')">
+        <div class="kb-col-head"><span class="dot" style="background:${col.main}"></span><span class="kname">${s}</span><span class="kcount">${cards.length}</span></div>
+        <div class="kb-cards">
+          ${cards.map(a=>`<div class="kb-card" draggable="${!document.body.classList.contains('presentation')}"
+              ondragstart="event.dataTransfer.setData('text/plain','${a.id}');this.classList.add('dragging')" ondragend="this.classList.remove('dragging')"
+              onclick="openActionDrawer('${a.id}')">
+            <div class="kc-name">${escapeHtml(a.titre)}</div>
+            <div class="kc-foot">
+              <span class="kc-av" title="${escAttr(a.responsable||'')}">${initials(a.responsable||'?')}</span>
+              ${actionLate(a)?'<span class="kc-late">RETARD</span>':''}
+              <span class="prio-flag" style="color:${PRIOS[a.priorite]||'#888'}">⚑ ${a.priorite||''}</span>
+              <span class="kc-date ${actionLate(a)?'pa-date past':''}">${fmtFR(a.echeance)}</span>
+            </div>
+            <div class="kc-prog"><i style="width:${a.avancement||0}%;background:${col.main}"></i></div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } else {
+    const cols = boardCols(b).filter(c=>c.visible!==false);
+    content = `<div class="pa-wrap">
+      ${summary}
+      <div class="pa-table-card">
+        <table class="pa-table">
+          <thead><tr>${cols.map(c=>`<th>${escapeHtml(c.label)}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${items.map((a,idx)=>`<tr class="${actionLate(a)?'is-late':''}" onclick="openActionDrawer('${a.id}')">
+              ${cols.map(c=>actionCellHtml(a, c, idx)).join('')}
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        ${items.length===0?'<div class="pa-empty">Aucune action ne correspond aux filtres.</div>':''}
+        <div class="pa-add-row" onclick="openActionDrawer(null)">＋ Ajouter une action</div>
+      </div>
+    </div>`;
+  }
+  main.innerHTML = `<div style="display:flex;flex-direction:column;height:100%">${toolbar}${route.sub==='kanban'?summaryWrap(summary)+content:content}</div>`;
+}
+function summaryWrap(s){ return `<div style="padding:14px 18px 0">${s}</div>`; }
+
+function actionCellHtml(a, c, idx){
+  switch(c.key){
+    case 'num': return `<td class="pa-num">${String(idx+1).padStart(2,'0')}</td>`;
+    case 'titre': return `<td class="pa-title">${escapeHtml(a.titre)}${actionLate(a)?'<span class="pa-late-badge">RETARD</span>':''}</td>`;
+    case 'responsable': return `<td><span class="pa-resp"><span class="av">${initials(a.responsable||'?')}</span>${escapeHtml(a.responsable||'—')}</span></td>`;
+    case 'echeance': return `<td><span class="pa-date ${actionLate(a)?'past':''}">${fmtFR(a.echeance)}</span></td>`;
+    case 'statut': { const col=ACTION_COLORS[a.statut]||ACTION_COLORS['À faire'];
+      return `<td><span class="status-pill" style="background:${col.soft};color:${col.main}"><span class="d" style="background:${col.main}"></span>${a.statut}</span></td>`; }
+    case 'priorite': return `<td><span class="prio-flag" style="color:${PRIOS[a.priorite]||'#888'}">⚑ ${a.priorite||'—'}</span></td>`;
+    case 'avancement': { const col=ACTION_COLORS[a.statut]||ACTION_COLORS['À faire'];
+      return `<td><span class="pa-prog"><span class="pa-prog-track"><span class="pa-prog-fill" style="display:block;width:${a.avancement||0}%;background:${col.main}"></span></span><span class="pa-prog-val">${a.avancement||0}%</span></span></td>`; }
+    case 'notes': return `<td style="color:var(--muted);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(a.notes||'')}</td>`;
+    default: return `<td style="color:var(--muted)">${escapeHtml((a.extra&&a.extra[c.key])||'')}</td>`;
+  }
+}
+async function actionDrop(e, statut){
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  const id = e.dataTransfer.getData('text/plain');
+  const a = state.actions.find(x=>x.id===id);
+  if(!a || a.statut===statut) return;
+  const old = a.statut;
+  const patch = {statut};
+  if(statut==='Fait') patch.avancement = 100;
+  await dbUpdate('actions', id, patch);
+  await logActivity('a fait passer', '« '+a.titre+' »', old+' → '+statut);
+  renderMain();
+  showToast('« '+truncate(a.titre,34)+' » → '+statut);
+}
+
+/* ---- Configuration des colonnes ---- */
+function openColsModal(){
+  const b = currentBoard();
+  const cols = boardCols(b);
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Colonnes du plan d'actions</div>
+    <div class="modal-body">
+      <div id="cols-list">
+        ${cols.map((c,i)=>`<div class="col-config-item" data-key="${c.key}">
+          <input type="checkbox" ${c.visible!==false?'checked':''} ${c.key==='titre'?'disabled checked':''}>
+          <span class="cc-label">${escapeHtml(c.label)}</span>
+          ${c.sys?'<span class="cc-sys">STANDARD</span>':`<button class="cc-del" onclick="this.closest('.col-config-item').remove()" title="Supprimer la colonne">✕</button>`}
+        </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input type="text" id="new-col-name" placeholder="Nouvelle colonne (ex : Site, Réf. 8D…)" style="flex:1;background:var(--panel-2);border:1.5px solid var(--line);border-radius:8px;padding:8px 11px;font-size:12.5px">
+        <button class="btn small" onclick="addCustomCol()">Ajouter</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="saveCols()">Enregistrer</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function addCustomCol(){
+  const inp = document.getElementById('new-col-name');
+  const label = inp.value.trim();
+  if(!label) return;
+  const key = 'c_'+label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').slice(0,24);
+  const div = document.createElement('div');
+  div.innerHTML = `<div class="col-config-item" data-key="${key}" data-label="${escAttr(label)}">
+    <input type="checkbox" checked>
+    <span class="cc-label">${escapeHtml(label)}</span>
+    <button class="cc-del" onclick="this.closest('.col-config-item').remove()" title="Supprimer">✕</button>
+  </div>`;
+  document.getElementById('cols-list').appendChild(div.firstElementChild);
+  inp.value='';
+}
+async function saveCols(){
+  const b = currentBoard();
+  const oldCols = boardCols(b);
+  const items = [...document.querySelectorAll('#cols-list .col-config-item')];
+  const cols = items.map(el=>{
+    const key = el.dataset.key;
+    const existing = oldCols.find(c=>c.key===key);
+    return {
+      key,
+      label: existing ? existing.label : (el.dataset.label || key),
+      sys: existing ? !!existing.sys : false,
+      visible: el.querySelector('input[type=checkbox]').checked,
+    };
+  });
+  await dbUpdate('boards', b.id, {config:{...(b.config||{}), cols}});
+  await logActivity('a modifié les colonnes de', '« '+b.nom+' »', '');
+  closeModal();
+  renderMain();
+  showToast('Colonnes mises à jour');
+}
+</script>
+<script>
+/* ============ ESPACE PROJET ============ */
+function getFilteredProjects(b){
+  const q = searchQ();
+  return state.projects.filter(p=>{
+    if(p.board_id!==b.id) return false;
+    if(ui.filterStatuts.size && !ui.filterStatuts.has(p.statut)) return false;
+    if(ui.filterResp.size && !ui.filterResp.has(p.responsable)) return false;
+    if(ui.onlyLate && !projLate(p)) return false;
+    if(q && !((p.nom||'')+' '+(p.code||'')+' '+(p.responsable||'')).toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderProjectBoard(main, b){
+  const all = state.projects.filter(p=>p.board_id===b.id);
+  const resps = [...new Set(all.map(p=>p.responsable).filter(Boolean))].sort();
+  const toolbar = `<div class="board-toolbar">
+    <div class="seg">
+      <button class="${route.sub==='gantt'?'active':''}" onclick="setSub('gantt')">📅 Gantt</button>
+      <button class="${route.sub==='kanban'?'active':''}" onclick="setSub('kanban')">▤ Kanban</button>
+      <button class="${route.sub==='dash'?'active':''}" onclick="setSub('dash')">◔ Dashboard</button>
+    </div>
+    ${route.sub==='gantt'?`<div class="seg">
+      <button class="${ui.pxPerDay>=30?'active':''}" onclick="ui.pxPerDay=34;renderMain()">Semaine</button>
+      <button class="${ui.pxPerDay<30&&ui.pxPerDay>=10?'active':''}" onclick="ui.pxPerDay=14;renderMain()">Mois</button>
+      <button class="${ui.pxPerDay<10?'active':''}" onclick="ui.pxPerDay=5.5;renderMain()">Trimestre</button>
+    </div>
+    <button class="btn small ghost" onclick="scrollToToday()">↦ Aujourd'hui</button>
+    <button class="btn small ghost" onclick="undoLast()" title="Ctrl+Z">↩</button>`:''}
+    ${filterChipsHtml(PROJ_STATUTS, PROJ_COLORS, resps)}
+    <div class="toolbar-spacer"></div>
+    ${route.sub==='gantt'?`<div class="gantt-legend">
+      <span><i style="background:#0c66e4"></i>En cours</span><span><i style="background:#e34935"></i>Retard</span>
+      <span><i style="background:#22a06b"></i>Terminé</span><span><i class="diam" style="background:#e77b1e"></i>Jalon</span>
+      <span><i style="background:transparent;border-top:2px solid #e77b1e;height:0;width:10px"></i>Engagement</span>
+    </div>`:''}
+    <button class="btn primary small" id="btn-new-item" onclick="openProjectModal()">＋ Projet</button>
+  </div>`;
+
+  let content;
+  if(route.sub==='kanban') content = renderProjKanban(b);
+  else if(route.sub==='dash') content = renderProjDash(b);
+  else content = `<div class="gantt-scroll" id="gantt-scroll"><div class="gantt-inner" id="gantt-inner">
+      <div class="gantt-canvas-bg" id="gantt-bg"></div>
+      <div class="gantt-header" id="gantt-header"></div>
+      <div class="rows-area" id="rows-area"></div>
+    </div></div>`;
+
+  main.innerHTML = `<div style="display:flex;flex-direction:column;height:100%">${toolbar}${content}</div>`;
+  if(route.sub==='gantt'){ renderGantt(b); setTimeout(scrollToToday, 80); }
+}
+
+/* ---- GANTT ---- */
+function computeTimelineRange(projs){
+  const dates = [];
+  projs.forEach(p=>{ if(p.date_debut) dates.push(dateFromStr(p.date_debut)); if(p.date_fin) dates.push(dateFromStr(p.date_fin)); });
+  const today = todayMid();
+  if(dates.length===0) dates.push(addDays(today,-30), addDays(today,60));
+  let min = new Date(Math.min(...dates.map(x=>+x), +today));
+  let max = new Date(Math.max(...dates.map(x=>+x), +today));
+  min = addDays(min,-12); max = addDays(max,35); min.setDate(1);
+  return {min,max};
+}
+function renderGantt(b){
+  const projs = getFilteredProjects(b);
+  const {min,max} = computeTimelineRange(state.projects.filter(p=>p.board_id===b.id));
+  const totalDays = dayIndex(max,min);
+  const px = ui.pxPerDay;
+  const totalWidth = totalDays*px + 40;
+  const today = todayMid();
+  const LEFT_PAD = 26;
+
+  const header = document.getElementById('gantt-header');
+  header.style.width = totalWidth+'px';
+  let monthsHtml='';
+  let cursor = new Date(min);
+  while(cursor < max){
+    const nextMonth = new Date(cursor.getFullYear(), cursor.getMonth()+1, 1);
+    const end = nextMonth<max?nextMonth:max;
+    monthsHtml += `<div class="gh-month" style="left:${dayIndex(cursor,min)*px+LEFT_PAD}px;width:${dayIndex(end,cursor)*px}px">${cursor.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})}</div>`;
+    cursor = nextMonth;
+  }
+  let daysHtml='';
+  if(px>=24){
+    for(let i=0;i<totalDays;i++){
+      const dt=addDays(min,i);
+      daysHtml += `<div class="gh-day ${fmtDate(dt)===fmtDate(today)?'today':''}" style="left:${i*px+LEFT_PAD}px;width:${px}px">${dt.getDate()}</div>`;
+    }
+  } else {
+    for(let i=0;i<totalDays;i++){
+      const dt=addDays(min,i);
+      if(dt.getDay()===1){
+        const oneJan=new Date(dt.getFullYear(),0,1);
+        const week=Math.ceil((((dt-oneJan)/86400000)+oneJan.getDay()+1)/7);
+        daysHtml += `<div class="gh-week" style="left:${i*px+LEFT_PAD}px;width:${px*7}px">S${String(week).padStart(2,'0')}</div>`;
+      }
+    }
+  }
+  header.innerHTML = `<div class="gh-months">${monthsHtml}</div><div class="gh-days">${daysHtml}</div>`;
+
+  const bg = document.getElementById('gantt-bg');
+  bg.style.width = totalWidth+'px';
+  let bands='';
+  for(let i=0;i<totalDays;i++){
+    const dt=addDays(min,i), key=fmtDate(dt);
+    if(FRENCH_HOLIDAYS.has(key)) bands += `<div class="hol-band" style="left:${i*px+LEFT_PAD}px;width:${px}px"></div>`;
+    else if(dt.getDay()===0||dt.getDay()===6) bands += `<div class="we-band" style="left:${i*px+LEFT_PAD}px;width:${px}px"></div>`;
+  }
+  bg.innerHTML = bands;
+
+  const rowsArea = document.getElementById('rows-area');
+  rowsArea.style.width = totalWidth+'px';
+  const todayLeft = dayIndex(today,min)*px + LEFT_PAD;
+  let html='';
+  projs.forEach(p=>{
+    const tasks = state.tasks.filter(t=>t.project_id===p.id);
+    const expanded = ui.expandedProjects.has(p.id);
+    const col = PROJ_COLORS[p.statut] || PROJ_COLORS['Planifié'];
+    const sd=dateFromStr(p.date_debut), ed=dateFromStr(p.date_fin);
+    const left = dayIndex(sd,min)*px + LEFT_PAD;
+    const width = Math.max(px*0.8,(dayIndex(ed,sd)+1)*px);
+    const late = projLate(p);
+    let engTick='';
+    if(p.engagement_date){
+      const engLeft = dayIndex(dateFromStr(p.engagement_date),sd)*px;
+      if(engLeft>=0 && engLeft<=width) engTick = `<div class="eng-tick" style="left:${engLeft}px" title="Engagement : ${fmtFR(p.engagement_date)}"></div>`;
+    }
+    html += `<div class="proj-row ${expanded?'expanded':''}" data-id="${p.id}">
+      <div class="expand-toggle" onclick="event.stopPropagation();toggleExpand('${p.id}')">${tasks.length?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 6 6 6-6 6"/></svg>':''}</div>
+      <div class="strip" style="left:${left}px;width:${width}px;background:${col.soft};border-color:${col.main}44"
+           data-id="${p.id}" data-kind="project" onmousedown="startDrag(event,'${p.id}','project')">
+        <div class="tab" style="background:${col.main}"></div>
+        <div class="strip-body" style="--fill:${p.avancement||0}%">
+          <span class="scode">${escapeHtml(p.code||'')}</span>
+          <span class="sname" style="color:${col.main}">${escapeHtml(p.nom)}</span>
+          ${late?'<span class="late-flag">DÉRIVE</span>':''}
+          <span class="spct" style="color:${col.main}">${p.avancement||0}%</span>
+        </div>
+        ${engTick}
+        <div class="resize-handle left" onmousedown="startResize(event,'${p.id}','project','left')"></div>
+        <div class="resize-handle right" onmousedown="startResize(event,'${p.id}','project','right')"></div>
+      </div>
+    </div>
+    <div class="task-rows">`;
+    tasks.forEach(t=>{
+      if(t.jalon){
+        const mleft = dayIndex(dateFromStr(t.date_debut),min)*px + LEFT_PAD;
+        html += `<div class="task-row"><div class="milestone ${t.avancement===100?'done':''}" data-tid="${t.id}" style="left:${mleft}px;background:${col.main}" title="${escAttr(t.nom)} — ${fmtFR(t.date_debut)}"></div></div>`;
+      } else {
+        const tsd=dateFromStr(t.date_debut), ted=dateFromStr(t.date_fin);
+        const tleft = dayIndex(tsd,min)*px + LEFT_PAD;
+        const twidth = Math.max(px*0.6,(dayIndex(ted,tsd)+1)*px);
+        html += `<div class="task-row">
+          <div class="task-strip" data-tid="${t.id}" style="left:${tleft}px;width:${twidth}px;background:${col.soft};border-color:${col.main}33;color:${col.main}"
+               onmousedown="startDrag(event,'${t.id}','task')" title="${escAttr(t.nom)} — ${fmtFR(t.date_debut)} → ${fmtFR(t.date_fin)} — ${t.avancement||0}%">
+            <div class="t-fill" style="width:${t.avancement||0}%"></div>
+            <span>${escapeHtml(t.nom)}</span>
+            <div class="resize-handle left" onmousedown="startResize(event,'${t.id}','task','left')"></div>
+            <div class="resize-handle right" onmousedown="startResize(event,'${t.id}','task','right')"></div>
+          </div>
+        </div>`;
+      }
+    });
+    html += `</div>`;
+  });
+  if(projs.length===0) html = `<div class="empty-hint" style="height:260px"><div class="eh-title">Aucun projet ne correspond aux filtres</div></div>`;
+  rowsArea.innerHTML = html + `<svg id="dep-svg"></svg><div class="today-line" style="left:${todayLeft}px"></div>`;
+  rowsArea.querySelectorAll('.strip[data-kind="project"]').forEach(el=>{
+    el.addEventListener('click', ()=>{ if(!el.dataset.dragged) openProjectDrawer(el.dataset.id); el.dataset.dragged=''; });
+  });
+  rowsArea.querySelectorAll('.task-strip,.milestone').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      if(el.dataset.dragged){ el.dataset.dragged=''; return; }
+      const t = state.tasks.find(x=>x.id===el.dataset.tid);
+      if(t) openProjectDrawer(t.project_id);
+    });
+  });
+  requestAnimationFrame(drawDependencies);
+}
+function drawDependencies(){
+  const svg = document.getElementById('dep-svg');
+  if(!svg) return;
+  const area = document.getElementById('rows-area');
+  if(!area) return;
+  svg.setAttribute('width', area.scrollWidth);
+  svg.setAttribute('height', area.scrollHeight);
+  let defs = `<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path class="arrowhead" d="M0,0 L6,3 L0,6 z"/></marker></defs>`;
+  let paths = '';
+  const areaRect = area.getBoundingClientRect();
+  const isVisible = (el)=>{
+    const tr = el.closest('.task-rows');
+    if(!tr) return true;
+    const pr = tr.previousElementSibling;
+    return !!(pr && pr.classList.contains('expanded'));
+  };
+  state.tasks.forEach(t=>{
+    if(!t.depends_on) return;
+    const fromEl = area.querySelector(`[data-tid="${t.depends_on}"]`);
+    const toEl = area.querySelector(`[data-tid="${t.id}"]`);
+    if(!fromEl || !toEl) return;
+    if(!isVisible(fromEl) || !isVisible(toEl)) return;
+    const fr = fromEl.getBoundingClientRect(), tr = toEl.getBoundingClientRect();
+    const x1 = fr.right - areaRect.left, y1 = fr.top + fr.height/2 - areaRect.top;
+    const x2 = tr.left - areaRect.left, y2 = tr.top + tr.height/2 - areaRect.top;
+    paths += `<path d="M ${x1} ${y1} L ${x1+8} ${y1} L ${x1+8} ${y2} L ${x2-3} ${y2}" marker-end="url(#arrow)"/>`;
+  });
+  svg.innerHTML = defs + paths;
+}
+function toggleExpand(id){
+  ui.expandedProjects.has(id)?ui.expandedProjects.delete(id):ui.expandedProjects.add(id);
+  renderMain();
+}
+function scrollToToday(){
+  const line = document.querySelector('.today-line');
+  const scroll = document.getElementById('gantt-scroll');
+  if(!line || !scroll) return;
+  const target = Math.max(0, parseFloat(line.style.left) - scroll.clientWidth*0.35);
+  if(typeof scroll.scrollTo==='function') scroll.scrollTo({left:target, behavior:'smooth'});
+  else scroll.scrollLeft = target;
+}
+
+/* ---- Drag / resize Gantt ---- */
+let dragCtx = null;
+function startDrag(e, id, kind){
+  if(document.body.classList.contains('presentation')) return;
+  if(e.target.classList.contains('resize-handle')) return;
+  e.preventDefault();
+  const table = kind==='project'?'projects':'tasks';
+  const item = state[table].find(x=>x.id===id);
+  dragCtx = {mode:'move', id, kind, table, startX:e.clientX, origDebut:item.date_debut, origFin:item.date_fin, moved:false};
+  document.body.style.userSelect='none';
+}
+function startResize(e, id, kind, side){
+  if(document.body.classList.contains('presentation')) return;
+  e.stopPropagation(); e.preventDefault();
+  const table = kind==='project'?'projects':'tasks';
+  const item = state[table].find(x=>x.id===id);
+  dragCtx = {mode:'resize', side, id, kind, table, startX:e.clientX, origDebut:item.date_debut, origFin:item.date_fin, moved:false};
+  document.body.style.userSelect='none';
+}
+document.addEventListener('mousemove', (e)=>{
+  if(!dragCtx) return;
+  const deltaDays = Math.round((e.clientX - dragCtx.startX)/ui.pxPerDay);
+  const item = state[dragCtx.table].find(x=>x.id===dragCtx.id);
+  if(!item) return;
+  let nd=dragCtx.origDebut, nf=dragCtx.origFin;
+  if(dragCtx.mode==='move'){
+    nd = fmtDate(addDays(dateFromStr(dragCtx.origDebut),deltaDays));
+    nf = fmtDate(addDays(dateFromStr(dragCtx.origFin),deltaDays));
+  } else if(dragCtx.side==='left') nd = fmtDate(addDays(dateFromStr(dragCtx.origDebut),deltaDays));
+  else nf = fmtDate(addDays(dateFromStr(dragCtx.origFin),deltaDays));
+  if(dateFromStr(nf)>=dateFromStr(nd) && (nd!==item.date_debut||nf!==item.date_fin)){
+    item.date_debut=nd; item.date_fin=nf; dragCtx.moved=true;
+    const bb = currentBoard();
+    if(bb) renderGantt(bb);
+    const el = document.querySelector(`[data-id="${dragCtx.id}"].strip, [data-tid="${dragCtx.id}"]`);
+    if(el) el.dataset.dragged='1';
+  }
+});
+document.addEventListener('mouseup', async ()=>{
+  if(!dragCtx) return;
+  document.body.style.userSelect='';
+  const ctx = dragCtx; dragCtx = null;
+  if(!ctx.moved) return;
+  const item = state[ctx.table].find(x=>x.id===ctx.id);
+  if(item && (item.date_debut!==ctx.origDebut || item.date_fin!==ctx.origFin)){
+    pushUndo(ctx.table, ctx.id, {date_debut:ctx.origDebut, date_fin:ctx.origFin});
+    await dbUpdate(ctx.table, ctx.id, {date_debut:item.date_debut, date_fin:item.date_fin});
+    await logActivity('a déplacé', (ctx.kind==='project'?'le projet « ':'la tâche « ')+item.nom+' »', fmtFR(item.date_debut)+' → '+fmtFR(item.date_fin));
+    showToast('Dates mises à jour · Ctrl+Z pour annuler');
+  }
+});
+
+/* ---- Kanban projets ---- */
+function renderProjKanban(b){
+  const items = getFilteredProjects(b);
+  return `<div class="kanban">${PROJ_STATUTS.map(s=>{
+    const col = PROJ_COLORS[s];
+    const cards = items.filter(p=>p.statut===s);
+    return `<div class="kb-col" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="projDrop(event,'${s}')">
+      <div class="kb-col-head"><span class="dot" style="background:${col.main}"></span><span class="kname">${s}</span><span class="kcount">${cards.length}</span></div>
+      <div class="kb-cards">
+        ${cards.map(p=>`<div class="kb-card" draggable="${!document.body.classList.contains('presentation')}"
+            ondragstart="event.dataTransfer.setData('text/plain','${p.id}');this.classList.add('dragging')" ondragend="this.classList.remove('dragging')"
+            onclick="openProjectDrawer('${p.id}')">
+          <div class="kc-name">${escapeHtml(p.nom)}</div>
+          <div class="kc-foot">
+            <span class="kc-health" style="background:${HEALTH[p.sante]||HEALTH.vert}" title="Santé : ${p.sante||'vert'}"></span>
+            <span class="kc-av" title="${escAttr(p.responsable||'')}">${initials(p.responsable||'?')}</span>
+            ${projLate(p)?'<span class="kc-late">DÉRIVE</span>':''}
+            <span class="kc-date">${fmtFR(p.date_fin)}</span>
+          </div>
+          <div class="kc-prog"><i style="width:${p.avancement||0}%;background:${col.main}"></i></div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+async function projDrop(e, statut){
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  const id = e.dataTransfer.getData('text/plain');
+  const p = state.projects.find(x=>x.id===id);
+  if(!p || p.statut===statut) return;
+  const old = p.statut;
+  const patch = {statut};
+  if(statut==='Terminé') patch.avancement=100;
+  await dbUpdate('projects', id, patch);
+  await logActivity('a fait passer', '« '+p.nom+' »', old+' → '+statut);
+  renderMain();
+  showToast('« '+truncate(p.nom,34)+' » → '+statut);
+}
+
+/* ---- Dashboard projet ---- */
+function donutSVG(counts, statuts, colors){
+  const total = Object.values(counts).reduce((a,b)=>a+b,0)||1;
+  const R=52, C=2*Math.PI*R;
+  let offset=0, segs='';
+  statuts.forEach(s=>{
+    const frac=(counts[s]||0)/total;
+    if(!frac) return;
+    segs += `<circle r="${R}" cx="68" cy="68" fill="none" stroke="${colors[s].main}" stroke-width="16" stroke-dasharray="${frac*C-1.5} ${C}" stroke-dashoffset="${-offset*C}" transform="rotate(-90 68 68)"/>`;
+    offset += frac;
+  });
+  return `<svg width="136" height="136" viewBox="0 0 136 136">
+    <circle r="${R}" cx="68" cy="68" fill="none" stroke="#ebedf0" stroke-width="16"/>${segs}
+    <text x="68" y="64" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700" font-size="24" fill="#172b4d">${total}</text>
+    <text x="68" y="80" text-anchor="middle" font-family="IBM Plex Mono" font-size="7.5" fill="#97a0af" letter-spacing="1.5">PROJETS</text>
+  </svg>`;
+}
+function renderProjDash(b){
+  const projs = getFilteredProjects(b);
+  const today = todayMid();
+  const counts = {}; PROJ_STATUTS.forEach(s=>counts[s]=0);
+  projs.forEach(p=>counts[p.statut]=(counts[p.statut]||0)+1);
+  const avgProg = projs.length?Math.round(projs.reduce((a,p)=>a+(p.avancement||0),0)/projs.length):0;
+  const lateOnes = projs.filter(projLate);
+  const byResp = {};
+  projs.forEach(p=>{ const r=p.responsable||'—'; byResp[r]=byResp[r]||{}; byResp[r][p.statut]=(byResp[r][p.statut]||0)+1; });
+  const maxLoad = Math.max(1,...Object.values(byResp).map(o=>Object.values(o).reduce((a,b)=>a+b,0)));
+  const in30 = addDays(today,30);
+  const upcoming = projs.filter(p=>p.date_fin && dateFromStr(p.date_fin)>=today && dateFromStr(p.date_fin)<=in30 && p.statut!=='Terminé')
+    .sort((a,b2)=>new Date(a.date_fin)-new Date(b2.date_fin));
+  const risks = [];
+  lateOnes.forEach(p=>risks.push({sev:'HAUT', color:'#e34935', bg:'#ffedeb', txt:`<b>${escapeHtml(p.nom)}</b> — échéance ${fmtFR(p.date_fin)} dépassée, avancement ${p.avancement||0}%.`, id:p.id}));
+  projs.filter(p=>!projLate(p) && p.engagement_date && dateFromStr(p.engagement_date)<today && (p.avancement||0)<100 && p.statut!=='Terminé')
+    .forEach(p=>risks.push({sev:'ENG.', color:'#e77b1e', bg:'#fdf0e3', txt:`<b>${escapeHtml(p.nom)}</b> — engagement ${fmtFR(p.engagement_date)} passé sans clôture.`, id:p.id}));
+  projs.filter(p=>p.sante==='rouge'&&!projLate(p)).forEach(p=>risks.push({sev:'SANTÉ', color:'#e34935', bg:'#ffedeb', txt:`<b>${escapeHtml(p.nom)}</b> — santé déclarée rouge.`, id:p.id}));
+  projs.filter(p=>p.sante==='orange').forEach(p=>risks.push({sev:'VIGIL.', color:'#e77b1e', bg:'#fdf0e3', txt:`<b>${escapeHtml(p.nom)}</b> — sous vigilance (orange).`, id:p.id}));
+
+  return `<div class="dash">
+    <div class="dash-grid-top">
+      <div class="kpi-card tot"><div class="num mono">${projs.length}</div><div class="lbl">Projets</div></div>
+      <div class="kpi-card cours" onclick="ui.filterStatuts=new Set(['En cours']);renderMain()"><div class="num mono">${counts['En cours']}</div><div class="lbl">En cours</div></div>
+      <div class="kpi-card retard"><div class="num mono">${lateOnes.length}</div><div class="lbl">Dérives détectées</div></div>
+      <div class="kpi-card termine" onclick="ui.filterStatuts=new Set(['Terminé']);renderMain()"><div class="num mono">${counts['Terminé']}</div><div class="lbl">Terminés</div></div>
+      <div class="kpi-card moy"><div class="num mono">${avgProg}<span style="font-size:15px">%</span></div><div class="lbl">Avancement moyen</div></div>
+    </div>
+    <div class="dash-grid-mid">
+      <div class="panel-card"><h3>Répartition</h3>
+        <div class="donut-wrap">${donutSVG(counts, PROJ_STATUTS, PROJ_COLORS)}
+          <div class="donut-legend">${PROJ_STATUTS.map(s=>`<div><i style="background:${PROJ_COLORS[s].main}"></i>${s}<b>${counts[s]}</b></div>`).join('')}</div>
+        </div>
+      </div>
+      <div class="panel-card"><h3>Charge par responsable <span class="n">${Object.keys(byResp).length} pers.</span></h3>
+        ${Object.entries(byResp).sort((a,c)=>Object.values(c[1]).reduce((x,y)=>x+y,0)-Object.values(a[1]).reduce((x,y)=>x+y,0)).map(([who,o])=>{
+          const tot = Object.values(o).reduce((a,c)=>a+c,0);
+          return `<div class="bar-row"><div class="who">${escapeHtml(who)}</div>
+            <div class="bar-track">${PROJ_STATUTS.map(s=>o[s]?`<div class="bar-seg" style="width:${o[s]/maxLoad*100}%;background:${PROJ_COLORS[s].main}"></div>`:'').join('')}</div>
+            <div class="val mono">${tot}</div></div>`;
+        }).join('')||'<div style="color:var(--muted-2);font-size:12px">Aucune donnée</div>'}
+      </div>
+      <div class="panel-card"><h3>Échéances à 30 jours <span class="n">${upcoming.length}</span></h3>
+        ${upcoming.slice(0,8).map(p=>{
+          const col = PROJ_COLORS[p.statut];
+          const days = dayIndex(dateFromStr(p.date_fin),today);
+          return `<div class="echeance-item" onclick="openProjectDrawer('${p.id}')">
+            <div class="edate mono" style="background:${col.soft};color:${col.main}">${fmtFR(p.date_fin).slice(0,5)}</div>
+            <div class="ename">${escapeHtml(p.nom)}</div><div class="edays">J${days>0?'-'+days:''}</div>
+          </div>`;
+        }).join('')||'<div style="color:var(--muted-2);font-size:12px">Rien à l’horizon 30 jours.</div>'}
+      </div>
+    </div>
+    <div class="panel-card"><h3>Radar des risques <span class="n">${risks.length}</span></h3>
+      ${risks.slice(0,10).map(r=>`<div class="risk-item" onclick="openProjectDrawer('${r.id}')">
+        <span class="r-sev" style="color:${r.color};background:${r.bg}">${r.sev}</span><span class="r-txt">${r.txt}</span>
+      </div>`).join('')||'<div style="color:var(--muted-2);font-size:12px">Aucun risque détecté. ✓</div>'}
+    </div>
+  </div>`;
+}
+
+/* ============ JOURNAL ============ */
+function renderJournal(main){
+  const entries = state.activity.slice(0,250);
+  let html = `<div class="journal"><h2>Journal d'activité</h2><div class="j-sub">Traçabilité des actions de l'équipe — ${entries.length} entrées récentes.</div>`;
+  let lastDay='';
+  entries.forEach(a=>{
+    const d = new Date(a.ts);
+    const dayKey = d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+    if(dayKey!==lastDay){ html += `<div class="j-day-sep">${dayKey}</div>`; lastDay=dayKey; }
+    const board = a.board_id ? state.boards.find(b=>b.id===a.board_id) : null;
+    html += `<div class="j-entry">
+      <span class="j-time">${d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span>
+      <span class="j-avatar">${initials(a.auteur)}</span>
+      <span class="j-txt"><b>${escapeHtml(a.auteur)}</b> <span class="j-action">${escapeHtml(a.action)}</span> ${escapeHtml(a.cible)}${a.details?` — <span class="mono" style="font-size:10.5px">${escapeHtml(a.details)}</span>`:''}${board?` <span style="color:var(--muted-2)">· ${escapeHtml(board.nom)}</span>`:''}</span>
+    </div>`;
+  });
+  if(entries.length===0) html += `<div class="empty-hint"><div class="eh-title">Aucune activité pour l'instant</div></div>`;
+  main.innerHTML = html + '</div>';
+}
+</script>
+<script>
+/* ============================================================
+   STUDIO D'INDICATEURS
+   3 types : compteur filtré, pourcentage, saisie manuelle
+   (avec historique + mini-courbe). Portée globale ou par plan.
+   ============================================================ */
+function kpiScopeItems(kpi){
+  const src = (kpi.config && kpi.config.source)==='projects' ? state.projects : state.actions;
+  return src.filter(x=> !kpi.board_id || x.board_id===kpi.board_id);
+}
+function kpiMatch(item, f, source){
+  if(!f) return true;
+  if(f.statuts && f.statuts.length && !f.statuts.includes(item.statut)) return false;
+  if(f.responsable && (item.responsable||'').toLowerCase().indexOf(f.responsable.toLowerCase())===-1) return false;
+  if(f.retard){
+    const late = source==='projects' ? projLate(item) : actionLate(item);
+    if(!late) return false;
+  }
+  return true;
+}
+function kpiHistory(kpi){
+  return state.kpi_values.filter(v=>v.kpi_id===kpi.id).sort((a,b)=>new Date(a.ts)-new Date(b.ts));
+}
+function evalKpi(kpi){
+  if(kpi.type==='manual'){
+    const h = kpiHistory(kpi);
+    return h.length ? Number(h[h.length-1].valeur) : null;
+  }
+  const items = kpiScopeItems(kpi);
+  const source = (kpi.config && kpi.config.source)||'actions';
+  const num = items.filter(i=>kpiMatch(i, kpi.config && kpi.config.num, source)).length;
+  if(kpi.type==='count') return num;
+  const denF = kpi.config && kpi.config.den;
+  const den = (denF && denF.custom) ? items.filter(i=>kpiMatch(i, denF, source)).length : items.length;
+  return den ? Math.round(num/den*1000)/10 : null;
+}
+function kpiTargetState(kpi, val){
+  if(val==null || kpi.objectif==null || kpi.objectif==='') return null;
+  const obj = Number(kpi.objectif);
+  return (kpi.sens==='bas') ? (val<=obj) : (val>=obj);
+}
+function sparklineSVG(kpi){
+  const h = kpiHistory(kpi);
+  if(h.length<2) return '';
+  const vals = h.map(v=>Number(v.valeur));
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const span = (max-min)||1;
+  const W=210, H=34;
+  const pts = vals.map((v,i)=>`${(i/(vals.length-1)*W).toFixed(1)},${(H-4-((v-min)/span)*(H-8)).toFixed(1)}`).join(' ');
+  const objLine = (kpi.objectif!=null && kpi.objectif!=='' && Number(kpi.objectif)>=min && Number(kpi.objectif)<=max)
+    ? `<line x1="0" x2="${W}" y1="${(H-4-((Number(kpi.objectif)-min)/span)*(H-8)).toFixed(1)}" y2="${(H-4-((Number(kpi.objectif)-min)/span)*(H-8)).toFixed(1)}" stroke="#e77b1e" stroke-width="1" stroke-dasharray="3 3"/>` : '';
+  return `<svg class="kpix-spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    ${objLine}
+    <polyline points="${pts}" fill="none" stroke="var(--kpix,#0c66e4)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${W}" cy="${(H-4-((vals[vals.length-1]-min)/span)*(H-8)).toFixed(1)}" r="3" fill="var(--kpix,#0c66e4)"/>
+  </svg>`;
+}
+function kpiCardHtml(kpi, compact){
+  const val = evalKpi(kpi);
+  const tgt = kpiTargetState(kpi, val);
+  const board = kpi.board_id ? state.boards.find(b=>b.id===kpi.board_id) : null;
+  const typeLbl = {count:'Compteur', percent:'Pourcentage', manual:'Saisie manuelle'}[kpi.type]||'';
+  const h = kpi.type==='manual' ? kpiHistory(kpi) : [];
+  const pctBar = (kpi.type!=='count' && kpi.objectif!=null && kpi.objectif!=='' && val!=null)
+    ? `<div class="kpix-bar"><i style="width:${Math.min(100, Math.max(2, val/Math.max(Number(kpi.objectif),0.001)*100))}%"></i></div>` : '';
+  return `<div class="kpix-card" style="--kpix:${kpi.couleur||'#0c66e4'}">
+    <div class="kpix-head">
+      <div style="flex:1;min-width:0">
+        <div class="kpix-name">${escapeHtml(kpi.nom)}</div>
+        <div class="kpix-scope">${board?escapeHtml(truncate(board.nom,32)):'Global'} · ${typeLbl}</div>
+      </div>
+      ${compact?'':`<div class="kpix-tools">
+        <button title="Modifier" onclick="openKpiModal('${kpi.id}')">✎</button>
+        <button title="Supprimer" onclick="deleteKpi('${kpi.id}')">🗑</button>
+      </div>`}
+    </div>
+    <div class="kpix-val-row">
+      <span class="kpix-val">${val==null?'—':val}</span>
+      <span class="kpix-unit">${escapeHtml(kpi.unite||'')}</span>
+      ${tgt!=null?`<span class="kpix-target ${tgt?'ok':'ko'}">${tgt?'✓ OBJECTIF ATTEINT':'✗ ÉCART'}</span>`:''}
+    </div>
+    ${kpi.objectif!=null && kpi.objectif!==''?`<div class="kpix-sub">Objectif : ${kpi.sens==='bas'?'≤':'≥'} ${kpi.objectif} ${escapeHtml(kpi.unite||'')}</div>`:''}
+    ${pctBar}
+    ${kpi.type==='manual' ? sparklineSVG(kpi) : ''}
+    ${kpi.type==='manual' && h.length ? `<div class="kpix-sub">Dernière saisie : ${fmtFR(h[h.length-1].ts.slice(0,10))} · ${h.length} valeur${h.length>1?'s':''}</div>` : ''}
+    ${kpi.type==='manual' && !compact ? `<div class="kpix-entry">
+      <input type="number" step="any" id="kv-${kpi.id}" placeholder="Nouvelle valeur">
+      <input type="date" id="kd-${kpi.id}" value="${fmtDate(new Date())}">
+      <button class="btn small primary" onclick="addKpiValue('${kpi.id}')">＋</button>
+    </div>` : ''}
+  </div>`;
+}
+function renderKpis(main){
+  const kpis = state.kpis;
+  main.innerHTML = `<div class="kview">
+    <div class="home-head"><h1>Studio d'indicateurs</h1></div>
+    <div class="home-sub">Compteurs filtrés, pourcentages calculés en direct sur tes plans, ou indicateurs à saisie manuelle avec historique (OTD, taux d'occupation, réclamations…). Chaque indicateur peut porter un objectif.</div>
+    <div class="kpix-grid">
+      ${kpis.map(k=>kpiCardHtml(k,false)).join('')}
+      <div class="kpix-card new-kpi" onclick="openKpiModal(null)">＋ Nouvel indicateur</div>
+    </div>
+  </div>`;
+}
+async function addKpiValue(kpiId){
+  const vEl = document.getElementById('kv-'+kpiId);
+  const dEl = document.getElementById('kd-'+kpiId);
+  const v = parseFloat(vEl.value);
+  if(isNaN(v)){ showToast('Saisis une valeur numérique'); return; }
+  const d = dEl.value || fmtDate(new Date());
+  await dbInsert('kpi_values', {kpi_id:kpiId, valeur:v, ts:d+'T12:00:00'});
+  const k = state.kpis.find(x=>x.id===kpiId);
+  await logActivity('a saisi', '« '+(k?k.nom:'indicateur')+' »', v+(k&&k.unite?' '+k.unite:'')+' au '+fmtFR(d), k?k.board_id:null);
+  renderMain();
+  showToast('Valeur enregistrée');
+}
+async function deleteKpi(id){
+  const k = state.kpis.find(x=>x.id===id);
+  if(!k) return;
+  if(!confirm('Supprimer l\u2019indicateur « '+k.nom+' » et son historique ?')) return;
+  for(const v of state.kpi_values.filter(x=>x.kpi_id===id)) await dbDelete('kpi_values', v.id);
+  await dbDelete('kpis', id);
+  await logActivity('a supprimé l\u2019indicateur', '« '+k.nom+' »', '');
+  renderMain();
+  showToast('Indicateur supprimé');
+}
+
+/* ---- Éditeur d'indicateur ---- */
+let kpiModalType = 'count';
+function openKpiModal(id){
+  const k = id ? state.kpis.find(x=>x.id===id) : null;
+  kpiModalType = k ? k.type : 'count';
+  const cfg = (k && k.config) || {};
+  const num = cfg.num || {};
+  const den = cfg.den || {};
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">${k?'Modifier l\u2019indicateur':'Nouvel indicateur'}</div>
+    <div class="modal-body">
+      <div class="field"><label>Nom</label><input type="text" id="k-nom" value="${k?escAttr(k.nom):''}" placeholder="ex : Actions 8D en retard, OTD Emballage…"></div>
+      <div class="field-row">
+        <div class="field"><label>Portée</label>
+          <select id="k-scope">
+            <option value="">Global (tous les plans)</option>
+            ${state.boards.map(b=>`<option value="${b.id}" ${k&&k.board_id===b.id?'selected':''}>${escapeHtml(truncate(b.nom,40))}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Couleur</label>
+          <div class="color-row" id="k-colors">${BOARD_COLORS.map((c,i)=>`<div class="color-dot ${k?(k.couleur===c?'sel':''):(i===0?'sel':'')}" style="background:${c};width:22px;height:22px" data-c="${c}" onclick="pickKpiColor(this)"></div>`).join('')}</div>
+        </div>
+      </div>
+      <div class="field"><label>Type de calcul</label>
+        <div class="type-choice" style="grid-template-columns:1fr 1fr 1fr">
+          <div class="type-opt ${kpiModalType==='count'?'sel':''}" data-t="count" onclick="pickKpiType(this)"><div class="to-icon">#</div><div class="to-name">Compteur</div><div class="to-desc">Nombre d'éléments qui matchent un filtre.</div></div>
+          <div class="type-opt ${kpiModalType==='percent'?'sel':''}" data-t="percent" onclick="pickKpiType(this)"><div class="to-icon">%</div><div class="to-name">Pourcentage</div><div class="to-desc">Part des éléments filtrés sur un total.</div></div>
+          <div class="type-opt ${kpiModalType==='manual'?'sel':''}" data-t="manual" onclick="pickKpiType(this)"><div class="to-icon">✍</div><div class="to-name">Manuel</div><div class="to-desc">Saisie régulière + courbe d'historique.</div></div>
+        </div>
+      </div>
+      <div id="k-calc-zone">${kpiCalcZoneHtml(cfg, num, den)}</div>
+      <div class="field-row-3">
+        <div class="field"><label>Objectif</label><input type="number" step="any" id="k-objectif" value="${k&&k.objectif!=null?k.objectif:''}" placeholder="ex : 95"></div>
+        <div class="field"><label>Sens</label>
+          <select id="k-sens">
+            <option value="haut" ${!k||k.sens!=='bas'?'selected':''}>≥ objectif = bien</option>
+            <option value="bas" ${k&&k.sens==='bas'?'selected':''}>≤ objectif = bien</option>
+          </select>
+        </div>
+        <div class="field"><label>Unité</label><input type="text" id="k-unite" value="${k?escAttr(k.unite||''):''}" placeholder="%, colis, h…"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="saveKpi('${k?k.id:''}')">${k?'Enregistrer':'Créer l\u2019indicateur'}</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+  setTimeout(()=>{const el=document.getElementById('k-nom'); if(el) el.focus();},50);
+}
+function kpiCalcZoneHtml(cfg, num, den){
+  if(kpiModalType==='manual'){
+    return `<div class="kpi-filter-box"><div class="kfb-title">Saisie manuelle</div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">Tu saisiras les valeurs directement sur la carte de l'indicateur (valeur + date). L'historique est conservé et tracé en mini-courbe, avec la ligne d'objectif en pointillés.</div></div>`;
+  }
+  const source = cfg.source||'actions';
+  const statuts = source==='projects' ? PROJ_STATUTS : ACTION_STATUTS;
+  const numHtml = `
+    <div class="field"><label>Source</label>
+      <select id="k-source" onchange="refreshKpiCalcZone()">
+        <option value="actions" ${source!=='projects'?'selected':''}>Actions (plans d'actions)</option>
+        <option value="projects" ${source==='projects'?'selected':''}>Projets (espaces projet)</option>
+      </select>
+    </div>
+    <div class="kpi-filter-box"><div class="kfb-title">${kpiModalType==='percent'?'Numérateur — éléments comptés':'Filtre — éléments comptés'}</div>
+      <div class="field"><label>Statuts (aucun coché = tous)</label>
+        <div class="kpi-chips" id="k-num-statuts">${statuts.map(s=>`<span class="chip ${(num.statuts||[]).includes(s)?'active':''}" data-s="${s}" onclick="this.classList.toggle('active')">${s}</span>`).join('')}</div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Responsable contient</label><input type="text" id="k-num-resp" value="${escAttr(num.responsable||'')}" placeholder="(optionnel)"></div>
+        <div class="field"><label style="margin-bottom:10px">Retards uniquement</label>
+          <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:12.5px;letter-spacing:0;color:var(--txt);font-weight:600;cursor:pointer">
+            <input type="checkbox" id="k-num-retard" style="width:15px;height:15px;accent-color:var(--primary)" ${num.retard?'checked':''}> Ne compter que les retards
+          </label>
+        </div>
+      </div>
+    </div>`;
+  const denHtml = kpiModalType==='percent' ? `
+    <div class="kpi-filter-box"><div class="kfb-title">Dénominateur — le total de référence</div>
+      <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:12.5px;color:var(--txt);font-weight:600;cursor:pointer;margin-bottom:9px">
+        <input type="checkbox" id="k-den-custom" style="width:15px;height:15px;accent-color:var(--primary)" ${den.custom?'checked':''} onchange="document.getElementById('k-den-fields').classList.toggle('hidden', !this.checked)"> Restreindre le total (sinon : tous les éléments de la portée)
+      </label>
+      <div id="k-den-fields" class="${den.custom?'':'hidden'}">
+        <div class="field"><label>Statuts du total (aucun = tous)</label>
+          <div class="kpi-chips" id="k-den-statuts">${statuts.map(s=>`<span class="chip ${(den.statuts||[]).includes(s)?'active':''}" data-s="${s}" onclick="this.classList.toggle('active')">${s}</span>`).join('')}</div>
+        </div>
+        <div class="field"><label>Responsable contient</label><input type="text" id="k-den-resp" value="${escAttr(den.responsable||'')}" placeholder="(optionnel)"></div>
+      </div>
+    </div>` : '';
+  return numHtml + denHtml;
+}
+function pickKpiType(el){
+  kpiModalType = el.dataset.t;
+  document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  refreshKpiCalcZone();
+}
+function refreshKpiCalcZone(){
+  const srcSel = document.getElementById('k-source');
+  const cfg = {source: srcSel ? srcSel.value : 'actions'};
+  document.getElementById('k-calc-zone').innerHTML = kpiCalcZoneHtml(cfg, {}, {});
+}
+function pickKpiColor(el){
+  document.querySelectorAll('#k-colors .color-dot').forEach(d=>d.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function readChips(containerId){
+  const el = document.getElementById(containerId);
+  if(!el) return [];
+  return [...el.querySelectorAll('.chip.active')].map(c=>c.dataset.s);
+}
+async function saveKpi(existingId){
+  const nom = document.getElementById('k-nom').value.trim();
+  if(!nom){ showToast('Donne un nom à l\u2019indicateur'); return; }
+  const objectifRaw = document.getElementById('k-objectif').value.trim();
+  const data = {
+    nom,
+    board_id: document.getElementById('k-scope').value || null,
+    type: kpiModalType,
+    couleur: (document.querySelector('#k-colors .color-dot.sel')||{dataset:{c:'#0c66e4'}}).dataset.c,
+    objectif: objectifRaw==='' ? null : parseFloat(objectifRaw),
+    sens: document.getElementById('k-sens').value,
+    unite: document.getElementById('k-unite').value.trim(),
+    config: {},
+  };
+  if(kpiModalType!=='manual'){
+    data.config.source = (document.getElementById('k-source')||{value:'actions'}).value;
+    data.config.num = {
+      statuts: readChips('k-num-statuts'),
+      responsable: (document.getElementById('k-num-resp')||{value:''}).value.trim(),
+      retard: !!(document.getElementById('k-num-retard')||{}).checked,
+    };
+    if(kpiModalType==='percent'){
+      const custom = !!(document.getElementById('k-den-custom')||{}).checked;
+      data.config.den = custom ? {
+        custom:true,
+        statuts: readChips('k-den-statuts'),
+        responsable: (document.getElementById('k-den-resp')||{value:''}).value.trim(),
+      } : {custom:false};
+      if(!data.unite) data.unite = '%';
+    }
+  }
+  if(existingId){
+    await dbUpdate('kpis', existingId, data);
+    await logActivity('a modifié l\u2019indicateur', '« '+nom+' »', '', data.board_id);
+  } else {
+    await dbInsert('kpis', data);
+    await logActivity('a créé l\u2019indicateur', '« '+nom+' »', '', data.board_id);
+  }
+  closeModal();
+  renderMain();
+  showToast('Indicateur enregistré');
+}
+
+/* ============================================================
+   SUPPRESSION D'UN PLAN (cascade complète)
+   ============================================================ */
+async function deleteBoard(ev, id){
+  ev.stopPropagation();
+  const b = state.boards.find(x=>x.id===id);
+  if(!b) return;
+  const s = boardStats(b);
+  if(!confirm('Supprimer définitivement « '+b.nom+' » ('+s.meta+') et tout son contenu ? Cette action est irréversible.')) return;
+  const projIds = state.projects.filter(p=>p.board_id===id).map(p=>p.id);
+  if(!USE_SUPABASE){
+    state.actions = state.actions.filter(a=>a.board_id!==id);
+    state.tasks = state.tasks.filter(t=>!projIds.includes(t.project_id));
+    state.comments = state.comments.filter(c=>!projIds.includes(c.project_id));
+    state.projects = state.projects.filter(p=>p.board_id!==id);
+    const kpiIds = state.kpis.filter(k=>k.board_id===id).map(k=>k.id);
+    state.kpi_values = state.kpi_values.filter(v=>!kpiIds.includes(v.kpi_id));
+    state.kpis = state.kpis.filter(k=>k.board_id!==id);
+  }
+  await dbDelete('boards', id); // côté Supabase : les clés étrangères cascadent
+  await logActivity('a supprimé le plan', '« '+b.nom+' »', '', null);
+  if(USE_SUPABASE) await loadAll();
+  if(route.boardId===id) route = {view:'home', boardId:null, sub:'liste'};
+  renderMain();
+  showToast('Plan supprimé');
+}
+
+/* ============================================================
+   CAPTURE PNG DE L'ÉCRAN
+   ============================================================ */
+let h2cPromise = null;
+function ensureHtml2Canvas(){
+  if(window.html2canvas) return Promise.resolve();
+  if(h2cPromise) return h2cPromise;
+  h2cPromise = new Promise((resolve, reject)=>{
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = resolve;
+    s.onerror = ()=>{ h2cPromise = null; reject(new Error('librairie de capture inaccessible depuis ce réseau')); };
+    document.head.appendChild(s);
+  });
+  return h2cPromise;
+}
+async function captureScreen(){
+  try{
+    showToast('Capture en cours…');
+    await ensureHtml2Canvas();
+    const target = document.getElementById('app');
+    const canvas = await window.html2canvas(target, {backgroundColor:'#f4f5f7', scale:2, useCORS:true, logging:false});
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    const b = currentBoard();
+    const ctx = b ? slug(b.nom)+'-'+route.sub : route.view;
+    a.download = 'capture-'+ctx+'-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.png';
+    a.click();
+    showToast('Capture PNG téléchargée ✓');
+  }catch(e){
+    showToast('Capture impossible ('+(e.message||e)+') — utilise Win+Maj+S en secours');
+  }
+}
+
+/* ============================================================
+   LIEN DE PARTAGE (configuration auto pour l'équipe)
+   ============================================================ */
+function buildShareLink(){
+  let u='', k='';
+  try{ u = localStorage.getItem('pa_sb_url')||''; k = localStorage.getItem('pa_sb_key')||''; }catch(e){}
+  if(!u || !k) return null;
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({u,k}))));
+  return location.origin + location.pathname + '#cfg=' + payload;
+}
+function shareLink(){
+  const link = buildShareLink();
+  if(!link){ showToast('Configure d\u2019abord Supabase (écran d\u2019accueil)'); return; }
+  const done = ()=>showToast('Lien copié — envoie-le à l\u2019équipe : leur configuration sera automatique');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(done, ()=>{ window.prompt('Copie ce lien :', link); });
+  } else {
+    window.prompt('Copie ce lien :', link);
+  }
+}
+</script>
+<script>
+/* ============ DRAWER : ACTION ============ */
+function openActionDrawer(id){
+  const b = currentBoard();
+  let a = id ? state.actions.find(x=>x.id===id) : null;
+  const isNew = !a;
+  if(isNew) a = {id:null, board_id:b.id, titre:'', responsable:ui.userName, echeance:fmtDate(addDays(new Date(),7)), statut:'À faire', priorite:'Moyenne', avancement:0, notes:'', extra:{}};
+  ui.drawer = {kind:'action', id:a.id, tab:'infos'};
+  const col = ACTION_COLORS[a.statut]||ACTION_COLORS['À faire'];
+  document.getElementById('drawer-tab').style.background = col.main;
+  document.getElementById('drawer-title').childNodes[0].textContent = isNew ? 'Nouvelle action' : truncate(a.titre,44);
+  document.getElementById('drawer-code').textContent = actionLate(a)?'⚠ EN RETARD':'';
+  document.getElementById('drawer-tabs').innerHTML = '';
+  const customCols = boardCols(b).filter(c=>!c.sys);
+  document.getElementById('drawer-body').innerHTML = `
+    <div class="field"><label>Action</label><textarea id="a-titre" style="min-height:56px">${escapeHtml(a.titre)}</textarea></div>
+    <div class="field-row">
+      <div class="field"><label>Responsable</label><input type="text" id="a-resp" value="${escAttr(a.responsable||'')}"></div>
+      <div class="field"><label>Échéance</label><input type="date" id="a-echeance" value="${a.echeance||''}"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Statut</label><select id="a-statut">${ACTION_STATUTS.map(s=>`<option ${s===a.statut?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="field"><label>Priorité</label><select id="a-prio">${Object.keys(PRIOS).map(p=>`<option ${p===a.priorite?'selected':''}>${p}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>Avancement</label>
+      <div class="progress-slider">
+        <input type="range" min="0" max="100" step="5" id="a-avancement" value="${a.avancement||0}" oninput="document.getElementById('a-av-val').textContent=this.value+'%'">
+        <span class="pval" id="a-av-val">${a.avancement||0}%</span>
+      </div>
+    </div>
+    <div class="field"><label>Commentaire</label><textarea id="a-notes">${escapeHtml(a.notes||'')}</textarea></div>
+    ${customCols.map(c=>`<div class="field"><label>${escapeHtml(c.label)}</label><input type="text" data-extra="${c.key}" value="${escAttr((a.extra&&a.extra[c.key])||'')}"></div>`).join('')}
+  `;
+  document.getElementById('drawer-foot').innerHTML = `
+    <button class="btn primary" style="flex:1" onclick="saveActionDrawer()">Enregistrer</button>
+    ${isNew?'':'<button class="btn danger" onclick="deleteAction()">Supprimer</button>'}`;
+  document.getElementById('drawer-overlay').classList.add('show');
+  document.getElementById('drawer').classList.add('show');
+}
+async function saveActionDrawer(){
+  const b = currentBoard();
+  const extra = {};
+  document.querySelectorAll('#drawer-body [data-extra]').forEach(el=>{ extra[el.dataset.extra] = el.value.trim(); });
+  const data = {
+    board_id: b.id,
+    titre: document.getElementById('a-titre').value.trim() || 'Sans titre',
+    responsable: document.getElementById('a-resp').value.trim(),
+    echeance: document.getElementById('a-echeance').value || null,
+    statut: document.getElementById('a-statut').value,
+    priorite: document.getElementById('a-prio').value,
+    avancement: parseInt(document.getElementById('a-avancement').value,10),
+    notes: document.getElementById('a-notes').value,
+    extra,
+  };
+  if(data.statut==='Fait' && data.avancement<100) data.avancement=100;
+  if(ui.drawer.id){
+    const old = state.actions.find(x=>x.id===ui.drawer.id);
+    const details = old && old.statut!==data.statut ? old.statut+' → '+data.statut : 'avancement '+data.avancement+'%';
+    await dbUpdate('actions', ui.drawer.id, data);
+    await logActivity('a modifié', '« '+data.titre+' »', details);
+  } else {
+    data.ordre = state.actions.filter(x=>x.board_id===b.id).length + 1;
+    await dbInsert('actions', data);
+    await logActivity('a créé l\u2019action', '« '+data.titre+' »', 'échéance '+fmtFR(data.echeance));
+  }
+  closeDrawer();
+  renderMain();
+  showToast('Action enregistrée');
+}
+async function deleteAction(){
+  const a = state.actions.find(x=>x.id===ui.drawer.id);
+  if(!a) return;
+  if(!confirm('Supprimer « '+a.titre+' » ?')) return;
+  await dbDelete('actions', a.id);
+  await logActivity('a supprimé l\u2019action', '« '+a.titre+' »', '');
+  closeDrawer();
+  renderMain();
+  showToast('Action supprimée');
+}
+
+/* ============ DRAWER : PROJET ============ */
+function openProjectDrawer(id){
+  const p = state.projects.find(x=>x.id===id);
+  if(!p) return;
+  ui.drawer = {kind:'project', id, tab:'infos'};
+  renderProjectDrawer();
+  document.getElementById('drawer-overlay').classList.add('show');
+  document.getElementById('drawer').classList.add('show');
+}
+function setProjTab(tab){ ui.drawer.tab = tab; renderProjectDrawer(); }
+function renderProjectDrawer(){
+  const p = state.projects.find(x=>x.id===ui.drawer.id);
+  if(!p) return;
+  const col = PROJ_COLORS[p.statut]||PROJ_COLORS['Planifié'];
+  document.getElementById('drawer-tab').style.background = col.main;
+  document.getElementById('drawer-title').childNodes[0].textContent = p.nom;
+  document.getElementById('drawer-code').textContent = p.code||'';
+  const nC = state.comments.filter(c=>c.project_id===p.id).length;
+  document.getElementById('drawer-tabs').innerHTML = `
+    <button class="${ui.drawer.tab==='infos'?'active':''}" onclick="setProjTab('infos')">Infos &amp; tâches</button>
+    <button class="${ui.drawer.tab==='comments'?'active':''}" onclick="setProjTab('comments')">Commentaires ${nC?'('+nC+')':''}</button>`;
+  const body = document.getElementById('drawer-body');
+  if(ui.drawer.tab==='infos'){
+    const tasks = state.tasks.filter(t=>t.project_id===p.id);
+    body.innerHTML = `
+      <div class="field"><label>Nom du projet</label><input type="text" id="f-nom" value="${escAttr(p.nom)}"></div>
+      <div class="field-row">
+        <div class="field"><label>Code</label><input type="text" id="f-code" value="${escAttr(p.code||'')}" placeholder="ex : CTR-002"></div>
+        <div class="field"><label>Responsable</label><input type="text" id="f-resp" value="${escAttr(p.responsable||'')}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Statut</label><select id="f-statut">${PROJ_STATUTS.map(s=>`<option ${s===p.statut?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="field"><label>Priorité</label><select id="f-prio">${Object.keys(PRIOS).map(pr=>`<option ${pr===p.priorite?'selected':''}>${pr}</option>`).join('')}</select></div>
+      </div>
+      <div class="field"><label>Santé (météo projet)</label>
+        <div class="health-picker" id="f-sante">
+          ${['vert','orange','rouge'].map(h=>`<button type="button" class="health-opt ${p.sante===h?'sel':''}" data-h="${h}" onclick="pickHealth(this)"><span class="hdot" style="background:${HEALTH[h]}"></span>${h.charAt(0).toUpperCase()+h.slice(1)}</button>`).join('')}
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Date début</label><input type="date" id="f-debut" value="${p.date_debut||''}"></div>
+        <div class="field"><label>Date fin</label><input type="date" id="f-fin" value="${p.date_fin||''}"></div>
+      </div>
+      <div class="field"><label>Date d'engagement</label><input type="date" id="f-engagement" value="${p.engagement_date||''}"></div>
+      <div class="field"><label>Avancement</label>
+        <div class="progress-slider">
+          <input type="range" min="0" max="100" step="5" id="f-avancement" value="${p.avancement||0}" oninput="document.getElementById('f-av-val').textContent=this.value+'%'">
+          <span class="pval" id="f-av-val">${p.avancement||0}%</span>
+        </div>
+      </div>
+      <div class="field"><label>Notes</label><textarea id="f-notes">${escapeHtml(p.notes||'')}</textarea></div>
+      <div class="section-div">
+        <h4>Tâches &amp; jalons <button class="add-mini" onclick="addTaskRow()">+ Ajouter</button></h4>
+        <div id="tasks-list">${tasks.map(t=>taskItemHtml(t,tasks)).join('')||'<div style="color:var(--muted-2);font-size:12px;padding:6px 0">Aucune tâche.</div>'}</div>
+      </div>`;
+    document.getElementById('drawer-foot').innerHTML = `
+      <button class="btn primary" style="flex:1" onclick="saveProjectDrawer()">Enregistrer</button>
+      <button class="btn danger" onclick="deleteProject()">Supprimer</button>`;
+  } else {
+    const comments = state.comments.filter(c=>c.project_id===p.id);
+    body.innerHTML = `
+      ${comments.map(c=>`<div class="comment-item">
+        <div class="comment-meta"><span class="j-avatar">${initials(c.auteur)}</span><span class="c-who">${escapeHtml(c.auteur)}</span><span class="c-when">${new Date(c.ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</span></div>
+        <div class="comment-txt">${escapeHtml(c.texte)}</div>
+      </div>`).join('')||'<div style="color:var(--muted-2);font-size:12.5px;padding:8px 0">Aucun commentaire. Lance la discussion.</div>'}
+      <div class="field" style="margin-top:14px"><textarea id="comment-input" placeholder="Point d'avancement, blocage, décision…"></textarea></div>`;
+    document.getElementById('drawer-foot').innerHTML = `<button class="btn primary" style="flex:1" onclick="addComment()">Publier le commentaire</button>`;
+  }
+}
+function pickHealth(btn){
+  document.querySelectorAll('#f-sante .health-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function taskItemHtml(t, allTasks){
+  const others = (allTasks||[]).filter(x=>x.id!==t.id);
+  return `<div class="task-item" data-task-id="${t.id}">
+    <div class="task-item-top">
+      <input type="text" class="t-nom" value="${escAttr(t.nom)}" placeholder="Nom de la tâche">
+      <button type="button" class="jalon-btn ${t.jalon?'active':''}" onclick="this.classList.toggle('active')" title="Jalon = date clé (losange sur le Gantt)">◆ JALON</button>
+      <button type="button" class="del-task" onclick="this.closest('.task-item').remove()">✕</button>
+    </div>
+    <div class="task-item-grid">
+      <input type="date" class="t-debut" value="${t.date_debut||''}">
+      <input type="date" class="t-fin" value="${t.date_fin||''}">
+      <input type="number" class="t-avancement" min="0" max="100" step="5" value="${t.avancement||0}" title="% avancement">
+    </div>
+    <span class="task-dep-label">Dépend de</span>
+    <select class="t-depends">
+      <option value="">— aucune —</option>
+      ${others.map(o=>`<option value="${o.id}" ${t.depends_on===o.id?'selected':''}>${escapeHtml(o.nom)}</option>`).join('')}
+    </select>
+  </div>`;
+}
+function addTaskRow(){
+  const p = state.projects.find(x=>x.id===ui.drawer.id);
+  const allTasks = state.tasks.filter(t=>t.project_id===p.id);
+  const div = document.createElement('div');
+  div.innerHTML = taskItemHtml({id:'new-'+uid(), nom:'', date_debut:p.date_debut, date_fin:p.date_fin, avancement:0, jalon:false, depends_on:null}, allTasks);
+  const list = document.getElementById('tasks-list');
+  const emptyMsg = list.querySelector('div[style]');
+  if(emptyMsg && !emptyMsg.classList.contains('task-item')) emptyMsg.remove();
+  list.appendChild(div.firstElementChild);
+}
+async function saveProjectDrawer(){
+  const p = state.projects.find(x=>x.id===ui.drawer.id);
+  if(!p) return;
+  const oldStatut = p.statut;
+  const sel = document.querySelector('#f-sante .health-opt.sel');
+  const patch = {
+    nom: document.getElementById('f-nom').value.trim()||'Sans titre',
+    code: document.getElementById('f-code').value.trim(),
+    responsable: document.getElementById('f-resp').value.trim(),
+    statut: document.getElementById('f-statut').value,
+    priorite: document.getElementById('f-prio').value,
+    sante: sel?sel.dataset.h:'vert',
+    date_debut: document.getElementById('f-debut').value,
+    date_fin: document.getElementById('f-fin').value,
+    engagement_date: document.getElementById('f-engagement').value||null,
+    avancement: parseInt(document.getElementById('f-avancement').value,10),
+    notes: document.getElementById('f-notes').value,
+  };
+  await dbUpdate('projects', p.id, patch);
+  const existingIds = new Set(state.tasks.filter(t=>t.project_id===p.id).map(t=>t.id));
+  const domTasks = [...document.querySelectorAll('#tasks-list .task-item')];
+  const keptIds = new Set();
+  for(const el of domTasks){
+    const id = el.dataset.taskId;
+    const data = {
+      project_id: p.id,
+      nom: el.querySelector('.t-nom').value.trim()||'Tâche',
+      date_debut: el.querySelector('.t-debut').value,
+      date_fin: el.querySelector('.t-fin').value || el.querySelector('.t-debut').value,
+      avancement: parseInt(el.querySelector('.t-avancement').value,10)||0,
+      jalon: el.querySelector('.jalon-btn').classList.contains('active'),
+      depends_on: el.querySelector('.t-depends').value||null,
+    };
+    if(String(id).startsWith('new-')){ const ins = await dbInsert('tasks', {...data}); keptIds.add(ins.id); }
+    else { keptIds.add(id); await dbUpdate('tasks', id, data); }
+  }
+  for(const oldId of existingIds){ if(!keptIds.has(oldId)) await dbDelete('tasks', oldId); }
+  await logActivity('a modifié', '« '+patch.nom+' »', oldStatut!==patch.statut?oldStatut+' → '+patch.statut:'avancement '+patch.avancement+'%');
+  closeDrawer();
+  renderMain();
+  showToast('Projet enregistré');
+}
+async function deleteProject(){
+  const p = state.projects.find(x=>x.id===ui.drawer.id);
+  if(!p) return;
+  if(!confirm('Supprimer définitivement « '+p.nom+' » et ses tâches ?')) return;
+  for(const t of state.tasks.filter(x=>x.project_id===p.id)) await dbDelete('tasks', t.id);
+  await dbDelete('projects', p.id);
+  await logActivity('a supprimé', '« '+p.nom+' »', '');
+  closeDrawer();
+  renderMain();
+  showToast('Projet supprimé');
+}
+async function addComment(){
+  const txt = document.getElementById('comment-input').value.trim();
+  if(!txt) return;
+  const p = state.projects.find(x=>x.id===ui.drawer.id);
+  await dbInsert('comments', {project_id:p.id, auteur:ui.userName, texte:txt, ts:new Date().toISOString()});
+  await logActivity('a commenté', '« '+p.nom+' »', truncate(txt,60));
+  renderProjectDrawer();
+}
+function closeDrawer(){
+  document.getElementById('drawer-overlay').classList.remove('show');
+  document.getElementById('drawer').classList.remove('show');
+  ui.drawer = {kind:null,id:null,tab:'infos'};
+}
+
+/* ============ MODALS ============ */
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('show'); }
+document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') closeModal(); });
+
+let modalBoardType = 'actions';
+function openBoardModal(type){
+  modalBoardType = type||'actions';
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Nouveau plan</div>
+    <div class="modal-body">
+      <div class="type-choice">
+        <div class="type-opt ${modalBoardType==='actions'?'sel':''}" onclick="pickBoardType('actions',this)">
+          <div class="to-icon">☑</div><div class="to-name">Plan d'actions</div>
+          <div class="to-desc">Liste d'actions avec responsables, échéances, retards automatiques. Colonnes personnalisables. Vue liste + tableau kanban.</div>
+        </div>
+        <div class="type-opt ${modalBoardType==='projet'?'sel':''}" onclick="pickBoardType('projet',this)">
+          <div class="to-icon">📅</div><div class="to-name">Espace projet</div>
+          <div class="to-desc">Pilotage complet : Gantt interactif avec jalons et dépendances, kanban, dashboard de direction.</div>
+        </div>
+      </div>
+      <div class="field"><label>Nom du plan</label><input type="text" id="m-b-nom" placeholder="ex : Plan d'actions Audit ISO 9001"></div>
+      <div class="field"><label>Couleur</label>
+        <div class="color-row" id="m-b-colors">${BOARD_COLORS.map((c,i)=>`<div class="color-dot ${i===0?'sel':''}" style="background:${c}" data-c="${c}" onclick="pickColor(this)"></div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="submitBoard()">Créer</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+  setTimeout(()=>document.getElementById('m-b-nom').focus(),50);
+}
+function pickBoardType(t, el){
+  modalBoardType = t;
+  document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function pickColor(el){
+  document.querySelectorAll('#m-b-colors .color-dot').forEach(d=>d.classList.remove('sel'));
+  el.classList.add('sel');
+}
+async function submitBoard(){
+  const nom = document.getElementById('m-b-nom').value.trim();
+  if(!nom) return;
+  const couleur = document.querySelector('#m-b-colors .color-dot.sel').dataset.c;
+  const config = modalBoardType==='actions' ? {cols: DEFAULT_COLS.map(c=>({...c, visible:true}))} : {};
+  const b = await dbInsert('boards', {nom, type:modalBoardType, couleur, config});
+  await logActivity('a créé le plan', '« '+nom+' »', modalBoardType==='actions'?'plan d\u2019actions':'espace projet', b.id);
+  closeModal();
+  openBoard(b.id);
+  showToast('Plan créé');
+}
+function openProjectModal(){
+  const b = currentBoard();
+  const today = fmtDate(new Date());
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Nouveau projet</div>
+    <div class="modal-body">
+      <div class="field"><label>Nom</label><input type="text" id="m-p-nom" placeholder="ex : Contrat Sénalia"></div>
+      <div class="field-row">
+        <div class="field"><label>Code</label><input type="text" id="m-p-code" placeholder="ex : CTR-002"></div>
+        <div class="field"><label>Responsable</label><input type="text" id="m-p-resp" value="${escAttr(ui.userName)}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Date début</label><input type="date" id="m-p-debut" value="${today}"></div>
+        <div class="field"><label>Date fin</label><input type="date" id="m-p-fin" value="${fmtDate(addDays(new Date(),21))}"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="submitProject()">Créer et ouvrir</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+  setTimeout(()=>document.getElementById('m-p-nom').focus(),50);
+}
+async function submitProject(){
+  const b = currentBoard();
+  const nom = document.getElementById('m-p-nom').value.trim();
+  if(!nom) return;
+  const row = {
+    board_id: b.id, nom,
+    code: document.getElementById('m-p-code').value.trim(),
+    responsable: document.getElementById('m-p-resp').value.trim(),
+    statut:'Planifié', priorite:'Moyenne', sante:'vert',
+    date_debut: document.getElementById('m-p-debut').value,
+    date_fin: document.getElementById('m-p-fin').value,
+    engagement_date:null, avancement:0, notes:'',
+  };
+  const ins = await dbInsert('projects', row);
+  await logActivity('a créé', '« '+nom+' »', '');
+  closeModal();
+  renderMain();
+  openProjectDrawer(ins.id);
+  showToast('Projet créé');
+}
+
+/* ============ MODE PRÉSENTATION ============ */
+function togglePresentation(){
+  document.body.classList.toggle('presentation');
+  const on = document.body.classList.contains('presentation');
+  document.getElementById('btn-presentation').classList.toggle('on', on);
+  if(on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+  if(!on && document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  renderMain();
+  showToast(on?'Mode présentation — édition masquée':'Retour au mode édition');
+}
+
+/* ============ EXPORT CSV ============ */
+function exportCSV(){
+  const sep=';';
+  const lines=[];
+  const b = currentBoard();
+  if(b && b.type==='actions'){
+    lines.push(['N°','Action','Responsable','Échéance','Statut','Priorité','Avancement %','Retard','Commentaire'].join(sep));
+    state.actions.filter(a=>a.board_id===b.id).sort((x,y)=>(x.ordre||0)-(y.ordre||0)).forEach((a,i)=>{
+      lines.push([i+1, a.titre||'', a.responsable||'', a.echeance||'', a.statut||'', a.priorite||'', a.avancement||0, actionLate(a)?'OUI':'', (a.notes||'').replace(/[\r\n]+/g,' ')]
+        .map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(sep));
+    });
+  } else if(b && b.type==='projet'){
+    lines.push(['Code','Projet','Responsable','Statut','Priorité','Santé','Début','Fin','Engagement','Avancement %','Dérive','Notes'].join(sep));
+    state.projects.filter(p=>p.board_id===b.id).forEach(p=>{
+      lines.push([p.code||'', p.nom||'', p.responsable||'', p.statut||'', p.priorite||'', p.sante||'', p.date_debut||'', p.date_fin||'', p.engagement_date||'', p.avancement||0, projLate(p)?'OUI':'', (p.notes||'').replace(/[\r\n]+/g,' ')]
+        .map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(sep));
+    });
+  } else {
+    lines.push(['Plan','Type','Éléments','Terminés','En retard'].join(sep));
+    state.boards.forEach(bd=>{
+      const s = boardStats(bd);
+      lines.push([bd.nom, bd.type, s.n, s.done, s.late].map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(sep));
+    });
+  }
+  const blob = new Blob(['\ufeff'+lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const ts = new Date().toISOString().slice(0,16).replace(/[:T]/g,'-');
+  a.download = (b?slug(b.nom):'plans')+'-'+ts+'.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Export CSV téléchargé');
+}
+function slug(s){ return (s||'export').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40); }
+
+/* ============ CLAVIER ============ */
+document.addEventListener('keydown', (e)=>{
+  const tag = (document.activeElement||{}).tagName;
+  const typing = tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';
+  if(e.key==='Escape'){ closeDrawer(); closeModal(); return; }
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='z' && !typing){ e.preventDefault(); undoLast(); return; }
+});
+
+/* ============ UTILS ============ */
+function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function escAttr(s){ return escapeHtml(s); }
+function truncate(s,n){ s=String(s||''); return s.length>n?s.slice(0,n-1)+'…':s; }
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._tm);
+  showToast._tm = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+window.addEventListener('resize', ()=>{ if(route.view==='board') requestAnimationFrame(drawDependencies); });
+</script>
+
+<script>
+/* ============================================================
+   DERNIER BLOC — logique d'entrée + voyant.
+   Si le voyant « Système prêt » est vert, ce bloc s'est exécuté :
+   les boutons ci-dessous sont donc câblés, sans exception possible.
+   ============================================================ */
+let gateUnlocked = false;
+function tryUnlock(){
+  const err = document.getElementById('gate-err');
+  const btn = document.getElementById('btn-enter');
+  try{
+    if(gateUnlocked) return;
+    err.textContent = '';
+    if(btn){ btn.textContent = 'Vérification…'; setTimeout(()=>{ if(!gateUnlocked) btn.textContent='Entrer'; }, 1200); }
+    const name = document.getElementById('gate-name').value.trim();
+    if(!name){ err.textContent = '✗ Indique ton prénom.'; return; }
+    const cfgUrl = document.getElementById('cfg-url').value.trim().replace(/\/+$/,'');
+    const cfgKey = document.getElementById('cfg-key').value.trim();
+    if(cfgUrl && !/^https:\/\/.+\.supabase\.co$/.test(cfgUrl)){
+      err.textContent = '✗ URL Supabase invalide : format attendu https://xxxxx.supabase.co (vérifie l\u2019orthographe de « supabase »).';
+      return;
+    }
+    try{
+      if(cfgUrl) localStorage.setItem('pa_sb_url', cfgUrl);
+      if(cfgKey) localStorage.setItem('pa_sb_key', cfgKey);
+      localStorage.setItem('pa_user', name);
+      sessionStorage.setItem('pa_unlocked','1');
+    }catch(e){ /* stockage bloqué : on continue en mémoire */ }
+    gateUnlocked = true;
+    ui.userName = name;
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('main').innerHTML = '<div class="empty-hint" style="height:70%"><div class="eh-title">Chargement des données…</div><div style="font-size:12px">Connexion à la base et récupération des plans.</div></div>';
+    init();
+  }catch(e){
+    err.textContent = '✗ Erreur technique : ' + (e.message||e);
+  }
+}
+(function wireGate(){
+  const be = document.getElementById('btn-enter');
+  if(be) be.addEventListener('click', tryUnlock);
+  ['gate-name','cfg-url','cfg-key'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('keydown', e=>{ if(e.key==='Enter') tryUnlock(); });
+  });
+  /* sauvegarde automatique des clés pendant la saisie */
+  const cu = document.getElementById('cfg-url'), ck = document.getElementById('cfg-key');
+  if(cu) cu.addEventListener('input', ()=>{ try{ localStorage.setItem('pa_sb_url', cu.value.trim().replace(/\/+$/,'')); }catch(e){} });
+  if(ck) ck.addEventListener('input', ()=>{ try{ localStorage.setItem('pa_sb_key', ck.value.trim()); }catch(e){} });
+  /* filet de sécurité ultime : délégation au niveau du document */
+  document.addEventListener('click', (e)=>{
+    const t = e.target.closest ? e.target.closest('#btn-enter') : null;
+    if(t && !gateUnlocked) tryUnlock();
+  }, true);
+})();
+(function bootFinal(){
+  /* lien de partage : #cfg=... configure automatiquement l'appareil */
+  try{
+    if(location.hash.indexOf('#cfg=')===0){
+      const obj = JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(5)))));
+      if(obj.u) localStorage.setItem('pa_sb_url', obj.u);
+      if(obj.k) localStorage.setItem('pa_sb_key', obj.k);
+      history.replaceState(null, '', location.pathname);
+    }
+  }catch(e){ /* lien invalide : on ignore */ }
+  try{
+    const savedName = localStorage.getItem('pa_user');
+    if(savedName) document.getElementById('gate-name').value = savedName;
+    document.getElementById('cfg-url').value = localStorage.getItem('pa_sb_url')||'';
+    document.getElementById('cfg-key').value = localStorage.getItem('pa_sb_key')||'';
+    if(savedName){
+      gateUnlocked = true;
+      ui.userName = savedName;
+      document.getElementById('gate').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      init();
+    }
+  }catch(e){ /* stockage bloqué : saisie manuelle */ }
+  const st = document.getElementById('gate-status');
+  if(st){ st.textContent = '● Système prêt — v4.0 · boutons câblés'; st.classList.add('ready'); }
+})();
+</script>
+</body>
+</html>
