@@ -581,6 +581,42 @@ button{cursor:pointer}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast .t-dot{width:7px;height:7px;border-radius:50%;background:#4cd6a4}
 
+.report-badge{
+  display:inline-flex;align-items:center;font-size:9.5px;font-weight:800;color:#8a5a00;background:#fff3d6;
+  border:1px solid #f0d9a0;border-radius:5px;padding:1.5px 6px;margin-left:7px;letter-spacing:.03em;vertical-align:1px;
+}
+.derive-zone{
+  position:absolute;top:0;bottom:0;z-index:1;border-radius:0 6px 6px 0;
+  background:repeating-linear-gradient(135deg, rgba(227,73,53,.20) 0 5px, rgba(227,73,53,.07) 5px 10px);
+  border-left:2px dashed var(--red);
+}
+.done-flag{
+  position:relative;z-index:1;flex-shrink:0;font-size:8.5px;font-weight:800;color:#fff;background:var(--green);
+  border-radius:4px;padding:1.5px 5px;margin-left:5px;letter-spacing:.03em;
+}
+/* ====== v5 : ventilation, aide, colonnes ====== */
+.kpix-break{margin-top:11px;border-top:1px solid var(--line-soft);padding-top:9px}
+.kpix-break-t{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted-2);margin-bottom:7px}
+.kpix-brow{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.kpix-brow .kb-k{font-size:11px;color:var(--muted);font-weight:600;width:78px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kpix-brow .kb-track{flex:1;height:6px;background:var(--line-soft);border-radius:3px;overflow:hidden}
+.kpix-brow .kb-track i{display:block;height:100%;border-radius:3px;background:var(--kpix,#0c66e4)}
+.kpix-brow .kb-v{font-family:var(--mono);font-size:10.5px;font-weight:700;width:44px;text-align:right}
+.kpix-tips{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px 20px;max-width:760px;box-shadow:var(--shadow-sm)}
+.kpix-tips-t{font-size:12px;font-weight:800;margin-bottom:9px}
+.kpix-tips ul{margin:0;padding-left:18px;font-size:12px;color:var(--muted);line-height:1.75}
+.kfb-help{font-size:11px;color:var(--muted-2);line-height:1.5;margin:-4px 0 10px}
+.lbl-soft{text-transform:none;letter-spacing:0;color:var(--muted-2);font-weight:500}
+.k-check{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;cursor:pointer}
+.k-check input{width:15px;height:15px;accent-color:var(--primary)}
+.k-types{grid-template-columns:repeat(5,1fr) !important}
+.k-types .to-icon{font-size:16px;margin-bottom:5px}
+.k-types .to-name{font-size:11.5px}
+.k-types .to-desc{font-size:10px}
+.modal{width:560px}
+.pa-pb{color:var(--muted);font-size:12px;line-height:1.4}
+.data-bar{margin-top:34px;border-top:1px solid var(--line);padding-top:15px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
 /* ====== SUPPRESSION DE PLAN ====== */
 .board-card{position:relative}
 .bc-del{
@@ -630,6 +666,110 @@ button{cursor:pointer}
 .kpi-chips{display:flex;gap:5px;flex-wrap:wrap}
 .kpi-chips .chip{font-size:10.5px;padding:4px 9px}
 .kview{padding:24px 30px 60px;overflow-y:auto;height:100%}
+
+
+/* ====== MODULE A3 ====== */
+.crumb .b-type.resolution{background:#fdf0e3;color:#e77b1e}
+.a3-wrap{padding:20px 26px 60px;overflow-y:auto;height:100%;background:var(--bg)}
+.a3-head{
+  background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--primary);border-radius:11px;
+  padding:16px 20px;display:flex;gap:18px;box-shadow:var(--shadow-sm);margin-bottom:14px;flex-wrap:wrap;
+}
+.a3-head-main{flex:1;min-width:280px}
+.a3-ref{font-family:var(--mono);font-size:10.5px;color:var(--muted-2);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.a3-titre{
+  width:100%;border:none;background:none;font-size:19px;font-weight:800;color:var(--txt);padding:3px 0;
+  letter-spacing:-.01em;border-bottom:1.5px solid transparent;
+}
+.a3-titre:hover{border-bottom-color:var(--line)}
+.a3-titre:focus{outline:none;border-bottom-color:var(--primary)}
+.a3-meta{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;font-size:11px;color:var(--muted);align-items:center}
+.a3-meta span{display:flex;align-items:center;gap:5px;font-weight:600}
+.a3-inline{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:11.5px;
+  color:var(--txt);font-weight:600;max-width:132px;
+}
+.a3-inline.wide{max-width:190px}
+.a3-inline:focus{outline:none;border-color:var(--primary);background:#fff}
+.a3-age{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--muted-2)}
+.a3-head-side{display:flex;flex-direction:column;gap:7px;align-items:stretch;min-width:186px}
+.a3-statut{border:1.5px solid;border-radius:8px;padding:8px 11px;font-weight:800;font-size:12.5px}
+.a3-grid{display:flex;flex-direction:column;gap:14px}
+.a3-box{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:17px 20px 19px;box-shadow:var(--shadow-sm)}
+.a3-box h3{font-size:13.5px;margin:0 0 14px;font-weight:800;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.a3-num{
+  width:21px;height:21px;border-radius:6px;background:var(--navy);color:#fff;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;
+}
+.a3-hint{font-size:10.5px;color:var(--muted-2);font-weight:500;letter-spacing:0}
+.a3-empty{padding:24px;text-align:center;color:var(--muted-2);font-size:12.5px}
+
+.qq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.qq-item label{display:block;font-size:10.5px;font-weight:800;color:var(--navy);letter-spacing:.06em;margin-bottom:5px}
+.qq-item label span{display:block;font-size:9.5px;color:var(--muted-2);font-weight:500;letter-spacing:0;margin-top:2px;line-height:1.35}
+.qq-item textarea{
+  width:100%;min-height:64px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+  padding:8px 10px;font-size:12px;line-height:1.5;resize:vertical;
+}
+.qq-item textarea:focus{outline:none;border-color:var(--primary);background:#fff}
+.est-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.est-col label{display:block;font-size:10.5px;font-weight:800;letter-spacing:.06em;margin-bottom:5px}
+.est-col label span{display:block;font-size:9.5px;font-weight:500;letter-spacing:0;color:var(--muted-2);margin-top:2px}
+.est-col textarea{width:100%;min-height:60px;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.5;resize:vertical}
+.est-yes label{color:var(--green)}
+.est-yes textarea{background:var(--green-soft);border:1px solid #b9e3cd}
+.est-no label{color:var(--muted)}
+.est-no textarea{background:var(--panel-2);border:1px solid var(--line)}
+
+.fish-wrap{background:var(--panel-2);border:1px solid var(--line-soft);border-radius:10px;padding:8px;overflow-x:auto;margin-bottom:14px}
+.fish{width:100%;min-width:760px;height:auto;display:block}
+.m6-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.m6-col{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:10px}
+.m6-t{font-size:11px;font-weight:800;color:var(--navy);margin-bottom:8px}
+.m6-t span{display:block;font-size:9.5px;color:var(--muted-2);font-weight:500;margin-top:2px;line-height:1.35}
+.m6-cause{display:flex;align-items:center;gap:5px;margin-bottom:5px}
+.m6-cause input{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:11.5px}
+.m6-cause.ret input{border-color:#f2c4bd;background:var(--red-soft);font-weight:600}
+.m6-chk{background:none;border:none;color:var(--muted-2);font-size:13px;padding:0 2px;flex-shrink:0}
+.m6-cause.ret .m6-chk{color:var(--red)}
+.m6-axe{background:#fff;border:1px solid var(--line);border-radius:6px;font-size:9.5px;padding:4px;max-width:88px;flex-shrink:0}
+.m6-del{background:none;border:none;color:var(--muted-2);font-size:11px;flex-shrink:0}
+.m6-del:hover{color:var(--red)}
+.m6-add{background:none;border:1px dashed var(--line);border-radius:6px;width:100%;padding:5px;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:3px}
+.m6-add:hover{border-color:var(--primary);color:var(--primary)}
+
+.cinq-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cinq-col{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:12px}
+.cinq-t{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-bottom:9px;padding-bottom:6px;border-bottom:2px solid}
+.cinq-t.occurrence{color:var(--red);border-color:#f2c4bd}
+.cinq-t.detection{color:var(--violet);border-color:#d5cdf5}
+.cinq-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.cinq-n{
+  width:19px;height:19px;border-radius:50%;background:var(--navy);color:#fff;font-size:9.5px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.cinq-row input{flex:1;min-width:0;background:#fff;border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:11.5px}
+.cinq-row input:focus{outline:none;border-color:var(--primary)}
+.racine{margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}
+.racine label{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:5px}
+.racine textarea{width:100%;min-height:48px;background:#fffdf5;border:1px solid #f0d9a0;border-radius:7px;padding:7px 9px;font-size:11.5px;line-height:1.5;resize:vertical}
+.ret-list{margin-top:12px;font-size:11.5px;color:var(--muted);line-height:1.9}
+.ret-chip{display:inline-flex;align-items:center;gap:5px;background:var(--red-soft);border:1px solid #f2c4bd;color:#8a2a1d;border-radius:12px;padding:2px 10px;margin-left:6px;font-weight:600;font-size:11px}
+.ret-chip i{font-style:normal;font-size:9px;opacity:.7}
+
+.a3-acts{min-width:0}
+.cat-chip{font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:10px;background:var(--primary-soft);color:var(--primary);white-space:nowrap}
+.synth-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.synth-item label{display:block;font-size:10.5px;font-weight:800;color:var(--navy);letter-spacing:.05em;margin-bottom:5px}
+.synth-item label span{display:block;font-size:9.5px;color:var(--muted-2);font-weight:500;letter-spacing:0;margin-top:2px}
+.synth-item textarea{width:100%;min-height:66px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.5;resize:vertical}
+.synth-item textarea:focus{outline:none;border-color:var(--primary);background:#fff}
+body.presentation .m6-add, body.presentation .m6-del, body.presentation .a3-head-side .btn{display:none !important}
+@media (max-width:1200px){
+  .qq-grid{grid-template-columns:repeat(2,1fr)}
+  .m6-grid,.synth-grid{grid-template-columns:1fr 1fr}
+  .cinq-grid{grid-template-columns:1fr}
+}
 
 /* ====== MODE PRÉSENTATION ====== */
 body.presentation .search-box, body.presentation #btn-export, body.presentation .conn-badge,
@@ -821,15 +961,24 @@ const HEALTH = {vert:'#22a06b', orange:'#e77b1e', rouge:'#e34935'};
 const PRIOS = {'Haute':'#e34935','Moyenne':'#e77b1e','Basse':'#5e6c84'};
 const BOARD_COLORS = ['#0c66e4','#22a06b','#e77b1e','#6554c0','#e34935','#00a3bf','#d6377b'];
 const DEFAULT_COLS = [
-  {key:'num',        label:'N°',           sys:true},
-  {key:'titre',      label:'Action',       sys:true},
-  {key:'responsable',label:'Responsable',  sys:true},
-  {key:'echeance',   label:'Échéance',     sys:true},
-  {key:'statut',     label:'Statut',       sys:true},
-  {key:'priorite',   label:'Priorité',     sys:true},
-  {key:'avancement', label:'Avancement',   sys:true},
-  {key:'notes',      label:'Commentaire',  sys:true},
+  {key:'num',          label:'N°',            sys:true},
+  {key:'probleme',     label:'Problème',      sys:true},
+  {key:'titre',        label:'Action',        sys:true},
+  {key:'responsable',  label:'Responsable',   sys:true},
+  {key:'date_ouverture',label:'Ouverture',    sys:true},
+  {key:'echeance',     label:'Échéance',      sys:true},
+  {key:'echeance_initiale', label:'Échéance initiale', sys:true},
+  {key:'nb_reports',   label:'Reports',       sys:true},
+  {key:'date_cloture', label:'Clôture',       sys:true},
+  {key:'duree_cloture',label:'Durée clôture', sys:true},
+  {key:'statut',       label:'Statut',        sys:true},
+  {key:'priorite',     label:'Priorité',      sys:true},
+  {key:'avancement',   label:'Avancement',    sys:true},
+  {key:'notes',        label:'Commentaire',   sys:true},
+  {key:'date_creation',label:'Date création', sys:true},
 ];
+/* Colonnes apparues après coup : visibilité par défaut sur les plans déjà créés */
+const NEW_COL_VISIBLE = {probleme:true, date_cloture:true, duree_cloture:false, date_creation:false, date_ouverture:false, echeance_initiale:false, nb_reports:true};
 const FRENCH_HOLIDAYS = new Set([
   '2026-01-01','2026-04-06','2026-05-01','2026-05-08','2026-05-14','2026-05-25',
   '2026-07-14','2026-08-15','2026-11-01','2026-11-11','2026-12-25',
@@ -839,12 +988,12 @@ const FRENCH_HOLIDAYS = new Set([
 
 let sbClient = null; // renommé : la librairie CDN crée déjà une globale « supabase »
 let USE_SUPABASE = false;
-let state = { boards: [], actions: [], projects: [], tasks: [], activity: [], comments: [] };
+let state = { boards: [], actions: [], projects: [], tasks: [], activity: [], comments: [], kpis: [], kpi_values: [], a3: [] };
 let route = { view:'home', boardId:null, sub:'liste' }; // sub: liste|kanban (actions) / gantt|kanban|dash (projet)
 let ui = {
   pxPerDay: 34, userName:'', drawer:{kind:null,id:null,tab:'infos'},
   filterStatuts:new Set(), filterResp:new Set(), onlyLate:false,
-  expandedProjects:new Set(),
+  expandedProjects:new Set(), horizonPlus:0,
 };
 let undoStack = [];
 
@@ -868,7 +1017,7 @@ function initials(name){ return (name||'?').trim().split(/\s+/).map(w=>w[0]).joi
 
 /* ============ STOCKAGE ============ */
 function uid(){ return 'id-'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
-const TABLES = ['boards','actions','projects','tasks','activity','comments','kpis','kpi_values'];
+const TABLES = ['boards','actions','projects','tasks','activity','comments','kpis','kpi_values','a3'];
 
 async function init(){
   try{
@@ -915,6 +1064,7 @@ async function loadAll(){
       sbClient.from('comments').select('*').order('ts'),
       sbClient.from('kpis').select('*').order('created_at'),
       sbClient.from('kpi_values').select('*').order('ts'),
+      sbClient.from('a3').select('*').order('created_at'),
     ]);
     TABLES.forEach((t,i)=>{ state[t] = res[i].data || []; });
   } else {
@@ -928,6 +1078,7 @@ function persistLocal(){
 }
 async function dbInsert(table, row){
   row.id = row.id || uid();
+  if(table!=='activity' && table!=='kpi_values' && !row.created_at) row.created_at = new Date().toISOString();
   if(USE_SUPABASE){
     const {error} = await sbClient.from(table).insert(row);
     if(error){ showToast('Erreur enregistrement : '+error.message); console.error(error); }
@@ -1001,7 +1152,57 @@ function todayMid(){ const t=new Date(); t.setHours(0,0,0,0); return t; }
 
 /* ---- Retards ---- */
 function actionLate(a){ return a.echeance && dateFromStr(a.echeance) < todayMid() && a.statut !== 'Fait'; }
-function projLate(p){ return p.date_fin && dateFromStr(p.date_fin) < todayMid() && (p.avancement||0) < 100 && p.statut !== 'Terminé'; }
+function dureeClotureJours(a){
+  if(!a.date_cloture) return null;
+  const deb = a.date_ouverture || (a.created_at||'').slice(0,10);
+  if(!deb) return null;
+  const d = Math.round((dateFromStr(a.date_cloture) - dateFromStr(deb))/86400000);
+  return d>=0 ? d : null;
+}
+function clotureeDansLesTemps(a){
+  if(!a.date_cloture || !a.echeance) return null;
+  return dateFromStr(a.date_cloture) <= dateFromStr(a.echeance);
+}
+function retardJours(a){
+  if(!a.echeance) return null;
+  const ref = a.date_cloture ? dateFromStr(a.date_cloture) : todayMid();
+  const d = Math.round((ref - dateFromStr(a.echeance))/86400000);
+  return d>0 ? d : 0;
+}
+/* Cible = engagement client. La date de fin n'est remplie qu'à la clôture réelle. */
+function projCible(p){ return p.engagement_date || p.date_fin || null; }
+/* Borne droite affichée : fin réelle si clôturé ; sinon la cible — et si la cible est
+   dépassée, la barre s'allonge d'elle-même jusqu'à aujourd'hui (suivi vivant). */
+function projEndDate(p){
+  if(p.date_fin) return dateFromStr(p.date_fin);
+  const cible = projCible(p);
+  const t = todayMid();
+  if(!cible) return t;
+  const c = dateFromStr(cible);
+  return (c < t && p.statut !== 'Terminé') ? t : c;
+}
+function projLate(p){
+  if(p.statut==='Terminé' || p.date_fin) return false;
+  const cible = projCible(p);
+  return !!cible && dateFromStr(cible) < todayMid();
+}
+function projDepassementJours(p){
+  const cible = projCible(p);
+  if(!cible) return null;
+  const ref = p.date_fin ? dateFromStr(p.date_fin) : todayMid();
+  const d = Math.round((ref - dateFromStr(cible))/86400000);
+  return d>0 ? d : 0;
+}
+function projDansLesTemps(p){
+  const cible = projCible(p);
+  if(!p.date_fin || !cible) return null;
+  return dateFromStr(p.date_fin) <= dateFromStr(cible);
+}
+function projDureeJours(p){
+  if(!p.date_debut || !p.date_fin) return null;
+  const d = Math.round((dateFromStr(p.date_fin) - dateFromStr(p.date_debut))/86400000);
+  return d>=0 ? d : null;
+}
 
 </script>
 <script>
@@ -1018,7 +1219,7 @@ function goHome(){ setRoute({view:'home'}); }
 function openBoard(id){
   const b = state.boards.find(x=>x.id===id);
   if(!b) return;
-  setRoute({view:'board', boardId:id, sub: b.type==='actions' ? 'liste' : 'gantt'});
+  setRoute({view:'board', boardId:id, sub: (b.type==='actions'||b.type==='resolution') ? 'liste' : 'gantt'});
 }
 function setSub(sub){ route.sub = sub; renderMain(); }
 
@@ -1030,7 +1231,15 @@ function renderCrumb(){
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
       <span class="sep">/</span>
       <span class="b-name">${escapeHtml(b.nom)}</span>
-      <span class="b-type ${b.type}">${b.type==='actions'?'Plan d\u2019actions':'Espace projet'}</span>`;
+      <span class="b-type ${b.type}">${b.type==='actions'?'Plan d\u2019actions':(b.type==='resolution'?'Résolution de problème':'Espace projet')}</span>`;
+  } else if(route.view==='a3'){
+    const a = state.a3.find(x=>x.id===route.a3Id);
+    const b = a ? state.boards.find(z=>z.id===a.board_id) : null;
+    c.innerHTML = `<button class="btn-home" onclick="goHome()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
+      <span class="sep">/</span>${b?`<span class="b-name" style="cursor:pointer" onclick="openBoard('${b.id}')">${escapeHtml(b.nom)}</span><span class="sep">/</span>`:''}
+      <span class="b-name">${a?escapeHtml(a.ref||a.titre):'Fiche A3'}</span>
+      <span class="b-type resolution">Fiche A3</span>`;
   } else if(route.view==='kpis'){
     c.innerHTML = `<button class="btn-home" onclick="goHome()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
@@ -1048,10 +1257,12 @@ function renderMain(){
   if(route.view==='home') renderHome(main);
   else if(route.view==='journal') renderJournal(main);
   else if(route.view==='kpis') renderKpis(main);
+  else if(route.view==='a3') renderA3(main);
   else if(route.view==='board'){
     const b = currentBoard();
     if(!b){ goHome(); return; }
     if(b.type==='actions') renderActionsBoard(main, b);
+    else if(b.type==='resolution') renderA3Board(main, b);
     else renderProjectBoard(main, b);
   }
 }
@@ -1063,6 +1274,11 @@ function boardStats(b){
     const done = items.filter(a=>a.statut==='Fait').length;
     const late = items.filter(actionLate).length;
     return {n:items.length, done, late, pct: items.length?Math.round(done/items.length*100):0, meta: items.length+' action'+(items.length>1?'s':'')};
+  } else if(b.type==='resolution'){
+    const items = state.a3.filter(x=>x.board_id===b.id);
+    const done = items.filter(x=>x.statut==='Clôturé').length;
+    const late = items.filter(x=>x.statut!=='Clôturé' && (a3AgeJours(x)||0)>60).length;
+    return {n:items.length, done, late, pct: items.length?Math.round(done/items.length*100):0, meta: items.length+' fiche'+(items.length>1?'s':'')+' A3'};
   } else {
     const items = state.projects.filter(p=>p.board_id===b.id);
     const done = items.filter(p=>p.statut==='Terminé').length;
@@ -1121,6 +1337,20 @@ function renderHome(main){
       ${projBoards.map(cardHtml).join('')}
       <div class="board-card new" onclick="openBoardModal('projet')">＋ Nouvel espace projet</div>
     </div>
+
+    <div class="section-label">Résolution de problème</div>
+    <div class="boards-grid">
+      ${state.boards.filter(b=>b.type==='resolution').map(cardHtml).join('')}
+      <div class="board-card new" onclick="openBoardModal('resolution')">＋ Nouvel espace A3</div>
+    </div>
+
+    <div class="data-bar">
+      <span class="section-label" style="margin:0">Données</span>
+      <button class="btn small" onclick="exportBackup()">⬇ Sauvegarde complète (JSON)</button>
+      <button class="btn small" onclick="importBackupPrompt()">⬆ Restaurer une sauvegarde</button>
+      <input type="file" id="backup-file" accept="application/json,.json" class="hidden" onchange="importBackupFile(event)">
+      <span style="font-size:11px;color:var(--muted-2)">Tes données vivent dans Supabase ; ceci est une copie de sécurité hors ligne.</span>
+    </div>
   </div>`;
 }
 
@@ -1139,13 +1369,21 @@ function searchQ(){ return (document.getElementById('search-input').value||'').t
 
 /* ============ PLAN D'ACTIONS ============ */
 function boardCols(b){
-  const cfg = (b.config && b.config.cols) ? b.config.cols : DEFAULT_COLS.map(c=>({...c, visible:true}));
-  return cfg;
+  if(!(b.config && b.config.cols)) return DEFAULT_COLS.map(c=>({...c, visible:true}));
+  const saved = b.config.cols.map(c=>({...c}));
+  /* les colonnes standard ajoutées par une mise à jour apparaissent sans casser l'ordre existant */
+  DEFAULT_COLS.forEach((d,i)=>{
+    if(!saved.some(c=>c.key===d.key)){
+      const vis = (NEW_COL_VISIBLE[d.key]!==undefined) ? NEW_COL_VISIBLE[d.key] : true;
+      saved.splice(Math.min(i, saved.length), 0, {...d, visible:vis});
+    }
+  });
+  return saved;
 }
 function getFilteredActions(b){
   const q = searchQ();
   return state.actions.filter(a=>{
-    if(a.board_id!==b.id) return false;
+    if(a.board_id!==b.id || a.a3_id) return false;
     if(ui.filterStatuts.size && !ui.filterStatuts.has(a.statut)) return false;
     if(ui.filterResp.size && !ui.filterResp.has(a.responsable)) return false;
     if(ui.onlyLate && !actionLate(a)) return false;
@@ -1233,7 +1471,7 @@ function summaryWrap(s){ return `<div style="padding:14px 18px 0">${s}</div>`; }
 function actionCellHtml(a, c, idx){
   switch(c.key){
     case 'num': return `<td class="pa-num">${String(idx+1).padStart(2,'0')}</td>`;
-    case 'titre': return `<td class="pa-title">${escapeHtml(a.titre)}${actionLate(a)?'<span class="pa-late-badge">RETARD</span>':''}</td>`;
+    case 'titre': return `<td class="pa-title">${escapeHtml(a.titre)}${actionLate(a)?'<span class="pa-late-badge">RETARD</span>':''}${(a.nb_reports||0)?`<span class="report-badge" title="Échéance repoussée ${a.nb_reports} fois">↻ ${a.nb_reports}</span>`:''}</td>`;
     case 'responsable': return `<td><span class="pa-resp"><span class="av">${initials(a.responsable||'?')}</span>${escapeHtml(a.responsable||'—')}</span></td>`;
     case 'echeance': return `<td><span class="pa-date ${actionLate(a)?'past':''}">${fmtFR(a.echeance)}</span></td>`;
     case 'statut': { const col=ACTION_COLORS[a.statut]||ACTION_COLORS['À faire'];
@@ -1242,6 +1480,16 @@ function actionCellHtml(a, c, idx){
     case 'avancement': { const col=ACTION_COLORS[a.statut]||ACTION_COLORS['À faire'];
       return `<td><span class="pa-prog"><span class="pa-prog-track"><span class="pa-prog-fill" style="display:block;width:${a.avancement||0}%;background:${col.main}"></span></span><span class="pa-prog-val">${a.avancement||0}%</span></span></td>`; }
     case 'notes': return `<td style="color:var(--muted);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(a.notes||'')}</td>`;
+    case 'probleme': return `<td class="pa-pb" style="max-width:260px">${escapeHtml(a.probleme||'')}</td>`;
+    case 'date_cloture': { const ok = clotureeDansLesTemps(a);
+      return `<td><span class="pa-date ${ok===false?'past':''}" title="${ok===true?'Clôturée dans les temps':(ok===false?'Clôturée hors délai':'')}">${a.date_cloture?fmtFR(a.date_cloture):'—'}${ok===true?' <span style="color:var(--green)">✓</span>':(ok===false?' <span style="color:var(--red)">!</span>':'')}</span></td>`; }
+    case 'duree_cloture': { const d = dureeClotureJours(a);
+      return `<td><span class="pa-date">${d==null?'—':d+' j'}</span></td>`; }
+    case 'echeance_initiale': return `<td><span class="pa-date" style="color:var(--muted)">${a.echeance_initiale?fmtFR(a.echeance_initiale):'—'}</span></td>`;
+    case 'nb_reports': { const n = a.nb_reports||0;
+      return `<td>${n?`<span class="report-badge" title="Échéance repoussée ${n} fois — initiale : ${a.echeance_initiale?fmtFR(a.echeance_initiale):'?'}">↻ ${n}</span>`:'<span style="color:var(--muted-2)">—</span>'}</td>`; }
+    case 'date_ouverture': return `<td><span class="pa-date">${a.date_ouverture?fmtFR(a.date_ouverture):(a.created_at?fmtFR(a.created_at.slice(0,10)):'—')}</span></td>`;
+    case 'date_creation': return `<td><span class="pa-date" style="color:var(--muted)">${a.created_at?fmtFR(a.created_at.slice(0,10)):'—'}</span></td>`;
     default: return `<td style="color:var(--muted)">${escapeHtml((a.extra&&a.extra[c.key])||'')}</td>`;
   }
 }
@@ -1253,7 +1501,8 @@ async function actionDrop(e, statut){
   if(!a || a.statut===statut) return;
   const old = a.statut;
   const patch = {statut};
-  if(statut==='Fait') patch.avancement = 100;
+  if(statut==='Fait'){ patch.avancement = 100; if(!a.date_cloture) patch.date_cloture = fmtDate(new Date()); }
+  else if(a.date_cloture) patch.date_cloture = null;
   await dbUpdate('actions', id, patch);
   await logActivity('a fait passer', '« '+a.titre+' »', old+' → '+statut);
   renderMain();
@@ -1346,8 +1595,10 @@ function renderProjectBoard(main, b){
     ${route.sub==='gantt'?`<div class="seg">
       <button class="${ui.pxPerDay>=30?'active':''}" onclick="ui.pxPerDay=34;renderMain()">Semaine</button>
       <button class="${ui.pxPerDay<30&&ui.pxPerDay>=10?'active':''}" onclick="ui.pxPerDay=14;renderMain()">Mois</button>
-      <button class="${ui.pxPerDay<10?'active':''}" onclick="ui.pxPerDay=5.5;renderMain()">Trimestre</button>
+      <button class="${ui.pxPerDay<10&&ui.pxPerDay>3?'active':''}" onclick="ui.pxPerDay=5.5;renderMain()">Trimestre</button>
+      <button class="${ui.pxPerDay<=3?'active':''}" onclick="ui.pxPerDay=2.4;renderMain()">Année</button>
     </div>
+    <button class="btn small ghost" onclick="ui.horizonPlus=(ui.horizonPlus||0)+365;renderMain();showToast('Horizon étendu d\u2019un an')" title="Ajouter un an de planification à droite">+1 an ▸</button>
     <button class="btn small ghost" onclick="scrollToToday()">↦ Aujourd'hui</button>
     <button class="btn small ghost" onclick="undoLast()" title="Ctrl+Z">↩</button>`:''}
     ${filterChipsHtml(PROJ_STATUTS, PROJ_COLORS, resps)}
@@ -1376,12 +1627,16 @@ function renderProjectBoard(main, b){
 /* ---- GANTT ---- */
 function computeTimelineRange(projs){
   const dates = [];
-  projs.forEach(p=>{ if(p.date_debut) dates.push(dateFromStr(p.date_debut)); if(p.date_fin) dates.push(dateFromStr(p.date_fin)); });
+  projs.forEach(p=>{ if(p.date_debut) dates.push(dateFromStr(p.date_debut)); dates.push(projEndDate(p)); });
   const today = todayMid();
   if(dates.length===0) dates.push(addDays(today,-30), addDays(today,60));
   let min = new Date(Math.min(...dates.map(x=>+x), +today));
   let max = new Date(Math.max(...dates.map(x=>+x), +today));
-  min = addDays(min,-12); max = addDays(max,35); min.setDate(1);
+  min = addDays(min,-12);
+  /* horizon : toujours de la marge à droite pour planifier au-delà du dernier projet */
+  const horizon = addDays(today, 200 + (ui.horizonPlus||0));
+  max = new Date(Math.max(+addDays(max,45), +horizon));
+  min.setDate(1);
   return {min,max};
 }
 function renderGantt(b){
@@ -1439,14 +1694,19 @@ function renderGantt(b){
     const tasks = state.tasks.filter(t=>t.project_id===p.id);
     const expanded = ui.expandedProjects.has(p.id);
     const col = PROJ_COLORS[p.statut] || PROJ_COLORS['Planifié'];
-    const sd=dateFromStr(p.date_debut), ed=dateFromStr(p.date_fin);
+    const sd=dateFromStr(p.date_debut), ed=projEndDate(p);
     const left = dayIndex(sd,min)*px + LEFT_PAD;
     const width = Math.max(px*0.8,(dayIndex(ed,sd)+1)*px);
     const late = projLate(p);
-    let engTick='';
-    if(p.engagement_date){
-      const engLeft = dayIndex(dateFromStr(p.engagement_date),sd)*px;
-      if(engLeft>=0 && engLeft<=width) engTick = `<div class="eng-tick" style="left:${engLeft}px" title="Engagement : ${fmtFR(p.engagement_date)}"></div>`;
+    const dep = projDepassementJours(p);
+    const cible = projCible(p);
+    let engTick='', deriveZone='';
+    if(cible){
+      const engLeft = dayIndex(dateFromStr(cible),sd)*px;
+      if(engLeft>=0 && engLeft<=width){
+        engTick = `<div class="eng-tick" style="left:${engLeft}px" title="Engagement client : ${fmtFR(cible)}"></div>`;
+        if(late && dep>0) deriveZone = `<div class="derive-zone" style="left:${engLeft}px;width:${Math.max(2,width-engLeft)}px" title="${dep} jour(s) au-dela de l engagement"></div>`;
+      }
     }
     html += `<div class="proj-row ${expanded?'expanded':''}" data-id="${p.id}">
       <div class="expand-toggle" onclick="event.stopPropagation();toggleExpand('${p.id}')">${tasks.length?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m9 6 6 6-6 6"/></svg>':''}</div>
@@ -1456,10 +1716,11 @@ function renderGantt(b){
         <div class="strip-body" style="--fill:${p.avancement||0}%">
           <span class="scode">${escapeHtml(p.code||'')}</span>
           <span class="sname" style="color:${col.main}">${escapeHtml(p.nom)}</span>
-          ${late?'<span class="late-flag">DÉRIVE</span>':''}
+          ${late?`<span class="late-flag">DÉRIVE +${dep}j</span>`:''}
+          ${p.date_fin?`<span class="done-flag">LIVRÉ ${fmtFR(p.date_fin)}</span>`:''}
           <span class="spct" style="color:${col.main}">${p.avancement||0}%</span>
         </div>
-        ${engTick}
+        ${deriveZone}${engTick}
         <div class="resize-handle left" onmousedown="startResize(event,'${p.id}','project','left')"></div>
         <div class="resize-handle right" onmousedown="startResize(event,'${p.id}','project','right')"></div>
       </div>
@@ -1550,7 +1811,8 @@ function startDrag(e, id, kind){
   e.preventDefault();
   const table = kind==='project'?'projects':'tasks';
   const item = state[table].find(x=>x.id===id);
-  dragCtx = {mode:'move', id, kind, table, startX:e.clientX, origDebut:item.date_debut, origFin:item.date_fin, moved:false};
+  const fin0 = (kind==='project') ? (item.date_fin || projCible(item) || fmtDate(projEndDate(item))) : item.date_fin;
+  dragCtx = {mode:'move', id, kind, table, startX:e.clientX, origDebut:item.date_debut, origFin:fin0, cible: kind==='project' && !item.date_fin, moved:false};
   document.body.style.userSelect='none';
 }
 function startResize(e, id, kind, side){
@@ -1558,7 +1820,8 @@ function startResize(e, id, kind, side){
   e.stopPropagation(); e.preventDefault();
   const table = kind==='project'?'projects':'tasks';
   const item = state[table].find(x=>x.id===id);
-  dragCtx = {mode:'resize', side, id, kind, table, startX:e.clientX, origDebut:item.date_debut, origFin:item.date_fin, moved:false};
+  const fin1 = (kind==='project') ? (item.date_fin || projCible(item) || fmtDate(projEndDate(item))) : item.date_fin;
+  dragCtx = {mode:'resize', side, id, kind, table, startX:e.clientX, origDebut:item.date_debut, origFin:fin1, cible: kind==='project' && !item.date_fin, moved:false};
   document.body.style.userSelect='none';
 }
 document.addEventListener('mousemove', (e)=>{
@@ -1571,9 +1834,10 @@ document.addEventListener('mousemove', (e)=>{
     nd = fmtDate(addDays(dateFromStr(dragCtx.origDebut),deltaDays));
     nf = fmtDate(addDays(dateFromStr(dragCtx.origFin),deltaDays));
   } else if(dragCtx.side==='left') nd = fmtDate(addDays(dateFromStr(dragCtx.origDebut),deltaDays));
-  else nf = fmtDate(addDays(dateFromStr(dragCtx.origFin),deltaDays));
-  if(dateFromStr(nf)>=dateFromStr(nd) && (nd!==item.date_debut||nf!==item.date_fin)){
-    item.date_debut=nd; item.date_fin=nf; dragCtx.moved=true;
+  else nf = fmtDate(addDays(dateFromStr(dragCtx.origFin||fmtDate(todayMid())),deltaDays));
+  const champFin = dragCtx.cible ? 'engagement_date' : 'date_fin';
+  if(dateFromStr(nf)>=dateFromStr(nd) && (nd!==item.date_debut||nf!==item[champFin])){
+    item.date_debut=nd; item[champFin]=nf; dragCtx.moved=true;
     const bb = currentBoard();
     if(bb) renderGantt(bb);
     const el = document.querySelector(`[data-id="${dragCtx.id}"].strip, [data-tid="${dragCtx.id}"]`);
@@ -1586,10 +1850,13 @@ document.addEventListener('mouseup', async ()=>{
   const ctx = dragCtx; dragCtx = null;
   if(!ctx.moved) return;
   const item = state[ctx.table].find(x=>x.id===ctx.id);
-  if(item && (item.date_debut!==ctx.origDebut || item.date_fin!==ctx.origFin)){
-    pushUndo(ctx.table, ctx.id, {date_debut:ctx.origDebut, date_fin:ctx.origFin});
-    await dbUpdate(ctx.table, ctx.id, {date_debut:item.date_debut, date_fin:item.date_fin});
-    await logActivity('a déplacé', (ctx.kind==='project'?'le projet « ':'la tâche « ')+item.nom+' »', fmtFR(item.date_debut)+' → '+fmtFR(item.date_fin));
+  const cf = ctx.cible ? 'engagement_date' : 'date_fin';
+  if(item && (item.date_debut!==ctx.origDebut || item[cf]!==ctx.origFin)){
+    const before = {date_debut:ctx.origDebut}; before[cf] = ctx.origFin;
+    pushUndo(ctx.table, ctx.id, before);
+    const patchD = {date_debut:item.date_debut}; patchD[cf] = item[cf];
+    await dbUpdate(ctx.table, ctx.id, patchD);
+    await logActivity('a déplacé', (ctx.kind==='project'?'le projet « ':'la tâche « ')+item.nom+' »', fmtFR(item.date_debut)+' → '+fmtFR(item[cf]));
     showToast('Dates mises à jour · Ctrl+Z pour annuler');
   }
 });
@@ -1627,7 +1894,8 @@ async function projDrop(e, statut){
   if(!p || p.statut===statut) return;
   const old = p.statut;
   const patch = {statut};
-  if(statut==='Terminé') patch.avancement=100;
+  if(statut==='Terminé'){ patch.avancement=100; if(!p.date_fin) patch.date_fin = fmtDate(new Date()); }
+  else if(p.date_fin) patch.date_fin = null;
   await dbUpdate('projects', id, patch);
   await logActivity('a fait passer', '« '+p.nom+' »', old+' → '+statut);
   renderMain();
@@ -1734,23 +2002,151 @@ function renderJournal(main){
 </script>
 <script>
 /* ============================================================
-   STUDIO D'INDICATEURS
-   3 types : compteur filtré, pourcentage, saisie manuelle
-   (avec historique + mini-courbe). Portée globale ou par plan.
+   STUDIO D'INDICATEURS v5 — entièrement modulable
+   Types : compteur · pourcentage · ratio · statistique · manuel
+   Filtres : statut, priorité, responsable, retard, état de clôture,
+             colonne personnalisée, période glissante ou fixe
+   Ventilation : par responsable, statut, priorité ou colonne perso
    ============================================================ */
+const AGG_LABELS = {moyenne:'Moyenne', somme:'Somme', min:'Minimum', max:'Maximum', mediane:'Médiane'};
+const NUM_FIELDS_ACTIONS = {
+  duree_cloture:'Délai de clôture (jours)',
+  retard_jours:'Jours de retard',
+  nb_reports:'Nombre de reports',
+  avancement:'Avancement (%)',
+};
+const NUM_FIELDS_PROJECTS = {
+  depassement:'Jours au-delà de l\u2019engagement',
+  duree_projet:'Durée réelle (jours)',
+  avancement:'Avancement (%)',
+};
+const NUM_FIELDS_A3 = {
+  duree_resolution:'Durée de résolution (jours)',
+  age_a3:'Âge de la fiche (jours)',
+};
+const PERIOD_PRESETS = {
+  tout:'Tout l\u2019historique', mois:'Mois en cours', mois_prec:'Mois précédent',
+  j30:'30 derniers jours', j90:'90 derniers jours', annee:'Année en cours', perso:'Dates personnalisées',
+};
+const GROUP_LABELS = {'':'Aucune', responsable:'Responsable', statut:'Statut', priorite:'Priorité', champ:'Colonne personnalisée'};
+
+/* ---- Colonnes personnalisées disponibles (tous plans confondus) ---- */
+function allCustomCols(){
+  const map = new Map();
+  state.boards.forEach(b=>{
+    ((b.config&&b.config.cols)||[]).forEach(c=>{ if(!c.sys && !map.has(c.key)) map.set(c.key, c.label||c.key); });
+  });
+  return [...map.entries()].map(([key,label])=>({key,label}));
+}
+
+/* ---- Périodes ---- */
+function periodRange(p){
+  const t = todayMid();
+  const y = t.getFullYear(), m = t.getMonth();
+  switch(p.preset){
+    case 'mois':      return {from:fmtDate(new Date(y,m,1)), to:fmtDate(new Date(y,m+1,0))};
+    case 'mois_prec': return {from:fmtDate(new Date(y,m-1,1)), to:fmtDate(new Date(y,m,0))};
+    case 'j30':       return {from:fmtDate(addDays(t,-30)), to:fmtDate(t)};
+    case 'j90':       return {from:fmtDate(addDays(t,-90)), to:fmtDate(t)};
+    case 'annee':     return {from:fmtDate(new Date(y,0,1)), to:fmtDate(new Date(y,11,31))};
+    case 'perso':     return {from:p.from||null, to:p.to||null};
+    default:          return {from:null, to:null};
+  }
+}
+
+/* ---- Périmètre & correspondance ---- */
 function kpiScopeItems(kpi){
-  const src = (kpi.config && kpi.config.source)==='projects' ? state.projects : state.actions;
+  const srcName = (kpi.config && kpi.config.source) || 'actions';
+  let src;
+  if(srcName==='projects') src = state.projects;
+  else if(srcName==='a3') src = state.a3.map(x=>({...x, responsable:x.pilote, echeance:x.date_cloture, priorite:x.gravite}));
+  else src = state.actions;
   return src.filter(x=> !kpi.board_id || x.board_id===kpi.board_id);
 }
-function kpiMatch(item, f, source){
+function itemMatch(item, f, source){
   if(!f) return true;
   if(f.statuts && f.statuts.length && !f.statuts.includes(item.statut)) return false;
+  if(f.priorites && f.priorites.length && !f.priorites.includes(item.priorite)) return false;
   if(f.responsable && (item.responsable||'').toLowerCase().indexOf(f.responsable.toLowerCase())===-1) return false;
   if(f.retard){
-    const late = source==='projects' ? projLate(item) : actionLate(item);
+    const late = source==='projects' ? projLate(item) : (source==='a3' ? (item.statut!=='Clôturé' && (a3AgeJours(item)||0)>60) : actionLate(item));
     if(!late) return false;
   }
+  if(source==='actions' && f.reports){
+    const n = item.nb_reports||0;
+    if(f.reports==='oui' && n<1) return false;
+    if(f.reports==='non' && n>0) return false;
+    if(f.reports==='multi' && n<2) return false;
+  }
+  if(source==='projects' && f.cloture && f.cloture!=='any'){
+    const dl = projDansLesTemps(item);
+    if(f.cloture==='oui' && !item.date_fin) return false;
+    if(f.cloture==='non' && item.date_fin) return false;
+    if(f.cloture==='temps' && dl!==true) return false;
+    if(f.cloture==='hors' && dl!==false) return false;
+  }
+  if(source==='a3' && f.cloture && f.cloture!=='any'){
+    if(f.cloture==='oui' && item.statut!=='Clôturé') return false;
+    if(f.cloture==='non' && item.statut==='Clôturé') return false;
+  }
+  if(source==='actions' && f.cloture && f.cloture!=='any'){
+    const ok = clotureeDansLesTemps(item);
+    if(f.cloture==='oui'   && !item.date_cloture) return false;
+    if(f.cloture==='non'   &&  item.date_cloture) return false;
+    if(f.cloture==='temps' && ok!==true) return false;
+    if(f.cloture==='hors'  && ok!==false) return false;
+  }
+  if(f.champ && f.champVal){
+    const v = (item.extra && item.extra[f.champ]) || '';
+    if(String(v).toLowerCase().indexOf(f.champVal.toLowerCase())===-1) return false;
+  }
+  if(f.periode && f.periode.preset && f.periode.preset!=='tout'){
+    const fld = f.periode.champ || 'echeance';
+    let val = (fld==='created_at') ? (item.created_at||'').slice(0,10) : item[fld];
+    if(!val) return false;
+    const r = periodRange(f.periode);
+    if(r.from && val < r.from) return false;
+    if(r.to && val > r.to) return false;
+  }
   return true;
+}
+function numericValue(item, champ){
+  if(champ==='avancement') return Number(item.avancement||0);
+  if(champ==='duree_cloture') return dureeClotureJours(item);
+  if(champ==='retard_jours') return retardJours(item);
+  if(champ==='nb_reports') return Number(item.nb_reports||0);
+  if(champ==='depassement') return projDepassementJours(item);
+  if(champ==='duree_projet') return projDureeJours(item);
+  if(champ==='duree_resolution') return a3DureeJours(item);
+  if(champ==='age_a3') return a3AgeJours(item);
+  return null;
+}
+function aggregate(vals, mode){
+  if(!vals.length) return null;
+  if(mode==='somme') return Math.round(vals.reduce((a,b)=>a+b,0)*10)/10;
+  if(mode==='min') return Math.min(...vals);
+  if(mode==='max') return Math.max(...vals);
+  if(mode==='mediane'){ const v=[...vals].sort((a,b)=>a-b); const n=v.length;
+    return Math.round((n%2?v[(n-1)/2]:(v[n/2-1]+v[n/2])/2)*10)/10; }
+  return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length*10)/10;
+}
+function computeOn(kpi, items){
+  const cfg = kpi.config||{};
+  const source = cfg.source||'actions';
+  if(kpi.type==='count') return items.filter(i=>itemMatch(i,cfg.num,source)).length;
+  if(kpi.type==='percent' || kpi.type==='ratio'){
+    const n = items.filter(i=>itemMatch(i,cfg.num,source)).length;
+    const den = (cfg.den && cfg.den.custom) ? items.filter(i=>itemMatch(i,cfg.den,source)).length : items.length;
+    if(!den) return null;
+    return kpi.type==='percent' ? Math.round(n/den*1000)/10 : Math.round(n/den*100)/100;
+  }
+  if(kpi.type==='aggregate'){
+    const vals = items.filter(i=>itemMatch(i,cfg.num,source))
+      .map(i=>numericValue(i, cfg.champNum||'duree_cloture'))
+      .filter(v=>v!=null && !isNaN(v));
+    return aggregate(vals, cfg.agg||'moyenne');
+  }
+  return null;
 }
 function kpiHistory(kpi){
   return state.kpi_values.filter(v=>v.kpi_id===kpi.id).sort((a,b)=>new Date(a.ts)-new Date(b.ts));
@@ -1760,90 +2156,144 @@ function evalKpi(kpi){
     const h = kpiHistory(kpi);
     return h.length ? Number(h[h.length-1].valeur) : null;
   }
+  return computeOn(kpi, kpiScopeItems(kpi));
+}
+function kpiBreakdown(kpi){
+  const cfg = kpi.config||{};
+  if(kpi.type==='manual' || !cfg.groupBy) return [];
   const items = kpiScopeItems(kpi);
-  const source = (kpi.config && kpi.config.source)||'actions';
-  const num = items.filter(i=>kpiMatch(i, kpi.config && kpi.config.num, source)).length;
-  if(kpi.type==='count') return num;
-  const denF = kpi.config && kpi.config.den;
-  const den = (denF && denF.custom) ? items.filter(i=>kpiMatch(i, denF, source)).length : items.length;
-  return den ? Math.round(num/den*1000)/10 : null;
+  const keyOf = (i)=>{
+    if(cfg.groupBy==='champ') return (i.extra && i.extra[cfg.groupChamp]) || '—';
+    return i[cfg.groupBy] || '—';
+  };
+  const groups = new Map();
+  items.forEach(i=>{ const k=keyOf(i); if(!groups.has(k)) groups.set(k,[]); groups.get(k).push(i); });
+  return [...groups.entries()]
+    .map(([k, list])=>({cle:k, valeur:computeOn(kpi, list), n:list.length}))
+    .filter(r=>r.valeur!=null)
+    .sort((a,b)=>b.valeur-a.valeur);
 }
 function kpiTargetState(kpi, val){
   if(val==null || kpi.objectif==null || kpi.objectif==='') return null;
-  const obj = Number(kpi.objectif);
-  return (kpi.sens==='bas') ? (val<=obj) : (val>=obj);
+  return (kpi.sens==='bas') ? (val<=Number(kpi.objectif)) : (val>=Number(kpi.objectif));
+}
+function kpiUnitOf(kpi){
+  if(kpi.unite) return kpi.unite;
+  if(kpi.type==='percent') return '%';
+  if(kpi.type==='aggregate' && (kpi.config||{}).champNum!=='avancement') return 'j';
+  return '';
 }
 function sparklineSVG(kpi){
   const h = kpiHistory(kpi);
   if(h.length<2) return '';
   const vals = h.map(v=>Number(v.valeur));
-  const min = Math.min(...vals), max = Math.max(...vals);
-  const span = (max-min)||1;
-  const W=210, H=34;
+  const min = Math.min(...vals), max = Math.max(...vals), span=(max-min)||1;
+  const W=210,H=34;
   const pts = vals.map((v,i)=>`${(i/(vals.length-1)*W).toFixed(1)},${(H-4-((v-min)/span)*(H-8)).toFixed(1)}`).join(' ');
-  const objLine = (kpi.objectif!=null && kpi.objectif!=='' && Number(kpi.objectif)>=min && Number(kpi.objectif)<=max)
-    ? `<line x1="0" x2="${W}" y1="${(H-4-((Number(kpi.objectif)-min)/span)*(H-8)).toFixed(1)}" y2="${(H-4-((Number(kpi.objectif)-min)/span)*(H-8)).toFixed(1)}" stroke="#e77b1e" stroke-width="1" stroke-dasharray="3 3"/>` : '';
+  const oy = (kpi.objectif!=null && kpi.objectif!=='' && Number(kpi.objectif)>=min && Number(kpi.objectif)<=max)
+    ? (H-4-((Number(kpi.objectif)-min)/span)*(H-8)).toFixed(1) : null;
   return `<svg class="kpix-spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-    ${objLine}
+    ${oy?`<line x1="0" x2="${W}" y1="${oy}" y2="${oy}" stroke="#e77b1e" stroke-width="1" stroke-dasharray="3 3"/>`:''}
     <polyline points="${pts}" fill="none" stroke="var(--kpix,#0c66e4)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
     <circle cx="${W}" cy="${(H-4-((vals[vals.length-1]-min)/span)*(H-8)).toFixed(1)}" r="3" fill="var(--kpix,#0c66e4)"/>
   </svg>`;
+}
+function kpiDescription(kpi){
+  const cfg = kpi.config||{};
+  if(kpi.type==='manual') return 'Saisie manuelle';
+  const src = cfg.source==='projects' ? 'projets' : (cfg.source==='a3' ? 'fiches A3' : 'actions');
+  const parts = [];
+  if(kpi.type==='count') parts.push('Nombre d\u2019'+src);
+  if(kpi.type==='percent') parts.push('% d\u2019'+src);
+  if(kpi.type==='ratio') parts.push('Ratio d\u2019'+src);
+  if(kpi.type==='aggregate') parts.push((AGG_LABELS[cfg.agg||'moyenne'])+' — '+(((cfg.source==='projects'?NUM_FIELDS_PROJECTS:(cfg.source==='a3'?NUM_FIELDS_A3:NUM_FIELDS_ACTIONS))[cfg.champNum||'duree_cloture'])||''));
+  const f = cfg.num||{};
+  if(f.retard) parts.push('en retard');
+  if(f.cloture==='temps') parts.push('clôturées dans les temps');
+  if(f.cloture==='hors') parts.push('clôturées hors délai');
+  if(f.cloture==='oui') parts.push('clôturées');
+  if(f.cloture==='non') parts.push('non clôturées');
+  if(f.statuts && f.statuts.length) parts.push(f.statuts.join('/'));
+  if(f.responsable) parts.push('resp. '+f.responsable);
+  if(f.champVal) parts.push(f.champVal);
+  if(f.reports==='oui') parts.push('avec report');
+  if(f.reports==='multi') parts.push('2 reports et +');
+  if(f.periode && f.periode.preset && f.periode.preset!=='tout') parts.push(PERIOD_PRESETS[f.periode.preset].toLowerCase());
+  return parts.join(' · ');
 }
 function kpiCardHtml(kpi, compact){
   const val = evalKpi(kpi);
   const tgt = kpiTargetState(kpi, val);
   const board = kpi.board_id ? state.boards.find(b=>b.id===kpi.board_id) : null;
-  const typeLbl = {count:'Compteur', percent:'Pourcentage', manual:'Saisie manuelle'}[kpi.type]||'';
+  const unit = kpiUnitOf(kpi);
   const h = kpi.type==='manual' ? kpiHistory(kpi) : [];
-  const pctBar = (kpi.type!=='count' && kpi.objectif!=null && kpi.objectif!=='' && val!=null)
-    ? `<div class="kpix-bar"><i style="width:${Math.min(100, Math.max(2, val/Math.max(Number(kpi.objectif),0.001)*100))}%"></i></div>` : '';
+  const rows = compact ? [] : kpiBreakdown(kpi);
+  const maxRow = rows.length ? Math.max(...rows.map(r=>Math.abs(r.valeur)))||1 : 1;
+  const pctBar = (kpi.type==='percent' && val!=null)
+    ? `<div class="kpix-bar"><i style="width:${Math.min(100,Math.max(2,val))}%"></i></div>` : '';
   return `<div class="kpix-card" style="--kpix:${kpi.couleur||'#0c66e4'}">
     <div class="kpix-head">
       <div style="flex:1;min-width:0">
         <div class="kpix-name">${escapeHtml(kpi.nom)}</div>
-        <div class="kpix-scope">${board?escapeHtml(truncate(board.nom,32)):'Global'} · ${typeLbl}</div>
+        <div class="kpix-scope">${board?escapeHtml(truncate(board.nom,26)):'Tous les plans'} · ${escapeHtml(truncate(kpiDescription(kpi),52))}</div>
       </div>
       ${compact?'':`<div class="kpix-tools">
+        <button title="Dupliquer" onclick="duplicateKpi('${kpi.id}')">⧉</button>
         <button title="Modifier" onclick="openKpiModal('${kpi.id}')">✎</button>
         <button title="Supprimer" onclick="deleteKpi('${kpi.id}')">🗑</button>
       </div>`}
     </div>
     <div class="kpix-val-row">
       <span class="kpix-val">${val==null?'—':val}</span>
-      <span class="kpix-unit">${escapeHtml(kpi.unite||'')}</span>
-      ${tgt!=null?`<span class="kpix-target ${tgt?'ok':'ko'}">${tgt?'✓ OBJECTIF ATTEINT':'✗ ÉCART'}</span>`:''}
+      <span class="kpix-unit">${escapeHtml(unit)}</span>
+      ${tgt!=null?`<span class="kpix-target ${tgt?'ok':'ko'}">${tgt?'✓ ATTEINT':'✗ ÉCART'}</span>`:''}
     </div>
-    ${kpi.objectif!=null && kpi.objectif!==''?`<div class="kpix-sub">Objectif : ${kpi.sens==='bas'?'≤':'≥'} ${kpi.objectif} ${escapeHtml(kpi.unite||'')}</div>`:''}
+    ${kpi.objectif!=null && kpi.objectif!==''?`<div class="kpix-sub">Objectif : ${kpi.sens==='bas'?'≤':'≥'} ${kpi.objectif} ${escapeHtml(unit)}</div>`:''}
     ${pctBar}
     ${kpi.type==='manual' ? sparklineSVG(kpi) : ''}
     ${kpi.type==='manual' && h.length ? `<div class="kpix-sub">Dernière saisie : ${fmtFR(h[h.length-1].ts.slice(0,10))} · ${h.length} valeur${h.length>1?'s':''}</div>` : ''}
+    ${rows.length?`<div class="kpix-break">
+      <div class="kpix-break-t">Ventilation par ${GROUP_LABELS[(kpi.config||{}).groupBy].toLowerCase()}</div>
+      ${rows.slice(0,8).map(r=>`<div class="kpix-brow">
+        <span class="kb-k" title="${escAttr(r.cle)}">${escapeHtml(truncate(String(r.cle),16))}</span>
+        <span class="kb-track"><i style="width:${Math.min(100,Math.abs(r.valeur)/maxRow*100)}%"></i></span>
+        <span class="kb-v">${r.valeur}${unit==='%'?'%':''}</span>
+      </div>`).join('')}
+    </div>`:''}
     ${kpi.type==='manual' && !compact ? `<div class="kpix-entry">
-      <input type="number" step="any" id="kv-${kpi.id}" placeholder="Nouvelle valeur">
+      <input type="number" step="any" id="kv-${kpi.id}" placeholder="Valeur">
       <input type="date" id="kd-${kpi.id}" value="${fmtDate(new Date())}">
       <button class="btn small primary" onclick="addKpiValue('${kpi.id}')">＋</button>
     </div>` : ''}
   </div>`;
 }
 function renderKpis(main){
-  const kpis = state.kpis;
   main.innerHTML = `<div class="kview">
     <div class="home-head"><h1>Studio d'indicateurs</h1></div>
-    <div class="home-sub">Compteurs filtrés, pourcentages calculés en direct sur tes plans, ou indicateurs à saisie manuelle avec historique (OTD, taux d'occupation, réclamations…). Chaque indicateur peut porter un objectif.</div>
+    <div class="home-sub">Construis n'importe quel indicateur : compteurs, pourcentages, ratios, délais moyens de clôture, taux de respect des échéances — filtrés par statut, responsable, thème ou période, et ventilables par personne.</div>
     <div class="kpix-grid">
-      ${kpis.map(k=>kpiCardHtml(k,false)).join('')}
+      ${state.kpis.map(k=>kpiCardHtml(k,false)).join('')}
       <div class="kpix-card new-kpi" onclick="openKpiModal(null)">＋ Nouvel indicateur</div>
     </div>
+    ${state.kpis.length?'':`<div class="kpix-tips">
+      <div class="kpix-tips-t">Quelques exemples à créer en deux clics</div>
+      <ul>
+        <li><b>Délai moyen de clôture</b> — type Statistique, champ « Délai de clôture », ventilation par responsable.</li>
+        <li><b>% clôturé dans les temps</b> — type Pourcentage, filtre « clôturées dans les temps », dénominateur restreint aux clôturées, ventilation par responsable.</li>
+        <li><b>Actions QUALITE en retard</b> — type Compteur, filtre retard + colonne THÈME contient « QUALITE ».</li>
+        <li><b>OTD Emballage</b> — type Manuel, objectif 95 %, saisie hebdomadaire.</li>
+      </ul>
+    </div>`}
   </div>`;
 }
 async function addKpiValue(kpiId){
-  const vEl = document.getElementById('kv-'+kpiId);
-  const dEl = document.getElementById('kd-'+kpiId);
+  const vEl = document.getElementById('kv-'+kpiId), dEl = document.getElementById('kd-'+kpiId);
   const v = parseFloat(vEl.value);
   if(isNaN(v)){ showToast('Saisis une valeur numérique'); return; }
   const d = dEl.value || fmtDate(new Date());
   await dbInsert('kpi_values', {kpi_id:kpiId, valeur:v, ts:d+'T12:00:00'});
   const k = state.kpis.find(x=>x.id===kpiId);
-  await logActivity('a saisi', '« '+(k?k.nom:'indicateur')+' »', v+(k&&k.unite?' '+k.unite:'')+' au '+fmtFR(d), k?k.board_id:null);
+  await logActivity('a saisi', '« '+(k?k.nom:'indicateur')+' »', v+' au '+fmtFR(d), k?k.board_id:null);
   renderMain();
   showToast('Valeur enregistrée');
 }
@@ -1857,38 +2307,132 @@ async function deleteKpi(id){
   renderMain();
   showToast('Indicateur supprimé');
 }
+async function duplicateKpi(id){
+  const k = state.kpis.find(x=>x.id===id);
+  if(!k) return;
+  const copy = {...k}; delete copy.id; delete copy.created_at;
+  copy.nom = k.nom+' (copie)';
+  copy.config = JSON.parse(JSON.stringify(k.config||{}));
+  await dbInsert('kpis', copy);
+  renderMain();
+  showToast('Indicateur dupliqué — adapte-le');
+}
 
-/* ---- Éditeur d'indicateur ---- */
+/* ============ ÉDITEUR D'INDICATEUR ============ */
 let kpiModalType = 'count';
+let kpiModalSource = 'actions';
+function statutsOf(source){ return source==='projects' ? PROJ_STATUTS : (source==='a3' ? A3_STATUTS : ACTION_STATUTS); }
+function clotureOptions(source){
+  if(source==='projects') return {any:'Peu importe', oui:'Terminés', non:'En cours', temps:'Livrés dans les temps', hors:'Livrés hors délai'};
+  if(source==='a3') return {any:'Peu importe', oui:'Clôturées', non:'Non clôturées'};
+  return {any:'Peu importe', oui:'Clôturées', non:'Non clôturées', temps:'Clôturées dans les temps', hors:'Clôturées hors délai'};
+}
+
+function filterEditorHtml(prefix, f, source, titre, aide){
+  f = f||{};
+  const per = f.periode||{};
+  const customs = allCustomCols();
+  const dateFields = source==='projects'
+    ? {date_fin:'Date de fin', date_debut:'Date de début', created_at:'Date de création'}
+    : {echeance:'Échéance', date_cloture:'Date de clôture', created_at:'Date de création'};
+  return `<div class="kpi-filter-box">
+    <div class="kfb-title">${titre}</div>
+    ${aide?`<div class="kfb-help">${aide}</div>`:''}
+    <div class="field"><label>Statuts <span class="lbl-soft">(aucun = tous)</span></label>
+      <div class="kpi-chips" id="k-${prefix}-statuts">${statutsOf(source).map(st=>`<span class="chip ${(f.statuts||[]).includes(st)?'active':''}" data-s="${st}" onclick="this.classList.toggle('active')">${st}</span>`).join('')}</div>
+    </div>
+    <div class="field"><label>Priorités <span class="lbl-soft">(aucune = toutes)</span></label>
+      <div class="kpi-chips" id="k-${prefix}-prios">${Object.keys(PRIOS).map(p=>`<span class="chip ${(f.priorites||[]).includes(p)?'active':''}" data-s="${p}" onclick="this.classList.toggle('active')">${p}</span>`).join('')}</div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Responsable contient</label><input type="text" id="k-${prefix}-resp" value="${escAttr(f.responsable||'')}" placeholder="ex : ONET"></div>
+      <div class="field"><label>État d'avancement</label>
+        <select id="k-${prefix}-cloture">
+          ${Object.entries(clotureOptions(source)).map(([k2,v])=>`<option value="${k2}" ${(f.cloture||'any')===k2?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <label class="k-check"><input type="checkbox" id="k-${prefix}-retard" ${f.retard?'checked':''}> Uniquement les éléments en retard ${source==='projects'?'<span class="lbl-soft">(engagement dépassé, non livré)</span>':''}</label>
+    ${source==='actions'?`<div class="field" style="margin-top:11px"><label>Report d'échéance</label>
+      <select id="k-${prefix}-reports">
+        <option value="">Peu importe</option>
+        <option value="oui"   ${f.reports==='oui'?'selected':''}>Au moins un report</option>
+        <option value="multi" ${f.reports==='multi'?'selected':''}>Deux reports ou plus</option>
+        <option value="non"   ${f.reports==='non'?'selected':''}>Jamais reportée</option>
+      </select></div>`:''}
+    ${customs.length?`<div class="field-row" style="margin-top:11px">
+      <div class="field"><label>Colonne personnalisée</label>
+        <select id="k-${prefix}-champ"><option value="">—</option>${customs.map(c=>`<option value="${c.key}" ${f.champ===c.key?'selected':''}>${escapeHtml(c.label)}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>Contient la valeur</label><input type="text" id="k-${prefix}-champval" value="${escAttr(f.champVal||'')}" placeholder="ex : QUALITE"></div>
+    </div>`:''}
+    <div class="field-row" style="margin-top:6px">
+      <div class="field"><label>Période sur</label>
+        <select id="k-${prefix}-perchamp">${Object.entries(dateFields).map(([k,v])=>`<option value="${k}" ${per.champ===k?'selected':''}>${v}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>Fenêtre</label>
+        <select id="k-${prefix}-perpreset" onchange="document.getElementById('k-${prefix}-perdates').classList.toggle('hidden', this.value!=='perso')">
+          ${Object.entries(PERIOD_PRESETS).map(([k,v])=>`<option value="${k}" ${(per.preset||'tout')===k?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="field-row ${per.preset==='perso'?'':'hidden'}" id="k-${prefix}-perdates">
+      <div class="field"><label>Du</label><input type="date" id="k-${prefix}-perfrom" value="${per.from||''}"></div>
+      <div class="field"><label>Au</label><input type="date" id="k-${prefix}-perto" value="${per.to||''}"></div>
+    </div>
+  </div>`;
+}
+function readFilter(prefix){
+  const g = (id)=>document.getElementById('k-'+prefix+'-'+id);
+  const chips = (id)=>{ const el=g(id); return el?[...el.querySelectorAll('.chip.active')].map(c=>c.dataset.s):[]; };
+  if(!g('statuts')) return {};
+  return {
+    statuts: chips('statuts'),
+    priorites: chips('prios'),
+    responsable: (g('resp')||{value:''}).value.trim(),
+    retard: !!(g('retard')||{}).checked,
+    cloture: (g('cloture')||{value:'any'}).value,
+    reports: (g('reports')||{value:''}).value,
+    champ: (g('champ')||{value:''}).value,
+    champVal: (g('champval')||{value:''}).value.trim(),
+    periode: {
+      champ: (g('perchamp')||{value:'echeance'}).value,
+      preset: (g('perpreset')||{value:'tout'}).value,
+      from: (g('perfrom')||{value:''}).value,
+      to: (g('perto')||{value:''}).value,
+    },
+  };
+}
 function openKpiModal(id){
   const k = id ? state.kpis.find(x=>x.id===id) : null;
   kpiModalType = k ? k.type : 'count';
+  kpiModalSource = (k && k.config && k.config.source) || 'actions';
   const cfg = (k && k.config) || {};
-  const num = cfg.num || {};
-  const den = cfg.den || {};
   document.getElementById('modal-content').innerHTML = `
     <div class="modal-head">${k?'Modifier l\u2019indicateur':'Nouvel indicateur'}</div>
     <div class="modal-body">
-      <div class="field"><label>Nom</label><input type="text" id="k-nom" value="${k?escAttr(k.nom):''}" placeholder="ex : Actions 8D en retard, OTD Emballage…"></div>
+      <div class="field"><label>Nom</label><input type="text" id="k-nom" value="${k?escAttr(k.nom):''}" placeholder="ex : Délai moyen de clôture par responsable"></div>
       <div class="field-row">
-        <div class="field"><label>Portée</label>
+        <div class="field"><label>Périmètre</label>
           <select id="k-scope">
-            <option value="">Global (tous les plans)</option>
+            <option value="">Tous les plans</option>
             ${state.boards.map(b=>`<option value="${b.id}" ${k&&k.board_id===b.id?'selected':''}>${escapeHtml(truncate(b.nom,40))}</option>`).join('')}
           </select>
         </div>
         <div class="field"><label>Couleur</label>
-          <div class="color-row" id="k-colors">${BOARD_COLORS.map((c,i)=>`<div class="color-dot ${k?(k.couleur===c?'sel':''):(i===0?'sel':'')}" style="background:${c};width:22px;height:22px" data-c="${c}" onclick="pickKpiColor(this)"></div>`).join('')}</div>
+          <div class="color-row" id="k-colors">${BOARD_COLORS.map((c,i)=>`<div class="color-dot ${k?(k.couleur===c?'sel':''):(i===0?'sel':'')}" style="background:${c};width:21px;height:21px" data-c="${c}" onclick="pickKpiColor(this)"></div>`).join('')}</div>
         </div>
       </div>
       <div class="field"><label>Type de calcul</label>
-        <div class="type-choice" style="grid-template-columns:1fr 1fr 1fr">
-          <div class="type-opt ${kpiModalType==='count'?'sel':''}" data-t="count" onclick="pickKpiType(this)"><div class="to-icon">#</div><div class="to-name">Compteur</div><div class="to-desc">Nombre d'éléments qui matchent un filtre.</div></div>
-          <div class="type-opt ${kpiModalType==='percent'?'sel':''}" data-t="percent" onclick="pickKpiType(this)"><div class="to-icon">%</div><div class="to-name">Pourcentage</div><div class="to-desc">Part des éléments filtrés sur un total.</div></div>
-          <div class="type-opt ${kpiModalType==='manual'?'sel':''}" data-t="manual" onclick="pickKpiType(this)"><div class="to-icon">✍</div><div class="to-name">Manuel</div><div class="to-desc">Saisie régulière + courbe d'historique.</div></div>
+        <div class="type-choice k-types">
+          <div class="type-opt ${kpiModalType==='count'?'sel':''}" data-t="count" onclick="pickKpiType(this)"><div class="to-icon">#</div><div class="to-name">Compteur</div><div class="to-desc">Combien d'éléments correspondent au filtre.</div></div>
+          <div class="type-opt ${kpiModalType==='percent'?'sel':''}" data-t="percent" onclick="pickKpiType(this)"><div class="to-icon">%</div><div class="to-name">Pourcentage</div><div class="to-desc">Part d'un sous-ensemble sur un total.</div></div>
+          <div class="type-opt ${kpiModalType==='ratio'?'sel':''}" data-t="ratio" onclick="pickKpiType(this)"><div class="to-icon">÷</div><div class="to-name">Ratio</div><div class="to-desc">Rapport brut A/B (ex : 1,8 action par problème).</div></div>
+          <div class="type-opt ${kpiModalType==='aggregate'?'sel':''}" data-t="aggregate" onclick="pickKpiType(this)"><div class="to-icon">Σ</div><div class="to-name">Statistique</div><div class="to-desc">Moyenne, somme, min, max, médiane d'une valeur.</div></div>
+          <div class="type-opt ${kpiModalType==='manual'?'sel':''}" data-t="manual" onclick="pickKpiType(this)"><div class="to-icon">✍</div><div class="to-name">Manuel</div><div class="to-desc">Saisie périodique + courbe d'historique.</div></div>
         </div>
       </div>
-      <div id="k-calc-zone">${kpiCalcZoneHtml(cfg, num, den)}</div>
+      <div id="k-calc-zone">${kpiCalcZoneHtml(cfg)}</div>
       <div class="field-row-3">
         <div class="field"><label>Objectif</label><input type="number" step="any" id="k-objectif" value="${k&&k.objectif!=null?k.objectif:''}" placeholder="ex : 95"></div>
         <div class="field"><label>Sens</label>
@@ -1897,76 +2441,78 @@ function openKpiModal(id){
             <option value="bas" ${k&&k.sens==='bas'?'selected':''}>≤ objectif = bien</option>
           </select>
         </div>
-        <div class="field"><label>Unité</label><input type="text" id="k-unite" value="${k?escAttr(k.unite||''):''}" placeholder="%, colis, h…"></div>
+        <div class="field"><label>Unité</label><input type="text" id="k-unite" value="${k?escAttr(k.unite||''):''}" placeholder="auto"></div>
       </div>
     </div>
     <div class="modal-foot">
       <button class="btn ghost" onclick="closeModal()">Annuler</button>
-      <button class="btn primary" onclick="saveKpi('${k?k.id:''}')">${k?'Enregistrer':'Créer l\u2019indicateur'}</button>
+      <button class="btn primary" onclick="saveKpi('${k?k.id:''}')">${k?'Enregistrer':'Créer'}</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('show');
   setTimeout(()=>{const el=document.getElementById('k-nom'); if(el) el.focus();},50);
 }
-function kpiCalcZoneHtml(cfg, num, den){
+function kpiCalcZoneHtml(cfg){
+  cfg = cfg||{};
   if(kpiModalType==='manual'){
     return `<div class="kpi-filter-box"><div class="kfb-title">Saisie manuelle</div>
-      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">Tu saisiras les valeurs directement sur la carte de l'indicateur (valeur + date). L'historique est conservé et tracé en mini-courbe, avec la ligne d'objectif en pointillés.</div></div>`;
+      <div class="kfb-help">Tu saisiras valeur + date directement sur la carte. L'historique est conservé et tracé en courbe, avec la ligne d'objectif en pointillés.</div></div>`;
   }
-  const source = cfg.source||'actions';
-  const statuts = source==='projects' ? PROJ_STATUTS : ACTION_STATUTS;
-  const numHtml = `
-    <div class="field"><label>Source</label>
-      <select id="k-source" onchange="refreshKpiCalcZone()">
-        <option value="actions" ${source!=='projects'?'selected':''}>Actions (plans d'actions)</option>
-        <option value="projects" ${source==='projects'?'selected':''}>Projets (espaces projet)</option>
-      </select>
+  const source = kpiModalSource;
+  const num = cfg.num||{}, den = cfg.den||{};
+  const numFields = source==='projects' ? NUM_FIELDS_PROJECTS : (source==='a3' ? NUM_FIELDS_A3 : NUM_FIELDS_ACTIONS);
+  const customs = allCustomCols();
+  const head = `<div class="field-row">
+      <div class="field"><label>Source des données</label>
+        <select id="k-source" onchange="kpiModalSource=this.value;refreshKpiCalcZone()">
+          <option value="actions" ${source==='actions'?'selected':''}>Actions (plans d'actions et A3)</option>
+          <option value="projects" ${source==='projects'?'selected':''}>Projets (espaces projet)</option>
+          <option value="a3" ${source==='a3'?'selected':''}>Fiches A3 (résolution de problème)</option>
+        </select>
+      </div>
+      <div class="field"><label>Ventilation</label>
+        <select id="k-groupby" onchange="document.getElementById('k-groupchamp-wrap').classList.toggle('hidden', this.value!=='champ')">
+          ${Object.entries(GROUP_LABELS).map(([k2,v])=>`<option value="${k2}" ${(cfg.groupBy||'')===k2?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
     </div>
-    <div class="kpi-filter-box"><div class="kfb-title">${kpiModalType==='percent'?'Numérateur — éléments comptés':'Filtre — éléments comptés'}</div>
-      <div class="field"><label>Statuts (aucun coché = tous)</label>
-        <div class="kpi-chips" id="k-num-statuts">${statuts.map(s=>`<span class="chip ${(num.statuts||[]).includes(s)?'active':''}" data-s="${s}" onclick="this.classList.toggle('active')">${s}</span>`).join('')}</div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Responsable contient</label><input type="text" id="k-num-resp" value="${escAttr(num.responsable||'')}" placeholder="(optionnel)"></div>
-        <div class="field"><label style="margin-bottom:10px">Retards uniquement</label>
-          <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:12.5px;letter-spacing:0;color:var(--txt);font-weight:600;cursor:pointer">
-            <input type="checkbox" id="k-num-retard" style="width:15px;height:15px;accent-color:var(--primary)" ${num.retard?'checked':''}> Ne compter que les retards
-          </label>
-        </div>
-      </div>
+    <div class="field ${cfg.groupBy==='champ'?'':'hidden'}" id="k-groupchamp-wrap">
+      <label>Ventiler selon la colonne</label>
+      <select id="k-groupchamp">${customs.map(c=>`<option value="${c.key}" ${cfg.groupChamp===c.key?'selected':''}>${escapeHtml(c.label)}</option>`).join('')||'<option value="">(aucune colonne personnalisée)</option>'}</select>
     </div>`;
-  const denHtml = kpiModalType==='percent' ? `
-    <div class="kpi-filter-box"><div class="kfb-title">Dénominateur — le total de référence</div>
-      <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:12.5px;color:var(--txt);font-weight:600;cursor:pointer;margin-bottom:9px">
-        <input type="checkbox" id="k-den-custom" style="width:15px;height:15px;accent-color:var(--primary)" ${den.custom?'checked':''} onchange="document.getElementById('k-den-fields').classList.toggle('hidden', !this.checked)"> Restreindre le total (sinon : tous les éléments de la portée)
-      </label>
-      <div id="k-den-fields" class="${den.custom?'':'hidden'}">
-        <div class="field"><label>Statuts du total (aucun = tous)</label>
-          <div class="kpi-chips" id="k-den-statuts">${statuts.map(s=>`<span class="chip ${(den.statuts||[]).includes(s)?'active':''}" data-s="${s}" onclick="this.classList.toggle('active')">${s}</span>`).join('')}</div>
-        </div>
-        <div class="field"><label>Responsable contient</label><input type="text" id="k-den-resp" value="${escAttr(den.responsable||'')}" placeholder="(optionnel)"></div>
+  const aggHtml = kpiModalType==='aggregate' ? `<div class="field-row">
+      <div class="field"><label>Valeur mesurée</label>
+        <select id="k-champnum">${Object.entries(numFields).map(([k2,v])=>`<option value="${k2}" ${cfg.champNum===k2?'selected':''}>${v}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>Calcul</label>
+        <select id="k-agg">${Object.entries(AGG_LABELS).map(([k2,v])=>`<option value="${k2}" ${(cfg.agg||'moyenne')===k2?'selected':''}>${v}</option>`).join('')}</select>
       </div>
     </div>` : '';
-  return numHtml + denHtml;
+  const numTitle = kpiModalType==='count' ? 'Filtre — éléments comptés'
+    : (kpiModalType==='aggregate' ? 'Filtre — éléments mesurés' : 'Numérateur — éléments comptés');
+  const numBox = filterEditorHtml('num', num, source, numTitle,
+    kpiModalType==='aggregate' ? 'Astuce : pour un délai moyen de clôture, choisis « Clôturées » ci-dessous.' : '');
+  const denBox = (kpiModalType==='percent'||kpiModalType==='ratio') ? `
+    <label class="k-check" style="margin:4px 0 10px"><input type="checkbox" id="k-den-custom" ${den.custom?'checked':''} onchange="document.getElementById('k-den-box').classList.toggle('hidden', !this.checked)"> Restreindre le dénominateur <span class="lbl-soft">(sinon : tous les éléments du périmètre)</span></label>
+    <div id="k-den-box" class="${den.custom?'':'hidden'}">${filterEditorHtml('den', den, source, 'Dénominateur — total de référence', '')}</div>` : '';
+  return head + aggHtml + numBox + denBox;
 }
 function pickKpiType(el){
   kpiModalType = el.dataset.t;
-  document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.k-types .type-opt').forEach(o=>o.classList.remove('sel'));
   el.classList.add('sel');
-  refreshKpiCalcZone();
+  refreshKpiCalcZone(true);
 }
-function refreshKpiCalcZone(){
-  const srcSel = document.getElementById('k-source');
-  const cfg = {source: srcSel ? srcSel.value : 'actions'};
-  document.getElementById('k-calc-zone').innerHTML = kpiCalcZoneHtml(cfg, {}, {});
+function refreshKpiCalcZone(keep){
+  const cfg = keep ? {source:kpiModalSource, num:readFilter('num'), den:readFilter('den'),
+    groupBy:(document.getElementById('k-groupby')||{value:''}).value,
+    groupChamp:(document.getElementById('k-groupchamp')||{value:''}).value,
+    champNum:(document.getElementById('k-champnum')||{value:''}).value,
+    agg:(document.getElementById('k-agg')||{value:'moyenne'}).value} : {source:kpiModalSource};
+  document.getElementById('k-calc-zone').innerHTML = kpiCalcZoneHtml(cfg);
 }
 function pickKpiColor(el){
   document.querySelectorAll('#k-colors .color-dot').forEach(d=>d.classList.remove('sel'));
   el.classList.add('sel');
-}
-function readChips(containerId){
-  const el = document.getElementById(containerId);
-  if(!el) return [];
-  return [...el.querySelectorAll('.chip.active')].map(c=>c.dataset.s);
 }
 async function saveKpi(existingId){
   const nom = document.getElementById('k-nom').value.trim();
@@ -1983,20 +2529,18 @@ async function saveKpi(existingId){
     config: {},
   };
   if(kpiModalType!=='manual'){
-    data.config.source = (document.getElementById('k-source')||{value:'actions'}).value;
-    data.config.num = {
-      statuts: readChips('k-num-statuts'),
-      responsable: (document.getElementById('k-num-resp')||{value:''}).value.trim(),
-      retard: !!(document.getElementById('k-num-retard')||{}).checked,
-    };
-    if(kpiModalType==='percent'){
+    const c = data.config;
+    c.source = (document.getElementById('k-source')||{value:'actions'}).value;
+    c.num = readFilter('num');
+    c.groupBy = (document.getElementById('k-groupby')||{value:''}).value;
+    if(c.groupBy==='champ') c.groupChamp = (document.getElementById('k-groupchamp')||{value:''}).value;
+    if(kpiModalType==='aggregate'){
+      c.champNum = (document.getElementById('k-champnum')||{value:'duree_cloture'}).value;
+      c.agg = (document.getElementById('k-agg')||{value:'moyenne'}).value;
+    }
+    if(kpiModalType==='percent'||kpiModalType==='ratio'){
       const custom = !!(document.getElementById('k-den-custom')||{}).checked;
-      data.config.den = custom ? {
-        custom:true,
-        statuts: readChips('k-den-statuts'),
-        responsable: (document.getElementById('k-den-resp')||{value:''}).value.trim(),
-      } : {custom:false};
-      if(!data.unite) data.unite = '%';
+      c.den = custom ? {custom:true, ...readFilter('den')} : {custom:false};
     }
   }
   if(existingId){
@@ -2009,6 +2553,46 @@ async function saveKpi(existingId){
   closeModal();
   renderMain();
   showToast('Indicateur enregistré');
+}
+
+/* ============================================================
+   SAUVEGARDE / RESTAURATION COMPLÈTE (JSON)
+   ============================================================ */
+function exportBackup(){
+  const dump = {app:'plan-action-onet-revima', version:5, date:new Date().toISOString(), data:{}};
+  TABLES.forEach(t=>{ dump.data[t] = state[t]; });
+  const blob = new Blob([JSON.stringify(dump,null,1)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sauvegarde-plan-action-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Sauvegarde complète téléchargée');
+}
+function importBackupPrompt(){ document.getElementById('backup-file').click(); }
+function importBackupFile(ev){
+  const file = ev.target.files && ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    try{
+      const dump = JSON.parse(reader.result);
+      if(!dump.data) throw new Error('fichier non reconnu');
+      let n = 0;
+      for(const t of TABLES){
+        for(const row of (dump.data[t]||[])){
+          if(state[t].some(x=>x.id===row.id)) continue;
+          await dbInsert(t, {...row});
+          n++;
+        }
+      }
+      await logActivity('a restauré une sauvegarde', '', n+' élément(s)', null);
+      renderMain();
+      showToast(n?('Restauration : '+n+' élément(s) ajouté(s)'):'Aucun élément nouveau à restaurer');
+    }catch(e){ showToast('Fichier illisible : '+(e.message||e)); }
+    ev.target.value = '';
+  };
+  reader.readAsText(file);
 }
 
 /* ============================================================
@@ -2029,6 +2613,7 @@ async function deleteBoard(ev, id){
     const kpiIds = state.kpis.filter(k=>k.board_id===id).map(k=>k.id);
     state.kpi_values = state.kpi_values.filter(v=>!kpiIds.includes(v.kpi_id));
     state.kpis = state.kpis.filter(k=>k.board_id!==id);
+    state.a3 = state.a3.filter(x=>x.board_id!==id);
   }
   await dbDelete('boards', id); // côté Supabase : les clés étrangères cascadent
   await logActivity('a supprimé le plan', '« '+b.nom+' »', '', null);
@@ -2099,23 +2684,29 @@ function openActionDrawer(id){
   const b = currentBoard();
   let a = id ? state.actions.find(x=>x.id===id) : null;
   const isNew = !a;
-  if(isNew) a = {id:null, board_id:b.id, titre:'', responsable:ui.userName, echeance:fmtDate(addDays(new Date(),7)), statut:'À faire', priorite:'Moyenne', avancement:0, notes:'', extra:{}};
+  if(isNew) a = {id:null, board_id:b.id, probleme:'', date_ouverture:fmtDate(new Date()), titre:'', responsable:ui.userName, echeance:fmtDate(addDays(new Date(),7)), date_cloture:null, statut:'À faire', priorite:'Moyenne', avancement:0, notes:'', extra:{}};
   ui.drawer = {kind:'action', id:a.id, tab:'infos'};
   const col = ACTION_COLORS[a.statut]||ACTION_COLORS['À faire'];
   document.getElementById('drawer-tab').style.background = col.main;
   document.getElementById('drawer-title').childNodes[0].textContent = isNew ? 'Nouvelle action' : truncate(a.titre,44);
-  document.getElementById('drawer-code').textContent = actionLate(a)?'⚠ EN RETARD':'';
+  document.getElementById('drawer-code').textContent = (actionLate(a)?'⚠ EN RETARD':'') + ((a.nb_reports||0)?('   ↻ '+a.nb_reports+' report(s) — initiale '+fmtFR(a.echeance_initiale)):'');
   document.getElementById('drawer-tabs').innerHTML = '';
   const customCols = boardCols(b).filter(c=>!c.sys);
   document.getElementById('drawer-body').innerHTML = `
-    <div class="field"><label>Action</label><textarea id="a-titre" style="min-height:56px">${escapeHtml(a.titre)}</textarea></div>
+    <div class="field"><label>Problème constaté</label><textarea id="a-probleme" style="min-height:50px" placeholder="Le constat, l'écart, la non-conformité…">${escapeHtml(a.probleme||'')}</textarea></div>
+    <div class="field"><label>Action corrective</label><textarea id="a-titre" style="min-height:56px" placeholder="Ce qu'on met en place pour y répondre">${escapeHtml(a.titre)}</textarea></div>
+    <div class="field"><label>Responsable</label><input type="text" id="a-resp" value="${escAttr(a.responsable||'')}"></div>
     <div class="field-row">
-      <div class="field"><label>Responsable</label><input type="text" id="a-resp" value="${escAttr(a.responsable||'')}"></div>
+      <div class="field"><label>Ouverture</label><input type="date" id="a-ouverture" value="${a.date_ouverture || (a.created_at?a.created_at.slice(0,10):fmtDate(new Date()))}"></div>
       <div class="field"><label>Échéance</label><input type="date" id="a-echeance" value="${a.echeance||''}"></div>
     </div>
     <div class="field-row">
-      <div class="field"><label>Statut</label><select id="a-statut">${ACTION_STATUTS.map(s=>`<option ${s===a.statut?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="field"><label>Statut</label><select id="a-statut" onchange="onStatutChange(this.value)">${ACTION_STATUTS.map(s=>`<option ${s===a.statut?'selected':''}>${s}</option>`).join('')}</select></div>
       <div class="field"><label>Priorité</label><select id="a-prio">${Object.keys(PRIOS).map(p=>`<option ${p===a.priorite?'selected':''}>${p}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>Date de clôture réelle ${a.date_cloture&&a.echeance?(clotureeDansLesTemps(a)?'<span style="color:var(--green);text-transform:none;letter-spacing:0"> · dans les temps ✓</span>':'<span style="color:var(--red);text-transform:none;letter-spacing:0"> · hors délai</span>'):''}</label>
+      <input type="date" id="a-cloture" value="${a.date_cloture||''}">
+      <div style="font-size:10.5px;color:var(--muted-2);margin-top:5px">Renseignée automatiquement au passage en « Fait ». Sert au calcul du délai moyen de clôture.</div>
     </div>
     <div class="field"><label>Avancement</label>
       <div class="progress-slider">
@@ -2132,13 +2723,25 @@ function openActionDrawer(id){
   document.getElementById('drawer-overlay').classList.add('show');
   document.getElementById('drawer').classList.add('show');
 }
+function onStatutChange(v){
+  const cl = document.getElementById('a-cloture');
+  const av = document.getElementById('a-avancement');
+  if(!cl) return;
+  if(v==='Fait'){
+    if(!cl.value) cl.value = fmtDate(new Date());
+    if(av){ av.value = 100; document.getElementById('a-av-val').textContent = '100%'; }
+  } else cl.value = '';
+}
 async function saveActionDrawer(){
   const b = currentBoard();
   const extra = {};
   document.querySelectorAll('#drawer-body [data-extra]').forEach(el=>{ extra[el.dataset.extra] = el.value.trim(); });
   const data = {
     board_id: b.id,
+    probleme: document.getElementById('a-probleme').value.trim(),
     titre: document.getElementById('a-titre').value.trim() || 'Sans titre',
+    date_ouverture: document.getElementById('a-ouverture').value || null,
+    date_cloture: document.getElementById('a-cloture').value || null,
     responsable: document.getElementById('a-resp').value.trim(),
     echeance: document.getElementById('a-echeance').value || null,
     statut: document.getElementById('a-statut').value,
@@ -2147,14 +2750,30 @@ async function saveActionDrawer(){
     notes: document.getElementById('a-notes').value,
     extra,
   };
-  if(data.statut==='Fait' && data.avancement<100) data.avancement=100;
+  if(data.statut==='Fait'){
+    if(data.avancement<100) data.avancement=100;
+    if(!data.date_cloture) data.date_cloture = fmtDate(new Date());
+  } else if(data.date_cloture) data.date_cloture = null;
   if(ui.drawer.id){
     const old = state.actions.find(x=>x.id===ui.drawer.id);
-    const details = old && old.statut!==data.statut ? old.statut+' → '+data.statut : 'avancement '+data.avancement+'%';
+    let repousse = false;
+    if(old && old.echeance && data.echeance && data.echeance !== old.echeance){
+      /* l'échéance bouge : on trace le report automatiquement */
+      data.echeance_initiale = old.echeance_initiale || old.echeance;
+      if(dateFromStr(data.echeance) > dateFromStr(old.echeance)){
+        data.nb_reports = (old.nb_reports||0) + 1;
+        repousse = true;
+      }
+    }
+    const details = repousse ? ('échéance repoussée '+fmtFR(old.echeance)+' → '+fmtFR(data.echeance)+' (report n°'+data.nb_reports+')')
+      : (old && old.statut!==data.statut ? old.statut+' → '+data.statut : 'avancement '+data.avancement+'%');
     await dbUpdate('actions', ui.drawer.id, data);
-    await logActivity('a modifié', '« '+data.titre+' »', details);
+    await logActivity(repousse?'a repoussé l\u2019échéance de':'a modifié', '« '+data.titre+' »', details);
+    if(repousse) showToast('Report tracé : '+data.nb_reports+' report(s) sur cette action');
   } else {
     data.ordre = state.actions.filter(x=>x.board_id===b.id).length + 1;
+    data.echeance_initiale = data.echeance;
+    data.nb_reports = 0;
     await dbInsert('actions', data);
     await logActivity('a créé l\u2019action', '« '+data.titre+' »', 'échéance '+fmtFR(data.echeance));
   }
@@ -2204,7 +2823,7 @@ function renderProjectDrawer(){
         <div class="field"><label>Responsable</label><input type="text" id="f-resp" value="${escAttr(p.responsable||'')}"></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Statut</label><select id="f-statut">${PROJ_STATUTS.map(s=>`<option ${s===p.statut?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="field"><label>Statut</label><select id="f-statut" onchange="onProjStatutChange(this.value)">${PROJ_STATUTS.map(s=>`<option ${s===p.statut?'selected':''}>${s}</option>`).join('')}</select></div>
         <div class="field"><label>Priorité</label><select id="f-prio">${Object.keys(PRIOS).map(pr=>`<option ${pr===p.priorite?'selected':''}>${pr}</option>`).join('')}</select></div>
       </div>
       <div class="field"><label>Santé (météo projet)</label>
@@ -2214,9 +2833,12 @@ function renderProjectDrawer(){
       </div>
       <div class="field-row">
         <div class="field"><label>Date début</label><input type="date" id="f-debut" value="${p.date_debut||''}"></div>
-        <div class="field"><label>Date fin</label><input type="date" id="f-fin" value="${p.date_fin||''}"></div>
+        <div class="field"><label>Engagement (objectif)</label><input type="date" id="f-engagement" value="${p.engagement_date||''}"></div>
       </div>
-      <div class="field"><label>Date d'engagement</label><input type="date" id="f-engagement" value="${p.engagement_date||''}"></div>
+      <div class="field"><label>Date de fin réelle ${p.date_fin?(projDansLesTemps(p)?'<span style="color:var(--green);text-transform:none;letter-spacing:0"> · tenu ✓</span>':'<span style="color:var(--red);text-transform:none;letter-spacing:0"> · +'+projDepassementJours(p)+' j</span>'):''}</label>
+        <input type="date" id="f-fin" value="${p.date_fin||''}">
+        <div style="font-size:10.5px;color:var(--muted-2);margin-top:5px">À laisser vide tant que le projet tourne : la barre du Gantt s'allonge alors toute seule jusqu'à aujourd'hui dès que l'engagement est dépassé.${projLate(p)?' <b style="color:var(--red)">Actuellement '+projDepassementJours(p)+' j au-delà de l\u2019engagement.</b>':''}</div>
+      </div>
       <div class="field"><label>Avancement</label>
         <div class="progress-slider">
           <input type="range" min="0" max="100" step="5" id="f-avancement" value="${p.avancement||0}" oninput="document.getElementById('f-av-val').textContent=this.value+'%'">
@@ -2276,6 +2898,14 @@ function addTaskRow(){
   if(emptyMsg && !emptyMsg.classList.contains('task-item')) emptyMsg.remove();
   list.appendChild(div.firstElementChild);
 }
+function onProjStatutChange(v){
+  const fin = document.getElementById('f-fin'), av = document.getElementById('f-avancement');
+  if(!fin) return;
+  if(v==='Terminé'){
+    if(!fin.value) fin.value = fmtDate(new Date());
+    if(av){ av.value = 100; document.getElementById('f-av-val').textContent = '100%'; }
+  } else fin.value = '';
+}
 async function saveProjectDrawer(){
   const p = state.projects.find(x=>x.id===ui.drawer.id);
   if(!p) return;
@@ -2289,11 +2919,14 @@ async function saveProjectDrawer(){
     priorite: document.getElementById('f-prio').value,
     sante: sel?sel.dataset.h:'vert',
     date_debut: document.getElementById('f-debut').value,
-    date_fin: document.getElementById('f-fin').value,
+    date_fin: document.getElementById('f-fin').value || null,
     engagement_date: document.getElementById('f-engagement').value||null,
     avancement: parseInt(document.getElementById('f-avancement').value,10),
     notes: document.getElementById('f-notes').value,
   };
+  if(patch.date_fin && patch.statut!=='Terminé'){ patch.statut='Terminé'; patch.avancement=100; }
+  if(patch.statut==='Terminé' && !patch.date_fin) patch.date_fin = fmtDate(new Date());
+  if(patch.statut!=='Terminé') patch.date_fin = null;
   await dbUpdate('projects', p.id, patch);
   const existingIds = new Set(state.tasks.filter(t=>t.project_id===p.id).map(t=>t.id));
   const domTasks = [...document.querySelectorAll('#tasks-list .task-item')];
@@ -2353,14 +2986,18 @@ function openBoardModal(type){
   document.getElementById('modal-content').innerHTML = `
     <div class="modal-head">Nouveau plan</div>
     <div class="modal-body">
-      <div class="type-choice">
+      <div class="type-choice" style="grid-template-columns:1fr 1fr 1fr">
         <div class="type-opt ${modalBoardType==='actions'?'sel':''}" onclick="pickBoardType('actions',this)">
           <div class="to-icon">☑</div><div class="to-name">Plan d'actions</div>
-          <div class="to-desc">Liste d'actions avec responsables, échéances, retards automatiques. Colonnes personnalisables. Vue liste + tableau kanban.</div>
+          <div class="to-desc">Actions, responsables, échéances, retards et reports automatiques. Colonnes personnalisables.</div>
         </div>
         <div class="type-opt ${modalBoardType==='projet'?'sel':''}" onclick="pickBoardType('projet',this)">
           <div class="to-icon">📅</div><div class="to-name">Espace projet</div>
-          <div class="to-desc">Pilotage complet : Gantt interactif avec jalons et dépendances, kanban, dashboard de direction.</div>
+          <div class="to-desc">Gantt vivant avec engagement client et dérive automatique, kanban, dashboard.</div>
+        </div>
+        <div class="type-opt ${modalBoardType==='resolution'?'sel':''}" onclick="pickBoardType('resolution',this)">
+          <div class="to-icon">🔍</div><div class="to-name">Résolution de problème</div>
+          <div class="to-desc">Fiches A3 : QQOQCCP, Ishikawa 6M, 5 Pourquoi, plan d'actions, synthèse et RETEX.</div>
         </div>
       </div>
       <div class="field"><label>Nom du plan</label><input type="text" id="m-b-nom" placeholder="ex : Plan d'actions Audit ISO 9001"></div>
@@ -2390,7 +3027,7 @@ async function submitBoard(){
   const couleur = document.querySelector('#m-b-colors .color-dot.sel').dataset.c;
   const config = modalBoardType==='actions' ? {cols: DEFAULT_COLS.map(c=>({...c, visible:true}))} : {};
   const b = await dbInsert('boards', {nom, type:modalBoardType, couleur, config});
-  await logActivity('a créé le plan', '« '+nom+' »', modalBoardType==='actions'?'plan d\u2019actions':'espace projet', b.id);
+  await logActivity('a créé le plan', '« '+nom+' »', modalBoardType==='actions'?'plan d\u2019actions':(modalBoardType==='resolution'?'espace A3':'espace projet'), b.id);
   closeModal();
   openBoard(b.id);
   showToast('Plan créé');
@@ -2408,7 +3045,7 @@ function openProjectModal(){
       </div>
       <div class="field-row">
         <div class="field"><label>Date début</label><input type="date" id="m-p-debut" value="${today}"></div>
-        <div class="field"><label>Date fin</label><input type="date" id="m-p-fin" value="${fmtDate(addDays(new Date(),21))}"></div>
+        <div class="field"><label>Engagement (objectif)</label><input type="date" id="m-p-fin" value="${fmtDate(addDays(new Date(),21))}"></div>
       </div>
     </div>
     <div class="modal-foot">
@@ -2428,8 +3065,9 @@ async function submitProject(){
     responsable: document.getElementById('m-p-resp').value.trim(),
     statut:'Planifié', priorite:'Moyenne', sante:'vert',
     date_debut: document.getElementById('m-p-debut').value,
-    date_fin: document.getElementById('m-p-fin').value,
-    engagement_date:null, avancement:0, notes:'',
+    date_fin: null,
+    engagement_date: document.getElementById('m-p-fin').value,
+    avancement:0, notes:'',
   };
   const ins = await dbInsert('projects', row);
   await logActivity('a créé', '« '+nom+' »', '');
@@ -2456,9 +3094,10 @@ function exportCSV(){
   const lines=[];
   const b = currentBoard();
   if(b && b.type==='actions'){
-    lines.push(['N°','Action','Responsable','Échéance','Statut','Priorité','Avancement %','Retard','Commentaire'].join(sep));
+    lines.push(['N°','Problème','Action','Responsable','Ouverture','Échéance initiale','Échéance','Reports','Clôture','Délai clôture (j)','Dans les temps','Statut','Priorité','Avancement %','Retard','Commentaire','Date création'].join(sep));
     state.actions.filter(a=>a.board_id===b.id).sort((x,y)=>(x.ordre||0)-(y.ordre||0)).forEach((a,i)=>{
-      lines.push([i+1, a.titre||'', a.responsable||'', a.echeance||'', a.statut||'', a.priorite||'', a.avancement||0, actionLate(a)?'OUI':'', (a.notes||'').replace(/[\r\n]+/g,' ')]
+      const dt = dureeClotureJours(a), ok = clotureeDansLesTemps(a);
+      lines.push([i+1, (a.probleme||'').replace(/[\r\n]+/g,' '), a.titre||'', a.responsable||'', a.date_ouverture||(a.created_at||'').slice(0,10), a.echeance_initiale||'', a.echeance||'', a.nb_reports||0, a.date_cloture||'', dt==null?'':dt, ok==null?'':(ok?'OUI':'NON'), a.statut||'', a.priorite||'', a.avancement||0, actionLate(a)?'OUI':'', (a.notes||'').replace(/[\r\n]+/g,' '), (a.created_at||'').slice(0,10)]
         .map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(sep));
     });
   } else if(b && b.type==='projet'){
@@ -2505,6 +3144,501 @@ function showToast(msg){
   showToast._tm = setTimeout(()=>t.classList.remove('show'), 2600);
 }
 window.addEventListener('resize', ()=>{ if(route.view==='board') requestAnimationFrame(drawDependencies); });
+</script>
+
+<script>
+/* ============================================================
+   MODULE RÉSOLUTION DE PROBLÈME — fiche A3
+   QQOQCCP (avec EST / N'EST PAS) · Ishikawa 6M · 5 Pourquoi
+   (occurrence + non-détection) · Plan d'actions · Synthèse
+   ============================================================ */
+const A3_STATUTS = ['Ouvert','Analyse en cours','Actions en cours','Efficacité à vérifier','Clôturé'];
+const A3_COLORS = {
+  'Ouvert':                {main:'#e34935', soft:'#ffedeb'},
+  'Analyse en cours':      {main:'#e77b1e', soft:'#fdf0e3'},
+  'Actions en cours':      {main:'#0c66e4', soft:'#e9f2ff'},
+  'Efficacité à vérifier': {main:'#6554c0', soft:'#f0edff'},
+  'Clôturé':               {main:'#22a06b', soft:'#e7f7ef'},
+};
+const QQOQCCP = [
+  {k:'quoi',    l:'QUOI',    q:'Quel est le problème constaté ?'},
+  {k:'qui',     l:'QUI',     q:'Qui est concerné, qui a détecté ?'},
+  {k:'ou',      l:'OÙ',      q:'À quel endroit, quel poste, quel flux ?'},
+  {k:'quand',   l:'QUAND',   q:'Date, heure, fréquence, depuis quand ?'},
+  {k:'comment', l:'COMMENT', q:'Dans quelles circonstances, comment détecté ?'},
+  {k:'combien', l:'COMBIEN', q:'Quantités, coût, temps perdu, gravité'},
+  {k:'pourquoi',l:'POURQUOI',q:'Pourquoi est-ce un problème ? (enjeu client)'},
+];
+const M6 = [
+  {k:'mo',  l:'Main-d\u2019œuvre', ex:'compétence, habilitation, effectif, vigilance'},
+  {k:'mat', l:'Matière',           ex:'pièce, emballage, consommable, fournisseur'},
+  {k:'mate',l:'Matériel',          ex:'chariot, outil, informatique, moyen de levage'},
+  {k:'meth',l:'Méthode',           ex:'standard, procédure, contrôle, séquence'},
+  {k:'mil', l:'Milieu',            ex:'zone, météo, éclairage, flux, coactivité'},
+  {k:'mes', l:'Mesure',            ex:'indicateur, traçabilité, relevé, alerte'},
+];
+const CAUSE_AXES = {occurrence:'Occurrence', detection:'Non-détection'};
+const A3_CAT = ['Immédiate (curative)','Corrective','Préventive / transversale'];
+
+function a3Default(){
+  return {
+    qqoqccp:{}, estnestpas:{est:'', nestpas:''},
+    causes:[],                       /* {id, m, axe, texte, retenue} */
+    cinq:{occurrence:['','','','',''], detection:['','','','','']},
+    racines:{occurrence:'', detection:''},
+    synthese:{initial:'', vise:'', gains:'', standard:'', retex:'', efficacite:'', date_efficacite:''},
+  };
+}
+function a3Content(a){
+  const base = a3Default();
+  const c = a.contenu || {};
+  return {
+    ...base, ...c,
+    qqoqccp: {...base.qqoqccp, ...(c.qqoqccp||{})},
+    estnestpas: {...base.estnestpas, ...(c.estnestpas||{})},
+    cinq: {occurrence:(c.cinq&&c.cinq.occurrence)||base.cinq.occurrence, detection:(c.cinq&&c.cinq.detection)||base.cinq.detection},
+    racines: {...base.racines, ...(c.racines||{})},
+    synthese: {...base.synthese, ...(c.synthese||{})},
+    causes: c.causes || [],
+  };
+}
+function a3Actions(id){ return state.actions.filter(a=>a.a3_id===id); }
+function a3Progress(a){
+  const acts = a3Actions(a.id);
+  if(!acts.length) return 0;
+  return Math.round(acts.filter(x=>x.statut==='Fait').length / acts.length * 100);
+}
+function a3DureeJours(a){
+  if(!a.date_cloture || !a.date_ouverture) return null;
+  const d = Math.round((dateFromStr(a.date_cloture)-dateFromStr(a.date_ouverture))/86400000);
+  return d>=0 ? d : null;
+}
+function a3AgeJours(a){
+  if(!a.date_ouverture) return null;
+  const ref = a.date_cloture ? dateFromStr(a.date_cloture) : todayMid();
+  return Math.max(0, Math.round((ref-dateFromStr(a.date_ouverture))/86400000));
+}
+
+/* ============ LISTE DES A3 D'UN ESPACE ============ */
+function renderA3Board(main, b){
+  const q = searchQ();
+  const items = state.a3.filter(x=>x.board_id===b.id && (!q || ((x.titre||'')+' '+(x.ref||'')+' '+(x.pilote||'')).toLowerCase().includes(q)))
+    .filter(x=> !ui.filterStatuts.size || ui.filterStatuts.has(x.statut))
+    .filter(x=> !ui.filterResp.size || ui.filterResp.has(x.pilote))
+    .sort((a,c)=> (c.date_ouverture||'').localeCompare(a.date_ouverture||''));
+  const all = state.a3.filter(x=>x.board_id===b.id);
+  const pilotes = [...new Set(all.map(x=>x.pilote).filter(Boolean))].sort();
+  const ouverts = all.filter(x=>x.statut!=='Clôturé');
+  const durees = all.map(a3DureeJours).filter(v=>v!=null);
+
+  const toolbar = `<div class="board-toolbar">
+    <div class="seg"><button class="active">☰ Fiches A3</button></div>
+    <div class="filters-row">
+      ${A3_STATUTS.map(st=>`<span class="chip ${ui.filterStatuts.has(st)?'active':''}" onclick="toggleFilterStatut('${st}')">${st}</span>`).join('')}
+      ${pilotes.length?'<span style="color:var(--line);margin:0 2px">|</span>':''}
+      ${pilotes.map(r=>`<span class="chip ${ui.filterResp.has(r)?'active':''}" onclick="toggleFilterResp('${escAttr(r)}')">${escapeHtml(r)}</span>`).join('')}
+    </div>
+    <div class="toolbar-spacer"></div>
+    <button class="btn primary small" id="btn-new-item" onclick="openA3Modal()">＋ Nouvelle fiche A3</button>
+  </div>`;
+
+  const summary = `<div class="pa-summary">
+    <div class="pa-sum-item"><span class="n">${all.length}</span><span class="l">fiches</span></div>
+    <div class="pa-sum-item late"><span class="n">${ouverts.length}</span><span class="l">non clôturées</span></div>
+    <div class="pa-sum-item done"><span class="n">${all.length-ouverts.length}</span><span class="l">clôturées</span></div>
+    <div class="pa-sum-item"><span class="n">${durees.length?Math.round(durees.reduce((x,y)=>x+y,0)/durees.length):'—'}</span><span class="l">jours de résolution (moy.)</span></div>
+  </div>`;
+
+  const rows = items.map(a=>{
+    const col = A3_COLORS[a.statut]||A3_COLORS['Ouvert'];
+    const acts = a3Actions(a.id);
+    const prog = a3Progress(a);
+    const age = a3AgeJours(a);
+    return `<tr onclick="openA3('${a.id}')">
+      <td class="pa-num">${escapeHtml(a.ref||'')}</td>
+      <td class="pa-title">${escapeHtml(a.titre)}</td>
+      <td><span class="pa-resp"><span class="av">${initials(a.pilote||'?')}</span>${escapeHtml(a.pilote||'—')}</span></td>
+      <td><span class="status-pill" style="background:${col.soft};color:${col.main}"><span class="d" style="background:${col.main}"></span>${a.statut}</span></td>
+      <td><span class="pa-date">${a.date_ouverture?fmtFR(a.date_ouverture):'—'}</span></td>
+      <td><span class="pa-date">${a.date_cloture?fmtFR(a.date_cloture):'<span style="color:var(--muted-2)">en cours</span>'}</span></td>
+      <td><span class="pa-date ${(!a.date_cloture&&age>60)?'past':''}">${age==null?'—':age+' j'}</span></td>
+      <td><span class="pa-prog"><span class="pa-prog-track"><span class="pa-prog-fill" style="display:block;width:${prog}%;background:${col.main}"></span></span><span class="pa-prog-val">${acts.length?prog+'%':'—'}</span></span></td>
+      <td style="color:var(--muted);font-family:var(--mono);font-size:11px">${acts.length} act.</td>
+    </tr>`;
+  }).join('');
+
+  main.innerHTML = `<div style="display:flex;flex-direction:column;height:100%">${toolbar}
+    <div class="pa-wrap">${summary}
+      <div class="pa-table-card"><table class="pa-table">
+        <thead><tr><th>Réf.</th><th>Problème</th><th>Pilote</th><th>Statut</th><th>Ouverture</th><th>Clôture</th><th>Âge</th><th>Actions soldées</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      ${items.length?'':'<div class="pa-empty">Aucune fiche. Ouvre-en une dès qu\\u2019un problème mérite une analyse structurée.</div>'}
+      <div class="pa-add-row" onclick="openA3Modal()">＋ Nouvelle fiche A3</div>
+      </div>
+    </div></div>`;
+}
+function openA3Modal(){
+  const b = currentBoard();
+  const n = state.a3.filter(x=>x.board_id===b.id).length + 1;
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Nouvelle fiche A3</div>
+    <div class="modal-body">
+      <div class="field"><label>Problème (titre court)</label><input type="text" id="m-a3-titre" placeholder="ex : Colis tombé au sol lors d'un transfert chariot"></div>
+      <div class="field-row">
+        <div class="field"><label>Référence</label><input type="text" id="m-a3-ref" value="A3-${String(n).padStart(3,'0')}"></div>
+        <div class="field"><label>Pilote</label><input type="text" id="m-a3-pilote" value="${escAttr(ui.userName)}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Date d'ouverture</label><input type="date" id="m-a3-date" value="${fmtDate(new Date())}"></div>
+        <div class="field"><label>Secteur / activité</label><input type="text" id="m-a3-secteur" placeholder="ex : Emballage M53"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="submitA3()">Créer et ouvrir</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+  setTimeout(()=>document.getElementById('m-a3-titre').focus(),50);
+}
+async function submitA3(){
+  const b = currentBoard();
+  const titre = document.getElementById('m-a3-titre').value.trim();
+  if(!titre){ showToast('Décris le problème en une ligne'); return; }
+  const row = {
+    board_id:b.id, titre,
+    ref: document.getElementById('m-a3-ref').value.trim(),
+    pilote: document.getElementById('m-a3-pilote').value.trim(),
+    equipe:'', secteur: document.getElementById('m-a3-secteur').value.trim(),
+    statut:'Ouvert', gravite:'Moyenne',
+    date_ouverture: document.getElementById('m-a3-date').value,
+    date_cloture:null, contenu:a3Default(),
+  };
+  const ins = await dbInsert('a3', row);
+  await logActivity('a ouvert la fiche A3', '« '+titre+' »', row.ref, b.id);
+  closeModal();
+  openA3(ins.id);
+  showToast('Fiche A3 créée');
+}
+function openA3(id){ setRoute({view:'a3', a3Id:id}); }
+
+/* ============ FICHE A3 ============ */
+function ishikawaSVG(c){
+  const W=880, H=330, spineY=H/2, headX=W-118;
+  const up=[M6[0],M6[1],M6[2]], down=[M6[3],M6[4],M6[5]];
+  let svg = `<svg viewBox="0 0 ${W} ${H}" class="fish" xmlns="http://www.w3.org/2000/svg">
+    <defs><marker id="fishArrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#172b4d"/></marker></defs>
+    <line x1="30" y1="${spineY}" x2="${headX-6}" y2="${spineY}" stroke="#172b4d" stroke-width="2.5" marker-end="url(#fishArrow)"/>
+    <rect x="${headX}" y="${spineY-32}" width="112" height="64" rx="8" fill="#ffedeb" stroke="#e34935" stroke-width="1.5"/>
+    <text x="${headX+56}" y="${spineY-8}" text-anchor="middle" font-family="Inter" font-size="10" font-weight="800" fill="#e34935">EFFET</text>
+    <text x="${headX+56}" y="${spineY+8}" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#8a2a1d">Problème</text>
+    <text x="${headX+56}" y="${spineY+20}" text-anchor="middle" font-family="Inter" font-size="8.5" fill="#8a2a1d">constaté</text>`;
+  const drawBranch=(m, i, isUp)=>{
+    const x0 = 110 + i*205;
+    const y0 = spineY, y1 = isUp ? 44 : H-44;
+    const x1 = x0 + (isUp ? 78 : -78) * (isUp?1:-1) * (isUp?1:1);
+    const bx = x0 + (isUp ? 74 : 74);
+    let g = `<line x1="${x0}" y1="${y0}" x2="${bx}" y2="${y1}" stroke="#5e6c84" stroke-width="1.6"/>
+      <rect x="${bx-46}" y="${isUp?y1-19:y1-1}" width="96" height="19" rx="5" fill="#eef2f8" stroke="#dfe3e8"/>
+      <text x="${bx+2}" y="${isUp?y1-6:y1+12}" text-anchor="middle" font-family="Inter" font-size="9" font-weight="800" fill="#172b4d">${m.l.toUpperCase()}</text>`;
+    const list = (c.causes||[]).filter(z=>z.m===m.k);
+    list.slice(0,4).forEach((z,j)=>{
+      const t = 0.22 + j*0.19;
+      const px = x0 + (bx-x0)*t, py = y0 + (y1-y0)*t;
+      const dir = isUp ? -1 : 1;
+      g += `<line x1="${px}" y1="${py}" x2="${px+38}" y2="${py+dir*11}" stroke="${z.retenue?'#e34935':'#97a0af'}" stroke-width="${z.retenue?1.8:1.1}"/>
+        <text x="${px+42}" y="${py+dir*11+3}" font-family="Inter" font-size="8.2" fill="${z.retenue?'#e34935':'#5e6c84'}" font-weight="${z.retenue?700:500}">${escapeHtml(truncate(z.texte,26))}</text>`;
+    });
+    return g;
+  };
+  up.forEach((m,i)=>{ svg += drawBranch(m,i,true); });
+  down.forEach((m,i)=>{ svg += drawBranch(m,i,false); });
+  svg += `</svg>`;
+  return svg;
+}
+function renderA3(main){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  if(!a){ goHome(); return; }
+  const c = a3Content(a);
+  const col = A3_COLORS[a.statut]||A3_COLORS['Ouvert'];
+  const acts = a3Actions(a.id);
+  const age = a3AgeJours(a);
+  const retenues = (c.causes||[]).filter(z=>z.retenue);
+
+  main.innerHTML = `<div class="a3-wrap" id="a3-sheet">
+    <div class="a3-head" style="border-left-color:${col.main}">
+      <div class="a3-head-main">
+        <div class="a3-ref">${escapeHtml(a.ref||'')} ${a.secteur?'· '+escapeHtml(a.secteur):''}</div>
+        <input class="a3-titre" id="a3-titre" value="${escAttr(a.titre)}" onchange="saveA3Field('titre',this.value)">
+        <div class="a3-meta">
+          <span>Pilote <input class="a3-inline" id="a3-pilote" value="${escAttr(a.pilote||'')}" onchange="saveA3Field('pilote',this.value)"></span>
+          <span>Équipe <input class="a3-inline wide" value="${escAttr(a.equipe||'')}" onchange="saveA3Field('equipe',this.value)" placeholder="participants"></span>
+          <span>Ouvert le <input type="date" class="a3-inline" value="${a.date_ouverture||''}" onchange="saveA3Field('date_ouverture',this.value)"></span>
+          <span>Clôturé le <input type="date" class="a3-inline" value="${a.date_cloture||''}" onchange="saveA3Field('date_cloture',this.value)"></span>
+          <span class="a3-age">${age==null?'':age+' jours'}</span>
+        </div>
+      </div>
+      <div class="a3-head-side">
+        <select class="a3-statut" style="background:${col.soft};color:${col.main};border-color:${col.main}55" onchange="saveA3Field('statut',this.value)">
+          ${A3_STATUTS.map(st=>`<option ${st===a.statut?'selected':''}>${st}</option>`).join('')}
+        </select>
+        <select class="a3-inline" onchange="saveA3Field('gravite',this.value)">
+          ${['Faible','Moyenne','Haute','Critique'].map(g=>`<option ${g===a.gravite?'selected':''}>Gravité : ${g}</option>`).join('')}
+        </select>
+        <button class="btn small" onclick="captureScreen()">📸 Capture A3</button>
+        <button class="btn small danger" onclick="deleteA3()">Supprimer</button>
+      </div>
+    </div>
+
+    <div class="a3-grid">
+      <!-- 1. QQOQCCP -->
+      <section class="a3-box">
+        <h3><span class="a3-num">1</span> Description du problème — QQOQCCP</h3>
+        <div class="qq-grid">
+          ${QQOQCCP.map(f=>`<div class="qq-item">
+            <label>${f.l}<span>${f.q}</span></label>
+            <textarea data-qq="${f.k}" onchange="saveA3Deep('qqoqccp','${f.k}',this.value)">${escapeHtml(c.qqoqccp[f.k]||'')}</textarea>
+          </div>`).join('')}
+        </div>
+        <div class="est-grid">
+          <div class="est-col est-yes">
+            <label>EST <span>ce que le problème est / où il se produit</span></label>
+            <textarea onchange="saveA3Deep('estnestpas','est',this.value)">${escapeHtml(c.estnestpas.est||'')}</textarea>
+          </div>
+          <div class="est-col est-no">
+            <label>N'EST PAS <span>ce qui aurait pu se produire mais ne s'est pas produit</span></label>
+            <textarea onchange="saveA3Deep('estnestpas','nestpas',this.value)">${escapeHtml(c.estnestpas.nestpas||'')}</textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Ishikawa -->
+      <section class="a3-box">
+        <h3><span class="a3-num">2</span> Recherche des causes — Ishikawa 6M
+          <span class="a3-hint">Coche « retenue » pour faire ressortir une cause en rouge sur l'arête</span></h3>
+        <div class="fish-wrap">${ishikawaSVG(c)}</div>
+        <div class="m6-grid">
+          ${M6.map(m=>`<div class="m6-col">
+            <div class="m6-t">${m.l}<span>${m.ex}</span></div>
+            ${(c.causes||[]).filter(z=>z.m===m.k).map(z=>`<div class="m6-cause ${z.retenue?'ret':''}">
+              <button class="m6-chk" title="Cause retenue" onclick="toggleCause('${z.id}')">${z.retenue?'●':'○'}</button>
+              <input value="${escAttr(z.texte)}" onchange="editCause('${z.id}',this.value)">
+              <select class="m6-axe" onchange="setCauseAxe('${z.id}',this.value)">
+                ${Object.entries(CAUSE_AXES).map(([k,v])=>`<option value="${k}" ${z.axe===k?'selected':''}>${v}</option>`).join('')}
+              </select>
+              <button class="m6-del" onclick="delCause('${z.id}')">✕</button>
+            </div>`).join('')}
+            <button class="m6-add" onclick="addCause('${m.k}')">＋ cause</button>
+          </div>`).join('')}
+        </div>
+      </section>
+
+      <!-- 3. 5 Pourquoi -->
+      <section class="a3-box">
+        <h3><span class="a3-num">3</span> Cause racine — 5 Pourquoi
+          <span class="a3-hint">Une chaîne pour l'occurrence (pourquoi c'est arrivé), une pour la non-détection (pourquoi on ne l'a pas vu)</span></h3>
+        <div class="cinq-grid">
+          ${Object.entries(CAUSE_AXES).map(([axe,lbl])=>`<div class="cinq-col">
+            <div class="cinq-t ${axe}">${lbl}</div>
+            ${[0,1,2,3,4].map(i=>`<div class="cinq-row">
+              <span class="cinq-n">${i+1}</span>
+              <input placeholder="${i===0?'Pourquoi le problème s\\u2019est-il produit ?':'… et pourquoi ?'}" value="${escAttr((c.cinq[axe]||[])[i]||'')}" onchange="saveCinq('${axe}',${i},this.value)">
+            </div>`).join('')}
+            <div class="racine">
+              <label>Cause racine ${lbl.toLowerCase()}</label>
+              <textarea onchange="saveA3Deep('racines','${axe}',this.value)">${escapeHtml(c.racines[axe]||'')}</textarea>
+            </div>
+          </div>`).join('')}
+        </div>
+        ${retenues.length?`<div class="ret-list"><b>Causes retenues (Ishikawa) :</b> ${retenues.map(z=>`<span class="ret-chip">${escapeHtml(z.texte)} <i>${CAUSE_AXES[z.axe]||''}</i></span>`).join('')}</div>`:''}
+      </section>
+
+      <!-- 4. Plan d'actions -->
+      <section class="a3-box">
+        <h3><span class="a3-num">4</span> Plan d'actions
+          <span class="a3-hint">Ces actions alimentent tes indicateurs comme n'importe quelle action</span>
+          <button class="btn small primary" style="margin-left:auto" onclick="openA3Action(null)">＋ Action</button></h3>
+        ${acts.length?`<table class="pa-table a3-acts"><thead><tr>
+            <th>Catégorie</th><th>Action</th><th>Responsable</th><th>Échéance</th><th>Statut</th><th>Clôture</th></tr></thead><tbody>
+          ${acts.map(x=>`<tr class="${actionLate(x)?'is-late':''}" onclick="openA3Action('${x.id}')">
+            <td><span class="cat-chip">${escapeHtml((x.extra&&x.extra.categorie)||'Corrective')}</span></td>
+            <td class="pa-title">${escapeHtml(x.titre)}${actionLate(x)?'<span class="pa-late-badge">RETARD</span>':''}${(x.nb_reports||0)?`<span class="report-badge">↻ ${x.nb_reports}</span>`:''}</td>
+            <td><span class="pa-resp"><span class="av">${initials(x.responsable||'?')}</span>${escapeHtml(x.responsable||'—')}</span></td>
+            <td><span class="pa-date ${actionLate(x)?'past':''}">${fmtFR(x.echeance)}</span></td>
+            <td><span class="status-pill" style="background:${(ACTION_COLORS[x.statut]||ACTION_COLORS['À faire']).soft};color:${(ACTION_COLORS[x.statut]||ACTION_COLORS['À faire']).main}">${x.statut}</span></td>
+            <td><span class="pa-date">${x.date_cloture?fmtFR(x.date_cloture):'—'}</span></td>
+          </tr>`).join('')}
+        </tbody></table>`:'<div class="a3-empty">Aucune action. Décline ici les actions immédiates, correctives et préventives.</div>'}
+      </section>
+
+      <!-- 5. Synthèse -->
+      <section class="a3-box">
+        <h3><span class="a3-num">5</span> Synthèse &amp; capitalisation</h3>
+        <div class="synth-grid">
+          <div class="synth-item"><label>État initial <span>la situation subie</span></label><textarea onchange="saveA3Deep('synthese','initial',this.value)">${escapeHtml(c.synthese.initial||'')}</textarea></div>
+          <div class="synth-item"><label>État visé <span>la cible après actions</span></label><textarea onchange="saveA3Deep('synthese','vise',this.value)">${escapeHtml(c.synthese.vise||'')}</textarea></div>
+          <div class="synth-item"><label>Gains obtenus <span>sécurité, qualité, délai, coût</span></label><textarea onchange="saveA3Deep('synthese','gains',this.value)">${escapeHtml(c.synthese.gains||'')}</textarea></div>
+          <div class="synth-item"><label>Standardisation <span>standard créé/modifié, formation, affichage</span></label><textarea onchange="saveA3Deep('synthese','standard',this.value)">${escapeHtml(c.synthese.standard||'')}</textarea></div>
+          <div class="synth-item"><label>Extension &amp; RETEX <span>autres secteurs concernés, diffusion</span></label><textarea onchange="saveA3Deep('synthese','retex',this.value)">${escapeHtml(c.synthese.retex||'')}</textarea></div>
+          <div class="synth-item"><label>Vérification d'efficacité <span>constat à J+30 / J+60</span></label>
+            <textarea onchange="saveA3Deep('synthese','efficacite',this.value)">${escapeHtml(c.synthese.efficacite||'')}</textarea>
+            <input type="date" class="a3-inline" style="margin-top:6px" value="${c.synthese.date_efficacite||''}" onchange="saveA3Deep('synthese','date_efficacite',this.value)">
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>`;
+}
+
+/* ---- Enregistrements ---- */
+async function saveA3Field(champ, val){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  if(!a) return;
+  const patch = {}; patch[champ] = val || null;
+  if(champ==='statut'){
+    if(val==='Clôturé' && !a.date_cloture) patch.date_cloture = fmtDate(new Date());
+    if(val!=='Clôturé') patch.date_cloture = null;
+  }
+  if(champ==='date_cloture' && val && a.statut!=='Clôturé') patch.statut = 'Clôturé';
+  if(champ==='gravite') patch.gravite = String(val).replace('Gravité : ','');
+  await dbUpdate('a3', a.id, patch);
+  await logActivity('a mis à jour la fiche A3', '« '+a.titre+' »', champ, a.board_id);
+  renderMain();
+}
+async function saveA3Deep(section, champ, val){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  if(!a) return;
+  const c = a3Content(a);
+  c[section][champ] = val;
+  await dbUpdate('a3', a.id, {contenu:c});
+}
+async function saveCinq(axe, idx, val){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  if(!a) return;
+  const c = a3Content(a);
+  c.cinq[axe] = (c.cinq[axe]||['','','','','']).slice();
+  c.cinq[axe][idx] = val;
+  await dbUpdate('a3', a.id, {contenu:c});
+}
+async function addCause(m){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  const c = a3Content(a);
+  c.causes = (c.causes||[]).concat([{id:uid(), m, axe:'occurrence', texte:'', retenue:false}]);
+  await dbUpdate('a3', a.id, {contenu:c});
+  renderMain();
+}
+async function editCause(id, val){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  const c = a3Content(a);
+  const z = c.causes.find(x=>x.id===id); if(!z) return;
+  z.texte = val;
+  await dbUpdate('a3', a.id, {contenu:c});
+  renderMain();
+}
+async function toggleCause(id){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  const c = a3Content(a);
+  const z = c.causes.find(x=>x.id===id); if(!z) return;
+  z.retenue = !z.retenue;
+  await dbUpdate('a3', a.id, {contenu:c});
+  renderMain();
+}
+async function setCauseAxe(id, axe){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  const c = a3Content(a);
+  const z = c.causes.find(x=>x.id===id); if(!z) return;
+  z.axe = axe;
+  await dbUpdate('a3', a.id, {contenu:c});
+}
+async function delCause(id){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  const c = a3Content(a);
+  c.causes = c.causes.filter(x=>x.id!==id);
+  await dbUpdate('a3', a.id, {contenu:c});
+  renderMain();
+}
+async function deleteA3(){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  if(!a) return;
+  if(!confirm('Supprimer la fiche « '+a.titre+' » et ses actions ?')) return;
+  for(const x of a3Actions(a.id)) await dbDelete('actions', x.id);
+  await dbDelete('a3', a.id);
+  await logActivity('a supprimé la fiche A3', '« '+a.titre+' »', '', a.board_id);
+  setRoute({view:'board', boardId:a.board_id});
+  showToast('Fiche supprimée');
+}
+
+/* ---- Action rattachée à un A3 ---- */
+function openA3Action(id){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  let x = id ? state.actions.find(z=>z.id===id) : null;
+  const isNew = !x;
+  if(isNew) x = {id:null, titre:'', responsable:ui.userName, echeance:fmtDate(addDays(new Date(),14)), statut:'À faire', priorite:'Moyenne', avancement:0, notes:'', extra:{categorie:'Corrective'}};
+  ui.drawer = {kind:'a3action', id:x.id, tab:'infos'};
+  const col = ACTION_COLORS[x.statut]||ACTION_COLORS['À faire'];
+  document.getElementById('drawer-tab').style.background = col.main;
+  document.getElementById('drawer-title').childNodes[0].textContent = isNew?'Nouvelle action':truncate(x.titre,44);
+  document.getElementById('drawer-code').textContent = a.ref||'';
+  document.getElementById('drawer-tabs').innerHTML = '';
+  document.getElementById('drawer-body').innerHTML = `
+    <div class="field"><label>Catégorie</label><select id="x-cat">${A3_CAT.map(k=>`<option ${((x.extra&&x.extra.categorie)||'Corrective')===k?'selected':''}>${k}</option>`).join('')}</select></div>
+    <div class="field"><label>Action</label><textarea id="x-titre" style="min-height:56px">${escapeHtml(x.titre)}</textarea></div>
+    <div class="field-row">
+      <div class="field"><label>Responsable</label><input type="text" id="x-resp" value="${escAttr(x.responsable||'')}"></div>
+      <div class="field"><label>Échéance</label><input type="date" id="x-echeance" value="${x.echeance||''}"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Statut</label><select id="x-statut">${ACTION_STATUTS.map(k=>`<option ${k===x.statut?'selected':''}>${k}</option>`).join('')}</select></div>
+      <div class="field"><label>Priorité</label><select id="x-prio">${Object.keys(PRIOS).map(k=>`<option ${k===x.priorite?'selected':''}>${k}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>Date de clôture</label><input type="date" id="x-cloture" value="${x.date_cloture||''}"></div>
+    <div class="field"><label>Commentaire</label><textarea id="x-notes">${escapeHtml(x.notes||'')}</textarea></div>`;
+  document.getElementById('drawer-foot').innerHTML = `
+    <button class="btn primary" style="flex:1" onclick="saveA3Action()">Enregistrer</button>
+    ${isNew?'':'<button class="btn danger" onclick="deleteA3Action()">Supprimer</button>'}`;
+  document.getElementById('drawer-overlay').classList.add('show');
+  document.getElementById('drawer').classList.add('show');
+}
+async function saveA3Action(){
+  const a = state.a3.find(x=>x.id===route.a3Id);
+  const data = {
+    board_id: a.board_id, a3_id: a.id,
+    probleme: a.titre,
+    titre: document.getElementById('x-titre').value.trim()||'Sans titre',
+    responsable: document.getElementById('x-resp').value.trim(),
+    echeance: document.getElementById('x-echeance').value||null,
+    date_cloture: document.getElementById('x-cloture').value||null,
+    statut: document.getElementById('x-statut').value,
+    priorite: document.getElementById('x-prio').value,
+    notes: document.getElementById('x-notes').value,
+    extra: {categorie: document.getElementById('x-cat').value},
+  };
+  if(data.statut==='Fait'){ data.avancement=100; if(!data.date_cloture) data.date_cloture = fmtDate(new Date()); }
+  else { data.avancement = 0; data.date_cloture = null; }
+  if(ui.drawer.id){
+    const old = state.actions.find(z=>z.id===ui.drawer.id);
+    if(old && old.echeance && data.echeance && data.echeance!==old.echeance){
+      data.echeance_initiale = old.echeance_initiale || old.echeance;
+      if(dateFromStr(data.echeance) > dateFromStr(old.echeance)) data.nb_reports = (old.nb_reports||0)+1;
+    }
+    await dbUpdate('actions', ui.drawer.id, data);
+  } else {
+    data.date_ouverture = a.date_ouverture || fmtDate(new Date());
+    data.echeance_initiale = data.echeance;
+    data.nb_reports = 0;
+    data.ordre = a3Actions(a.id).length + 1;
+    await dbInsert('actions', data);
+  }
+  await logActivity('a mis à jour une action de', '« '+a.titre+' »', data.titre, a.board_id);
+  closeDrawer();
+  renderMain();
+  showToast('Action enregistrée');
+}
+async function deleteA3Action(){
+  if(!ui.drawer.id) return;
+  await dbDelete('actions', ui.drawer.id);
+  closeDrawer(); renderMain(); showToast('Action supprimée');
+}
 </script>
 
 <script>
@@ -2586,7 +3720,7 @@ function tryUnlock(){
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v4.0 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v6.0 · boutons câblés'; st.classList.add('ready'); }
 })();
 </script>
 </body>
