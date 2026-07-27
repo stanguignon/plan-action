@@ -4183,13 +4183,25 @@ async function deleteA3Action(){
      - "pct"  : % direct (sans quantité)
    ============================================================ */
 const OTD_DEFAUT = [
-  {key:'recep', nom:'Réception',    mode:'pct_qte', objectif:95, couleur:'#0c66e4', series:['Récep Avant détails','Récep Après détails']},
-  {key:'rapu',  nom:'Récep. APU',   mode:'qte',     objectif:95, couleur:'#22a06b', series:['OTD']},
-  {key:'ratt',  nom:'Récep. ATT',   mode:'qte',     objectif:95, couleur:'#00a3bf', series:['OTD']},
-  {key:'emb',   nom:'Emballage',    mode:'qte',     objectif:95, couleur:'#6554c0', series:['STD','URG','AOG']},
-  {key:'mapu',  nom:'Manut. APU',   mode:'qte',     objectif:95, couleur:'#e77b1e', series:['STD','URG','AOG']},
-  {key:'matt',  nom:'Manut. ATT',   mode:'qte',     objectif:95, couleur:'#d6377b', series:['STD','URG','AOG']},
+  {key:'recep', nom:'Réception',  mode:'pct_qte', objectif:95, couleur:'#5e6c84', global:false,
+   qteLabel:'Quantité de colis', series:['Récep Avant détails','Récep Après détails']},
+  {key:'rapu',  nom:'Récep. APU', mode:'qte', objectif:95, couleur:'#0c66e4', court:'RcpAPU', series:['']},
+  {key:'ratt',  nom:'Récep. ATT', mode:'qte', objectif:95, couleur:'#22a06b', court:'RcpATT', series:['']},
+  {key:'emb',   nom:'Emballage',  mode:'qte', objectif:95, couleur:'#6554c0', court:'Emballage', series:['STD','URG','AOG']},
+  {key:'mapu',  nom:'Manut. APU', mode:'qte', objectif:95, couleur:'#e77b1e', court:'APU', series:['STD','URG','AOG']},
+  {key:'matt',  nom:'Manut. ATT', mode:'qte', objectif:95, couleur:'#00a3bf', court:'ATT', series:['STD','URG','AOG']},
 ];
+/* Un espace créé avec une configuration antérieure est remis au standard
+   tant qu'aucun relevé n'a été saisi dessus. */
+function otdMigrer(b){
+  const cfg = (b.config && b.config.activites) || null;
+  if(!cfg) return false;
+  const ancien = cfg.some(a=>/CRIM|Emballage \/ Exp|Manutention /.test(a.nom||''));
+  if(!ancien) return false;
+  if(state.otd_values.some(v=>v.board_id===b.id)) return false;
+  dbUpdate('boards', b.id, {config:{...(b.config||{}), activites: OTD_DEFAUT.map(a=>({...a}))}});
+  return true;
+}
 function otdActivites(b){
   return (b.config && b.config.activites) ? b.config.activites : OTD_DEFAUT;
 }
@@ -4254,6 +4266,7 @@ function otdCouleur(pct, objectif){
 
 /* ============ VUE SAISIE ============ */
 function renderOtdBoard(main, b){
+  if(otdMigrer(b)) showToast('Activités remises au standard SQDCP');
   const acts = otdActivites(b);
   const lundi = otdSemaineCourante();
   const nbJours = (b.config && b.config.jours) || 5;
@@ -4302,7 +4315,7 @@ function renderOtdBoard(main, b){
       }).join('');
       const moyenne = otdCalc(b.id, {...a, series:[se]}, jours);
       const mc = otdCouleur(moyenne, a.objectif);
-      return `<tr><td class="otd-serie">${escapeHtml(se)}</td>${cellules}<td class="otd-moy" style="color:${mc.c}">${moyenne==null?'—':moyenne+'%'}</td></tr>`;
+      return `<tr><td class="otd-serie">${escapeHtml(se||'OTD')}</td>${cellules}<td class="otd-moy" style="color:${mc.c}">${moyenne==null?'—':moyenne+'%'}</td></tr>`;
     }).join('');
     const jourGlobal = jours.map(j=>{
       const g = otdCalc(b.id, a, [j]);
@@ -4412,11 +4425,14 @@ function openOtdConfig(){
               </select>
             </div>
             <div class="field"><label>Objectif %</label><input type="number" class="c-obj" value="${a.objectif}"></div>
-            <div class="field"><label>Séries</label><input type="text" class="c-series" value="${escAttr(a.series.join(', '))}" placeholder="STD, URG, AOG"></div>
+            <div class="field"><label>Séries</label><input type="text" class="c-series" value="${escAttr(a.series.filter(Boolean).join(', '))}" placeholder="vide = série unique"></div>
           </div>
         </div>`).join('')}
       </div>
-      <button class="btn small" style="margin-top:8px" onclick="otdAddActivite()">＋ Ajouter une activité</button>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn small" onclick="otdAddActivite()">＋ Ajouter une activité</button>
+        <button class="btn small" onclick="otdResetStandard()" title="Remplacer par les 6 activités du fichier SQDCP">↺ Réinitialiser au standard SQDCP</button>
+      </div>
       <div class="field" style="margin-top:14px"><label>Jours affichés par semaine</label>
         <select id="otd-jours">
           ${[5,6,7].map(n=>`<option value="${n}" ${((b.config&&b.config.jours)||5)===n?'selected':''}>${n} jours</option>`).join('')}
@@ -4440,21 +4456,32 @@ function otdAddActivite(){
     <div class="field-row-3">
       <div class="field"><label>Mode</label><select class="c-mode"><option value="qte">Quantité + % par série</option><option value="pct_qte">% + quantité partagée</option><option value="pct">% direct (non pondéré)</option></select></div>
       <div class="field"><label>Objectif %</label><input type="number" class="c-obj" value="95"></div>
-      <div class="field"><label>Séries</label><input type="text" class="c-series" value="STD, URG, AOG"></div>
+      <div class="field"><label>Séries</label><input type="text" class="c-series" value="STD, URG, AOG" placeholder="vide = série unique"></div>
     </div>
   </div>`;
   document.getElementById('otd-acts').appendChild(div.firstElementChild);
 }
+async function otdResetStandard(){
+  if(!confirm('Remplacer la configuration actuelle par les 6 activités standard (Réception, Récep. APU, Récep. ATT, Emballage, Manut. APU, Manut. ATT) ? Les relevés déjà saisis sont conservés.')) return;
+  const b = currentBoard();
+  await dbUpdate('boards', b.id, {config:{...(b.config||{}), activites: OTD_DEFAUT.map(a=>({...a}))}});
+  closeModal(); renderMain(); showToast('Activités remises au standard SQDCP');
+}
 async function saveOtdConfig(){
   const b = currentBoard();
+  const anciennes = otdActivites(b);
   const activites = [...document.querySelectorAll('#otd-acts .otd-cfg')].map(el=>({
+    ...(anciennes.find(x=>x.key===el.dataset.key)||{}),
     key: el.dataset.key,
     nom: el.querySelector('.c-nom').value.trim() || 'Activité',
     mode: el.querySelector('.c-mode').value,
     objectif: parseFloat(el.querySelector('.c-obj').value)||95,
     couleur: el.dataset.couleur || OTD_PALETTE[0],
-    series: el.querySelector('.c-series').value.split(',').map(x=>x.trim()).filter(Boolean),
-  })).filter(a=>a.series.length);
+    series: (function(){
+      const l = el.querySelector('.c-series').value.split(',').map(x=>x.trim()).filter(Boolean);
+      return l.length ? l : [''];   /* série unique sans libellé */
+    })(),
+  })).filter(a=>a.nom);
   const jours = parseInt(document.getElementById('otd-jours').value,10)||5;
   await dbUpdate('boards', b.id, {config:{...(b.config||{}), activites, jours}});
   await logActivity('a configuré les activités de', '« '+b.nom+' »', activites.length+' activité(s)', b.id);
@@ -4661,15 +4688,14 @@ function renderOtdMois(b, acts){
   const corps = acts.map((a,ai)=>{
     const coul = a.couleur || OTD_PALETTE[ai%OTD_PALETTE.length];
     const lignes = [];
-    /* ligne de quantité partagée (mode pct_qte) */
-    if(a.mode==='pct_qte'){
-      lignes.push({kind:'qte', serie:QTE_SERIE, label:'Quantité'});
-    }
     a.series.forEach(se=>{
-      if(a.mode==='qte') lignes.push({kind:'qte', serie:se, label:'Qté traitée'+(a.series.length>1?' '+se:'')});
-      lignes.push({kind:'pct', serie:se, label:(a.mode==='pct'||a.mode==='pct_qte') ? se : '% OTD'+(a.series.length>1?' '+se:'')});
+      if(a.mode==='qte') lignes.push({kind:'qte', serie:se, label:'Qté traitée'+(se?' '+se:'')});
+      lignes.push({kind:'pct', serie:se, label:(a.mode==='pct'||a.mode==='pct_qte') ? se : '% OTD'+(se?' '+se:'')});
     });
-    if(a.series.length>1 || a.mode==='qte') lignes.push({kind:'glob', label:'% Global'});
+    /* quantité partagée : ligne placée sous les pourcentages, comme dans le fichier SQDCP */
+    if(a.mode==='pct_qte') lignes.push({kind:'qte', serie:QTE_SERIE, label:a.qteLabel||'Quantité de colis'});
+    if(a.global!==false && (a.series.filter(Boolean).length>1 || a.mode==='qte'))
+      lignes.push({kind:'glob', label:'% Global'+(a.court?' '+a.court:'')});
 
     return lignes.map((L,li)=>{
       const cellules = cols.map(c=>{
@@ -4800,7 +4826,7 @@ function tryUnlock(){
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v8.0 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v8.1 · boutons câblés'; st.classList.add('ready'); }
 })();
 </script>
 </body>
