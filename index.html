@@ -904,6 +904,117 @@ body.presentation .m6-add, body.presentation .m6-del, body.presentation .a3-head
 .news-actions{display:flex;gap:9px;margin-top:18px}
 @media (max-width:1100px){ .news-cols{grid-template-columns:1fr} }
 
+
+/* ====== GRILLE MENSUELLE SQDCP ====== */
+.sq-scroll{flex:1;overflow:auto;padding:14px;background:var(--bg)}
+.sq-table{border-collapse:separate;border-spacing:0;font-size:11px;background:#fff;box-shadow:var(--shadow-sm)}
+.sq-title{
+  background:var(--navy);color:#fff;font-size:13px;font-weight:800;letter-spacing:.06em;padding:9px 14px;text-align:center;
+  position:sticky;top:0;z-index:40;
+}
+.sq-table th{border:1px solid #cfd6e0}
+.sq-table td{border:1px solid #dfe3e8}
+.sq-h1,.sq-h2{
+  background:var(--navy);color:#fff;font-size:10px;font-weight:800;letter-spacing:.05em;padding:6px 8px;
+  position:sticky;z-index:35;top:33px;
+}
+.sq-h1{left:0;width:104px;min-width:104px}
+.sq-h2{left:104px;width:132px;min-width:132px}
+.sq-day,.sq-week,.sq-month{
+  background:var(--navy);color:#fff;font-size:9.5px;font-weight:700;padding:4px 3px;min-width:46px;
+  position:sticky;top:33px;z-index:30;text-align:center;line-height:1.25;
+}
+.sq-day b{display:block;font-size:11px}
+.sq-day span{display:block;font-weight:500;opacity:.72;font-size:8.5px}
+.sq-day.today{background:#0c66e4}
+.sq-week{background:#2b4a7d;min-width:52px}
+.sq-month{background:#1b3663;min-width:64px}
+.sq-month span{display:block;font-weight:500;opacity:.72;font-size:8.5px}
+.sq-act{
+  position:sticky;left:0;z-index:20;width:104px;min-width:104px;font-weight:800;font-size:11px;
+  padding:6px 8px;vertical-align:middle;text-align:center;background:#fff;
+}
+.sq-act span{display:block;line-height:1.25}
+.sq-act i{display:block;font-style:normal;font-size:8.5px;color:var(--muted-2);font-weight:600;margin-top:3px}
+.sq-detail{
+  position:sticky;left:104px;z-index:20;width:132px;min-width:132px;background:var(--panel-2);
+  font-size:10px;font-weight:600;color:var(--muted);padding:3px 8px;white-space:nowrap;
+}
+.sq-detail.pct{background:#eaf4ee;color:#1a6b4a}
+.sq-detail.glob{background:var(--navy);color:#fff;font-weight:800;letter-spacing:.03em}
+.sq-cell{padding:0;text-align:center;height:23px}
+.sq-in{
+  width:100%;border:none;background:transparent;text-align:center;font-family:var(--mono);font-size:10.5px;
+  padding:3px 2px;color:inherit;font-weight:600;
+}
+.sq-in:focus{outline:2px solid var(--primary);outline-offset:-2px;background:#fff}
+.sq-in.sq-q{color:var(--muted);font-weight:500}
+.sq-in::placeholder{color:#c4cad3;font-weight:500}
+.sq-agg{background:#eef2f8;font-family:var(--mono);font-weight:800;font-size:10.5px;padding:3px}
+.sq-qagg{color:var(--muted)}
+.sq-na{color:#b3bac5;font-family:var(--mono);font-size:10px}
+.sq-globrow td{border-top:2px solid var(--navy);border-bottom:2px solid var(--navy)}
+.sq-globcell{font-family:var(--mono);font-weight:800;font-size:10.5px;background:#f7f8fa}
+
+/* ====== ACCUEIL : modes d'affichage ====== */
+.home-bar{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.home-bar h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0}
+.home-bar .home-sub{margin:3px 0 0}
+.home-tools{margin-left:auto;display:flex;gap:9px;align-items:center}
+.home-kpis.mini{gap:8px;margin-bottom:16px}
+.home-kpis.mini .home-kpi{padding:8px 13px;min-width:104px;border-radius:9px}
+.home-kpis.mini .home-kpi .num{font-size:18px}
+.home-kpis.mini .home-kpi .lbl{font-size:10px;margin-top:1px}
+.home.dense,.home.liste{padding-bottom:28px}
+.dense-grid{display:grid;grid-template-columns:1fr 296px;gap:14px;align-items:start}
+.dense-sec{margin-bottom:14px}
+.dense-t{
+  font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:8px;display:flex;align-items:center;gap:7px;
+}
+.dense-t .btn{margin-left:auto;padding:2px 8px}
+.tuiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:9px}
+.tuile{
+  background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px 11px 8px;cursor:pointer;
+  box-shadow:var(--shadow-sm);position:relative;transition:box-shadow .12s,transform .12s;
+}
+.tuile:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.tu-top{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.tu-ic{width:21px;height:21px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.tu-nom{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tu-bas{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-weight:600}
+.tu-late{background:var(--red-soft);color:var(--red);border-radius:9px;padding:0 7px;font-weight:800}
+.tu-pct{margin-left:auto;font-family:var(--mono);font-weight:700;color:var(--txt)}
+.tu-bar{height:4px;background:var(--line-soft);border-radius:2px;overflow:hidden;margin-top:7px}
+.tu-bar i{display:block;height:100%;border-radius:2px}
+.tuile .bc-del{top:5px;right:5px;width:20px;height:20px;font-size:10px}
+.dense-side{display:flex;flex-direction:column;gap:12px}
+.dense-box{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:13px 15px;box-shadow:var(--shadow-sm)}
+.kmini-list{display:flex;flex-direction:column;gap:6px}
+.kmini{display:flex;align-items:center;gap:9px;font-size:11.5px}
+.km-n{color:var(--muted);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.km-v{margin-left:auto;font-family:var(--mono);font-weight:800;flex-shrink:0}
+.hlist{display:flex;flex-direction:column;gap:16px}
+.hgroup-t{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.hgroup-t span{font-family:var(--mono);color:var(--muted-2);margin-left:4px}
+.hrow{
+  display:flex;align-items:center;gap:11px;background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:7px 12px;margin-bottom:5px;cursor:pointer;box-shadow:var(--shadow-sm);position:relative;
+}
+.hrow:hover{border-color:var(--primary)}
+.hr-ic{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.hr-nom{font-size:12.5px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hr-type{font-size:10px;color:var(--muted-2);font-weight:600;width:110px;flex-shrink:0}
+.hr-meta{font-size:11px;color:var(--muted);width:118px;flex-shrink:0}
+.hr-late{font-size:10px;font-weight:800;color:var(--red);background:var(--red-soft);border-radius:9px;padding:1px 8px;width:52px;text-align:center;flex-shrink:0}
+.hr-late.vide{background:none}
+.hr-track{width:88px;height:5px;background:var(--line-soft);border-radius:3px;overflow:hidden;flex-shrink:0}
+.hr-track i{display:block;height:100%;border-radius:3px}
+.hr-pct{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--muted);width:34px;text-align:right;flex-shrink:0}
+.hrow .bc-del{position:static;opacity:0;width:22px;height:22px;font-size:11px;flex-shrink:0}
+.hrow:hover .bc-del{opacity:1}
+@media (max-width:1150px){ .dense-grid{grid-template-columns:1fr} }
+
 /* ====== MODE PRÉSENTATION ====== */
 body.presentation .search-box, body.presentation #btn-export, body.presentation .conn-badge,
 body.presentation #btn-share, body.presentation .bc-del, body.presentation .kpix-tools, body.presentation .kpix-entry, body.presentation .kpix-card.new-kpi,
@@ -1130,7 +1241,7 @@ let route = { view:'home', boardId:null, sub:'liste' }; // sub: liste|kanban (ac
 let ui = {
   pxPerDay: 34, userName:'', drawer:{kind:null,id:null,tab:'infos'},
   filterStatuts:new Set(), filterResp:new Set(), onlyLate:false,
-  expandedProjects:new Set(), horizonPlus:0, otdLundi:null,
+  expandedProjects:new Set(), horizonPlus:0, otdLundi:null, otdMois:null, homeMode:null,
 };
 let undoStack = [];
 
@@ -1357,7 +1468,7 @@ function goHome(){ setRoute({view:'home'}); }
 function openBoard(id){
   const b = state.boards.find(x=>x.id===id);
   if(!b) return;
-  setRoute({view:'board', boardId:id, sub: b.type==='projet' ? 'gantt' : (b.type==='otd' ? 'saisie' : 'liste')});
+  setRoute({view:'board', boardId:id, sub: b.type==='projet' ? 'gantt' : (b.type==='otd' ? 'mois' : 'liste')});
 }
 function setSub(sub){ route.sub = sub; renderMain(); }
 
@@ -1439,75 +1550,144 @@ function boardStats(b){
     return {n:items.length, done, late, pct, meta: items.length+' projet'+(items.length>1?'s':'')};
   }
 }
+function homeMode(){
+  if(!ui.homeMode){ try{ ui.homeMode = localStorage.getItem('pa_home_mode') || 'dense'; }catch(e){ ui.homeMode='dense'; } }
+  return ui.homeMode;
+}
+function setHomeMode(m){
+  ui.homeMode = m;
+  try{ localStorage.setItem('pa_home_mode', m); }catch(e){}
+  renderMain();
+}
+const TYPE_LABELS = {actions:'Plan d\u2019actions', projet:'Espace projet', resolution:'Résolution A3', otd:'Suivi OTD'};
+const TYPE_ICONS  = {actions:'☑', projet:'📅', resolution:'🔍', otd:'📈'};
+const TYPE_ORDRE  = ['actions','projet','otd','resolution'];
+
 function renderHome(main){
   const totalActions = state.actions.length, lateActions = state.actions.filter(actionLate).length;
   const totalProj = state.projects.length, lateProj = state.projects.filter(projLate).length;
   const doneActions = state.actions.filter(a=>a.statut==='Fait').length;
   const dstr = new Date().toLocaleDateString('fr-FR',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const mode = homeMode();
 
-  const actionBoards = state.boards.filter(b=>b.type==='actions');
-  const projBoards = state.boards.filter(b=>b.type==='projet');
+  const kpis = `<div class="home-kpis ${mode==='confort'?'':'mini'}">
+      <div class="home-kpi"><div class="num">${totalActions}</div><div class="lbl">Actions suivies</div></div>
+      <div class="home-kpi late"><div class="num">${lateActions+lateProj}</div><div class="lbl">Retards détectés</div></div>
+      <div class="home-kpi done"><div class="num">${doneActions}</div><div class="lbl">Actions soldées</div></div>
+      <div class="home-kpi"><div class="num">${totalProj}</div><div class="lbl">Projets pilotés</div></div>
+      <div class="home-kpi"><div class="num">${state.a3.filter(x=>x.statut!=='Clôturé').length}</div><div class="lbl">A3 en cours</div></div>
+    </div>`;
+
+  const barre = `<div class="home-bar">
+      <div>
+        <h1>Plans d'action &amp; projets</h1>
+        <div class="home-sub">${dstr}</div>
+      </div>
+      <div class="home-tools">
+        <div class="seg">
+          <button class="${mode==='dense'?'active':''}" onclick="setHomeMode('dense')" title="Tout sur un écran">▦ Dense</button>
+          <button class="${mode==='liste'?'active':''}" onclick="setHomeMode('liste')" title="Liste compacte">☰ Liste</button>
+          <button class="${mode==='confort'?'active':''}" onclick="setHomeMode('confort')" title="Grandes cartes">◻ Confort</button>
+        </div>
+        <button class="btn small primary" onclick="openBoardModal('actions')">＋ Nouvel espace</button>
+      </div>
+    </div>`;
 
   const cardHtml = (b)=>{
-    const s = boardStats(b);
+    const s2 = boardStats(b);
     return `<div class="board-card" onclick="openBoard('${b.id}')">
       <button class="bc-del" title="Supprimer ce plan" onclick="deleteBoard(event,'${b.id}')">🗑</button>
       <div class="bc-band" style="background:${b.couleur}"></div>
       <div class="bc-body">
         <div class="bc-name">${escapeHtml(b.nom)}</div>
-        <div class="bc-meta">${s.meta}${s.done?` · ${s.done} terminé${s.done>1?'s':''}`:''}</div>
+        <div class="bc-meta">${s2.meta}${s2.done?` · ${s2.done} terminé${s2.done>1?'s':''}`:''}</div>
       </div>
       <div class="bc-foot">
-        ${s.late?`<span class="bc-late">⚠ ${s.late} en retard</span>`:''}
-        <div class="bc-prog-track"><div class="bc-prog-fill" style="width:${s.pct}%"></div></div>
-        <span class="bc-pct">${s.pct}%</span>
+        ${s2.late?`<span class="bc-late">⚠ ${s2.late} en retard</span>`:''}
+        <div class="bc-prog-track"><div class="bc-prog-fill" style="width:${s2.pct}%"></div></div>
+        <span class="bc-pct">${s2.pct}%</span>
       </div>
     </div>`;
   };
+  const tuile = (b)=>{
+    const s2 = boardStats(b);
+    return `<div class="tuile" onclick="openBoard('${b.id}')" title="${escAttr(b.nom)}">
+      <button class="bc-del" onclick="deleteBoard(event,'${b.id}')">🗑</button>
+      <div class="tu-top"><span class="tu-ic" style="background:${b.couleur}1f;color:${b.couleur}">${TYPE_ICONS[b.type]||'▪'}</span>
+        <span class="tu-nom">${escapeHtml(b.nom)}</span></div>
+      <div class="tu-bas">
+        <span class="tu-meta">${s2.meta}</span>
+        ${s2.late?`<span class="tu-late">${s2.late}</span>`:''}
+        <span class="tu-pct">${s2.pct}%</span>
+      </div>
+      <div class="tu-bar"><i style="width:${s2.pct}%;background:${b.couleur}"></i></div>
+    </div>`;
+  };
+  const ligne = (b)=>{
+    const s2 = boardStats(b);
+    return `<div class="hrow" onclick="openBoard('${b.id}')">
+      <span class="hr-ic" style="background:${b.couleur}1f;color:${b.couleur}">${TYPE_ICONS[b.type]||'▪'}</span>
+      <span class="hr-nom">${escapeHtml(b.nom)}</span>
+      <span class="hr-type">${TYPE_LABELS[b.type]||''}</span>
+      <span class="hr-meta">${s2.meta}</span>
+      ${s2.late?`<span class="hr-late">⚠ ${s2.late}</span>`:'<span class="hr-late vide"></span>'}
+      <span class="hr-track"><i style="width:${s2.pct}%;background:${b.couleur}"></i></span>
+      <span class="hr-pct">${s2.pct}%</span>
+      <button class="bc-del" onclick="deleteBoard(event,'${b.id}')">🗑</button>
+    </div>`;
+  };
 
-  main.innerHTML = `<div class="home">
-    <div class="home-head"><h1>Plans d'action &amp; projets</h1></div>
-    <div class="home-sub">${dstr} — vue d'ensemble du site.</div>
-    <div class="home-kpis">
-      <div class="home-kpi"><div class="num">${totalActions}</div><div class="lbl">Actions suivies</div></div>
-      <div class="home-kpi late"><div class="num">${lateActions+lateProj}</div><div class="lbl">Retards détectés</div></div>
-      <div class="home-kpi done"><div class="num">${doneActions}</div><div class="lbl">Actions soldées</div></div>
-      <div class="home-kpi"><div class="num">${totalProj}</div><div class="lbl">Projets pilotés</div></div>
-    </div>
+  let contenu = '';
+  if(mode==='confort'){
+    contenu = TYPE_ORDRE.map(t=>`
+      <div class="section-label">${TYPE_LABELS[t]}</div>
+      <div class="boards-grid">
+        ${state.boards.filter(b=>b.type===t).map(cardHtml).join('')}
+        <div class="board-card new" onclick="openBoardModal('${t}')">＋ Nouveau</div>
+      </div>`).join('');
+  } else if(mode==='liste'){
+    contenu = `<div class="hlist">${TYPE_ORDRE.map(t=>{
+      const list = state.boards.filter(b=>b.type===t);
+      if(!list.length) return '';
+      return `<div class="hgroup"><div class="hgroup-t">${TYPE_LABELS[t]} <span>${list.length}</span></div>${list.map(ligne).join('')}</div>`;
+    }).join('')}</div>
+    <button class="btn small" style="margin-top:12px" onclick="openBoardModal('actions')">＋ Nouvel espace</button>`;
+  } else {
+    const alertes = alertesActuelles().slice(0,6);
+    contenu = `<div class="dense-grid">
+      <div class="dense-main">
+        ${TYPE_ORDRE.map(t=>{
+          const list = state.boards.filter(b=>b.type===t);
+          if(!list.length) return '';
+          return `<div class="dense-sec"><div class="dense-t">${TYPE_ICONS[t]} ${TYPE_LABELS[t]}</div>
+            <div class="tuiles">${list.map(tuile).join('')}</div></div>`;
+        }).join('')}
+        ${state.boards.length?'':'<div class="news-empty">Aucun espace pour le moment. Crée le premier avec « ＋ Nouvel espace ».</div>'}
+      </div>
+      <div class="dense-side">
+        ${state.kpis.length?`<div class="dense-box"><div class="dense-t">Indicateurs <button class="btn small ghost" onclick="setRoute({view:'kpis'})">→</button></div>
+          <div class="kmini-list">${state.kpis.slice(0,6).map(k=>{
+            const v = evalKpi(k), t2 = kpiTargetState(k,v);
+            return `<div class="kmini"><span class="km-n">${escapeHtml(truncate(k.nom,26))}</span>
+              <span class="km-v" style="color:${t2===false?'var(--red)':(t2===true?'var(--green)':'var(--txt)')}">${v==null?'—':v}${kpiUnitOf(k)}</span></div>`;
+          }).join('')}</div></div>`:''}
+        <div class="dense-box"><div class="dense-t">⚠ Attention <button class="btn small ghost" onclick="setRoute({view:'news'})">→</button></div>
+          ${alertes.map(a=>`<div class="news-alert ${a.sev}" onclick="${a.go}"><span class="na-dot"></span><span class="na-txt">${a.txt}<span class="na-sub">${a.sous}</span></span></div>`).join('')
+            || '<div class="news-empty">Rien ne dérive ✓</div>'}
+        </div>
+      </div>
+    </div>`;
+  }
 
-    ${state.kpis.length?`<div class="section-label">Indicateurs <button class="btn small ghost" style="margin-left:auto" onclick="setRoute({view:'kpis'})">Gérer →</button></div>
-    <div class="kpix-grid" style="margin-bottom:34px">${state.kpis.slice(0,8).map(k=>kpiCardHtml(k,true)).join('')}</div>`:''}
-
-    <div class="section-label">Plans d'actions</div>
-    <div class="boards-grid">
-      ${actionBoards.map(cardHtml).join('')}
-      <div class="board-card new" onclick="openBoardModal('actions')">＋ Nouveau plan d'actions</div>
-    </div>
-
-    <div class="section-label">Espaces projet</div>
-    <div class="boards-grid">
-      ${projBoards.map(cardHtml).join('')}
-      <div class="board-card new" onclick="openBoardModal('projet')">＋ Nouvel espace projet</div>
-    </div>
-
-    <div class="section-label">Suivi OTD</div>
-    <div class="boards-grid">
-      ${state.boards.filter(b=>b.type==='otd').map(cardHtml).join('')}
-      <div class="board-card new" onclick="openBoardModal('otd')">＋ Nouveau suivi OTD</div>
-    </div>
-
-    <div class="section-label">Résolution de problème</div>
-    <div class="boards-grid">
-      ${state.boards.filter(b=>b.type==='resolution').map(cardHtml).join('')}
-      <div class="board-card new" onclick="openBoardModal('resolution')">＋ Nouvel espace A3</div>
-    </div>
-
+  main.innerHTML = `<div class="home ${mode}">
+    ${barre}
+    ${kpis}
+    ${contenu}
     <div class="data-bar">
       <span class="section-label" style="margin:0">Données</span>
       <button class="btn small" onclick="exportBackup()">⬇ Sauvegarde complète (JSON)</button>
       <button class="btn small" onclick="importBackupPrompt()">⬆ Restaurer une sauvegarde</button>
       <input type="file" id="backup-file" accept="application/json,.json" class="hidden" onchange="importBackupFile(event)">
-      <span style="font-size:11px;color:var(--muted-2)">Tes données vivent dans Supabase ; ceci est une copie de sécurité hors ligne.</span>
     </div>
   </div>`;
 }
@@ -4003,10 +4183,12 @@ async function deleteA3Action(){
      - "pct"  : % direct (sans quantité)
    ============================================================ */
 const OTD_DEFAUT = [
-  {key:'emb',   nom:'Emballage / Expédition', mode:'qte', objectif:95, series:['STD','URG','AOG']},
-  {key:'apu',   nom:'Manutention APU',        mode:'qte', objectif:95, series:['STD','URG','AOG']},
-  {key:'att',   nom:'Manutention ATT',        mode:'qte', objectif:95, series:['STD','URG','AOG']},
-  {key:'recep', nom:'Réception CRIM',         mode:'pct', objectif:95, series:['Avant détails','Après détails']},
+  {key:'recep', nom:'Réception',    mode:'pct_qte', objectif:95, couleur:'#0c66e4', series:['Récep Avant détails','Récep Après détails']},
+  {key:'rapu',  nom:'Récep. APU',   mode:'qte',     objectif:95, couleur:'#22a06b', series:['OTD']},
+  {key:'ratt',  nom:'Récep. ATT',   mode:'qte',     objectif:95, couleur:'#00a3bf', series:['OTD']},
+  {key:'emb',   nom:'Emballage',    mode:'qte',     objectif:95, couleur:'#6554c0', series:['STD','URG','AOG']},
+  {key:'mapu',  nom:'Manut. APU',   mode:'qte',     objectif:95, couleur:'#e77b1e', series:['STD','URG','AOG']},
+  {key:'matt',  nom:'Manut. ATT',   mode:'qte',     objectif:95, couleur:'#d6377b', series:['STD','URG','AOG']},
 ];
 function otdActivites(b){
   return (b.config && b.config.activites) ? b.config.activites : OTD_DEFAUT;
@@ -4080,20 +4262,28 @@ function renderOtdBoard(main, b){
 
   const toolbar = `<div class="board-toolbar">
     <div class="seg">
-      <button class="${route.sub!=='synthese'?'active':''}" onclick="setSub('saisie')">✎ Saisie</button>
+      <button class="${route.sub==='mois'?'active':''}" onclick="setSub('mois')">▦ Mois</button>
+      <button class="${route.sub==='saisie'?'active':''}" onclick="setSub('saisie')">✎ Semaine</button>
       <button class="${route.sub==='synthese'?'active':''}" onclick="setSub('synthese')">📊 Synthèse hebdo</button>
     </div>
-    <div class="seg">
+    ${route.sub==='mois'?`<div class="seg">
+      <button onclick="otdMois(-1)">◀</button>
+      <button class="active" style="min-width:132px">${new Date(otdMoisCourant()+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</button>
+      <button onclick="otdMois(1)">▶</button>
+    </div>
+    <button class="btn small ghost" onclick="ui.otdMois=null;renderMain()">↦ Mois en cours</button>`
+    :`<div class="seg">
       <button onclick="otdSemaine(-1)">◀</button>
       <button class="active" style="min-width:112px">Semaine ${String(sem).padStart(2,'0')}</button>
       <button onclick="otdSemaine(1)">▶</button>
     </div>
-    <button class="btn small ghost" onclick="ui.otdLundi=fmtDate(lundiDe(new Date()));renderMain()">↦ Semaine en cours</button>
+    <button class="btn small ghost" onclick="ui.otdLundi=fmtDate(lundiDe(new Date()));renderMain()">↦ Semaine en cours</button>`}
     <div class="toolbar-spacer"></div>
-    <span style="font-size:11px;color:var(--muted);font-weight:600">${fmtFR(fmtDate(jours[0]))} → ${fmtFR(fmtDate(jours[jours.length-1]))}</span>
-    ${route.sub==='synthese'?'<button class="btn small primary" onclick="captureScreen()">📸 Capture de la synthèse</button>':'<button class="btn small" onclick="openOtdConfig()">⚙ Activités</button>'}
+    <button class="btn small" onclick="openOtdConfig()">⚙ Activités</button>
+    <button class="btn small primary" onclick="captureScreen()">📸 Capture</button>
   </div>`;
 
+  if(route.sub==='mois'){ main.innerHTML = `<div style="display:flex;flex-direction:column;height:100%">${toolbar}${renderOtdMois(b, acts)}</div>`; return; }
   if(route.sub==='synthese'){ main.innerHTML = `<div style="display:flex;flex-direction:column;height:100%">${toolbar}${otdSyntheseHtml(b, acts, jours, sem)}</div>`; return; }
 
   const entete = jours.map(j=>`<th class="otd-day ${fmtDate(j)===fmtDate(todayMid())?'today':''}">${j.toLocaleDateString('fr-FR',{weekday:'short'})}<span>${String(j.getDate()).padStart(2,'0')}/${String(j.getMonth()+1).padStart(2,'0')}</span></th>`).join('');
@@ -4208,7 +4398,7 @@ function openOtdConfig(){
     <div class="modal-head">Activités suivies</div>
     <div class="modal-body">
       <div id="otd-acts">
-        ${acts.map((a,i)=>`<div class="otd-cfg" data-key="${a.key}">
+        ${acts.map((a,i)=>`<div class="otd-cfg" data-key="${a.key}" data-couleur="${a.couleur||OTD_PALETTE[i%OTD_PALETTE.length]}">
           <div class="otd-cfg-top">
             <input type="text" class="c-nom" value="${escAttr(a.nom)}" placeholder="Nom de l'activité">
             <button class="del-task" onclick="this.closest('.otd-cfg').remove()">✕</button>
@@ -4216,8 +4406,9 @@ function openOtdConfig(){
           <div class="field-row-3">
             <div class="field"><label>Mode</label>
               <select class="c-mode">
-                <option value="qte" ${a.mode==='qte'?'selected':''}>Quantité + %</option>
-                <option value="pct" ${a.mode==='pct'?'selected':''}>% direct</option>
+                <option value="qte" ${a.mode==='qte'?'selected':''}>Quantité + % par série</option>
+                <option value="pct_qte" ${a.mode==='pct_qte'?'selected':''}>% + quantité partagée</option>
+                <option value="pct" ${a.mode==='pct'?'selected':''}>% direct (non pondéré)</option>
               </select>
             </div>
             <div class="field"><label>Objectif %</label><input type="number" class="c-obj" value="${a.objectif}"></div>
@@ -4240,13 +4431,14 @@ function openOtdConfig(){
 }
 function otdAddActivite(){
   const div = document.createElement('div');
-  div.innerHTML = `<div class="otd-cfg" data-key="new-${uid()}">
+  const n = document.querySelectorAll('#otd-acts .otd-cfg').length;
+  div.innerHTML = `<div class="otd-cfg" data-key="new-${uid()}" data-couleur="${OTD_PALETTE[n%OTD_PALETTE.length]}">
     <div class="otd-cfg-top">
       <input type="text" class="c-nom" value="" placeholder="Nom de l'activité">
       <button class="del-task" onclick="this.closest('.otd-cfg').remove()">✕</button>
     </div>
     <div class="field-row-3">
-      <div class="field"><label>Mode</label><select class="c-mode"><option value="qte">Quantité + %</option><option value="pct">% direct</option></select></div>
+      <div class="field"><label>Mode</label><select class="c-mode"><option value="qte">Quantité + % par série</option><option value="pct_qte">% + quantité partagée</option><option value="pct">% direct (non pondéré)</option></select></div>
       <div class="field"><label>Objectif %</label><input type="number" class="c-obj" value="95"></div>
       <div class="field"><label>Séries</label><input type="text" class="c-series" value="STD, URG, AOG"></div>
     </div>
@@ -4260,6 +4452,7 @@ async function saveOtdConfig(){
     nom: el.querySelector('.c-nom').value.trim() || 'Activité',
     mode: el.querySelector('.c-mode').value,
     objectif: parseFloat(el.querySelector('.c-obj').value)||95,
+    couleur: el.dataset.couleur || OTD_PALETTE[0],
     series: el.querySelector('.c-series').value.split(',').map(x=>x.trim()).filter(Boolean),
   })).filter(a=>a.series.length);
   const jours = parseInt(document.getElementById('otd-jours').value,10)||5;
@@ -4362,6 +4555,174 @@ function renderNews(main){
 
 <script>
 /* ============================================================
+   VUE MENSUELLE SQDCP — grille jours ouvrés / semaines / mois
+   ============================================================ */
+const OTD_PALETTE = ['#0c66e4','#22a06b','#00a3bf','#6554c0','#e77b1e','#d6377b','#5e6c84'];
+const QTE_SERIE = '__qte__';   /* quantité partagée (mode pct_qte) */
+
+function otdMoisCourant(){
+  if(!ui.otdMois){ const t = todayMid(); ui.otdMois = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0'); }
+  return ui.otdMois;
+}
+function moisJoursOuvres(ym){
+  const [y,m] = ym.split('-').map(Number);
+  const out = [];
+  const d = new Date(y, m-1, 1);
+  while(d.getMonth() === m-1){
+    const key = fmtDate(d);
+    if(d.getDay()!==0 && d.getDay()!==6 && !FRENCH_HOLIDAYS.has(key)) out.push(new Date(d));
+    d.setDate(d.getDate()+1);
+  }
+  return out;
+}
+/* Colonnes : jours ouvrés entrecoupés d'une colonne de synthèse à la fin de chaque semaine */
+function moisColonnes(ym){
+  const jours = moisJoursOuvres(ym);
+  const cols = [];
+  jours.forEach((j,i)=>{
+    cols.push({type:'jour', d:j});
+    const suivant = jours[i+1];
+    if(!suivant || numSemaine(suivant)!==numSemaine(j)){
+      cols.push({type:'semaine', sem:numSemaine(j), jours: jours.filter(x=>numSemaine(x)===numSemaine(j))});
+    }
+  });
+  cols.push({type:'mois', jours});
+  return cols;
+}
+function otdRaw(boardId, act, serie, jour){
+  const v = otdVal(boardId, act, serie, jour);
+  return v || {};
+}
+/* Quantité servant de poids pour une série un jour donné */
+function otdPoids(boardId, a, serie, key){
+  if(a.mode==='pct') return 1;
+  if(a.mode==='pct_qte'){ const q = otdRaw(boardId, a.key, QTE_SERIE, key).quantite; return Number(q||0); }
+  return Number(otdRaw(boardId, a.key, serie, key).quantite||0);
+}
+/* Moyenne pondérée d'une série sur une liste de jours */
+function otdSerieMoy(boardId, a, serie, jours){
+  let sq=0, sqp=0, sp=0, n=0;
+  jours.forEach(j=>{
+    const key = fmtDate(j);
+    const p = otdRaw(boardId, a.key, serie, key).pct;
+    if(p==null || p==='' || isNaN(Number(p))) return;
+    const pct = Number(p);
+    if(a.mode==='pct'){ sp+=pct; n++; return; }
+    const q = otdPoids(boardId, a, serie, key);
+    if(q>0){ sq+=q; sqp+=q*pct; }
+  });
+  if(a.mode==='pct') return n ? Math.round(sp/n*10)/10 : null;
+  return sq>0 ? Math.round(sqp/sq*10)/10 : null;
+}
+/* Global de l'activité (toutes séries) */
+function otdGlobal(boardId, a, jours){
+  let sq=0, sqp=0, sp=0, n=0;
+  jours.forEach(j=>{
+    const key = fmtDate(j);
+    a.series.forEach(se=>{
+      const p = otdRaw(boardId, a.key, se, key).pct;
+      if(p==null || p==='' || isNaN(Number(p))) return;
+      const pct = Number(p);
+      if(a.mode==='pct'){ sp+=pct; n++; return; }
+      const q = otdPoids(boardId, a, se, key);
+      if(q>0){ sq+=q; sqp+=q*pct; }
+    });
+  });
+  if(a.mode==='pct') return n ? Math.round(sp/n*10)/10 : null;
+  return sq>0 ? Math.round(sqp/sq*10)/10 : null;
+}
+function otdQteSomme(boardId, a, serie, jours){
+  let s=0, vu=false;
+  jours.forEach(j=>{
+    const q = otdRaw(boardId, a.key, serie, fmtDate(j)).quantite;
+    if(q!=null && q!=='' && !isNaN(Number(q))){ s += Number(q); vu=true; }
+  });
+  return vu ? s : null;
+}
+function sqCellPct(val, objectif){
+  if(val==null) return {txt:'NA', cls:'sq-na'};
+  const c = otdCouleur(val, objectif);
+  return {txt:(Math.round(val*10)/10).toString().replace('.',',')+'%', style:`color:${c.c};background:${c.bg}`};
+}
+
+function renderOtdMois(b, acts){
+  const ym = otdMoisCourant();
+  const cols = moisColonnes(ym);
+  const jours = moisJoursOuvres(ym);
+  const [y,m] = ym.split('-').map(Number);
+  const libMois = new Date(y,m-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}).toUpperCase();
+
+  const thJours = cols.map(c=>{
+    if(c.type==='jour') return `<th class="sq-day ${fmtDate(c.d)===fmtDate(todayMid())?'today':''}"><b>${c.d.getDate()}</b><span>${c.d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3)}</span></th>`;
+    if(c.type==='semaine') return `<th class="sq-week">S${String(c.sem).padStart(2,'0')}</th>`;
+    return `<th class="sq-month">Moyenne<span>mensuelle</span></th>`;
+  }).join('');
+
+  const corps = acts.map((a,ai)=>{
+    const coul = a.couleur || OTD_PALETTE[ai%OTD_PALETTE.length];
+    const lignes = [];
+    /* ligne de quantité partagée (mode pct_qte) */
+    if(a.mode==='pct_qte'){
+      lignes.push({kind:'qte', serie:QTE_SERIE, label:'Quantité'});
+    }
+    a.series.forEach(se=>{
+      if(a.mode==='qte') lignes.push({kind:'qte', serie:se, label:'Qté traitée'+(a.series.length>1?' '+se:'')});
+      lignes.push({kind:'pct', serie:se, label:(a.mode==='pct'||a.mode==='pct_qte') ? se : '% OTD'+(a.series.length>1?' '+se:'')});
+    });
+    if(a.series.length>1 || a.mode==='qte') lignes.push({kind:'glob', label:'% Global'});
+
+    return lignes.map((L,li)=>{
+      const cellules = cols.map(c=>{
+        if(L.kind==='glob'){
+          const js = c.type==='jour' ? [c.d] : c.jours;
+          const v = otdGlobal(b.id, a, js);
+          const cc = sqCellPct(v, a.objectif);
+          return `<td class="sq-cell sq-globcell ${c.type!=='jour'?'sq-agg':''} ${cc.cls||''}" style="${cc.style||''}">${cc.txt}</td>`;
+        }
+        if(L.kind==='qte'){
+          if(c.type==='jour'){
+            const key = fmtDate(c.d);
+            const v = otdRaw(b.id, a.key, L.serie, key).quantite;
+            return `<td class="sq-cell"><input class="sq-in sq-q" type="number" value="${v!=null?v:''}" onchange="otdSave('${a.key}','${escAttr(L.serie)}','${key}','quantite',this.value)"></td>`;
+          }
+          const s = otdQteSomme(b.id, a, L.serie, c.jours);
+          return `<td class="sq-cell sq-agg sq-qagg">${s==null?'0':s}</td>`;
+        }
+        if(c.type==='jour'){
+          const key = fmtDate(c.d);
+          const v = otdRaw(b.id, a.key, L.serie, key).pct;
+          const cc = v!=null && v!=='' ? sqCellPct(Number(v), a.objectif) : {style:''};
+          return `<td class="sq-cell" style="${cc.style||''}"><input class="sq-in sq-p" type="number" step="0.1" placeholder="NA" value="${v!=null?v:''}" onchange="otdSave('${a.key}','${escAttr(L.serie)}','${key}','pct',this.value)"></td>`;
+        }
+        const v = otdSerieMoy(b.id, a, L.serie, c.jours);
+        const cc = sqCellPct(v, a.objectif);
+        return `<td class="sq-cell sq-agg ${cc.cls||''}" style="${cc.style||''}">${cc.txt}</td>`;
+      }).join('');
+      const tete = li===0 ? `<td class="sq-act" rowspan="${lignes.length}" style="background:${coul}1a;border-left:4px solid ${coul}"><span style="color:${coul}">${escapeHtml(a.nom)}</span><i>obj. ${a.objectif}%</i></td>` : '';
+      return `<tr class="${L.kind==='glob'?'sq-globrow':''}">${tete}<td class="sq-detail ${L.kind}">${escapeHtml(L.label)}</td>${cellules}</tr>`;
+    }).join('');
+  }).join('');
+
+  return `<div class="sq-scroll" id="sq-sheet">
+    <table class="sq-table">
+      <thead>
+        <tr><th class="sq-title" colspan="${cols.length+2}">SUIVI KPI SQDCP — ${libMois} · ${jours.length} jours ouvrés</th></tr>
+        <tr><th class="sq-h1">KPI</th><th class="sq-h2">Détail</th>${thJours}</tr>
+      </thead>
+      <tbody>${corps}</tbody>
+    </table>
+  </div>`;
+}
+function otdMois(delta){
+  const [y,m] = otdMoisCourant().split('-').map(Number);
+  const d = new Date(y, m-1+delta, 1);
+  ui.otdMois = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  renderMain();
+}
+</script>
+
+<script>
+/* ============================================================
    DERNIER BLOC — logique d'entrée + voyant.
    Si le voyant « Système prêt » est vert, ce bloc s'est exécuté :
    les boutons ci-dessous sont donc câblés, sans exception possible.
@@ -4439,7 +4800,7 @@ function tryUnlock(){
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v7.0 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v8.0 · boutons câblés'; st.classList.add('ready'); }
 })();
 </script>
 </body>
