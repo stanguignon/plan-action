@@ -906,67 +906,64 @@ body.presentation .m6-add, body.presentation .m6-del, body.presentation .a3-head
 
 
 /* ====== GRILLE MENSUELLE SQDCP ====== */
-.sq-scroll{flex:1;overflow:auto;padding:14px;background:var(--bg)}
-.sq-table{border-collapse:separate;border-spacing:0;font-size:11px;background:#fff;box-shadow:var(--shadow-sm)}
+.sq-scroll{flex:1;overflow:auto;padding:12px;background:var(--bg)}
+.sq-table{border-collapse:separate;border-spacing:0;font-size:10.5px;background:#fff;box-shadow:var(--shadow-md);border-radius:6px;overflow:hidden}
 .sq-title{
-  background:var(--navy);color:#fff;font-size:13px;font-weight:800;letter-spacing:.06em;padding:9px 14px;text-align:center;
-  position:sticky;top:0;z-index:40;
+  background:linear-gradient(90deg,#1f3864,#2b4a7d);color:#fff;font-size:13.5px;font-weight:800;letter-spacing:.1em;
+  padding:10px 14px;text-align:center;position:sticky;top:0;z-index:40;
 }
-.sq-table th{border:1px solid #cfd6e0}
-.sq-table td{border:1px solid #dfe3e8}
+.sq-title em{font-style:normal;opacity:.55;padding:0 8px}
+.sq-table th{border:1px solid #24406e}
+.sq-table td{border:1px solid #d7dce4}
 .sq-h1,.sq-h2{
-  background:var(--navy);color:#fff;font-size:10px;font-weight:800;letter-spacing:.05em;padding:6px 8px;
-  position:sticky;z-index:35;top:33px;
+  background:#1f3864;color:#fff;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 8px;
+  position:sticky;z-index:35;top:35px;
 }
-.sq-h1{left:0;width:104px;min-width:104px}
-.sq-h2{left:104px;width:132px;min-width:132px}
+.sq-h1{left:0;width:112px;min-width:112px}
+.sq-h2{left:112px;width:140px;min-width:140px}
 .sq-day,.sq-week,.sq-month{
-  background:var(--navy);color:#fff;font-size:9.5px;font-weight:700;padding:4px 3px;min-width:46px;
-  position:sticky;top:33px;z-index:30;text-align:center;line-height:1.25;
+  background:#1f3864;color:#fff;font-size:9.5px;font-weight:700;padding:3px 2px;min-width:44px;
+  position:sticky;top:35px;z-index:30;text-align:center;line-height:1.2;
 }
-.sq-day b{display:block;font-size:11px}
-.sq-day span{display:block;font-weight:500;opacity:.72;font-size:8.5px}
-.sq-day.today{background:#0c66e4}
-.sq-week{background:#2b4a7d;min-width:52px}
-.sq-month{background:#1b3663;min-width:64px}
-.sq-month span{display:block;font-weight:500;opacity:.72;font-size:8.5px}
+.sq-day b{display:block;font-size:11.5px}
+.sq-day span{display:block;font-weight:500;opacity:.65;font-size:8px;text-transform:lowercase}
+.sq-day.today{background:#e34935}
+.sq-week{background:#2f6db5;min-width:50px;font-size:10.5px;font-weight:800}
+.sq-month{background:#132c52;min-width:62px}
+.sq-month span{display:block;font-weight:500;opacity:.65;font-size:8px}
 .sq-act{
-  position:sticky;left:0;z-index:20;width:104px;min-width:104px;font-weight:800;font-size:11px;
-  padding:6px 8px;vertical-align:middle;text-align:center;background:#fff;
+  position:sticky;left:0;z-index:20;width:112px;min-width:112px;font-weight:800;font-size:11px;
+  padding:5px 7px;vertical-align:middle;text-align:center;
 }
-.sq-act span{display:block;line-height:1.25}
-.sq-act i{display:block;font-style:normal;font-size:8.5px;color:var(--muted-2);font-weight:600;margin-top:3px}
+.sq-act span{display:block;line-height:1.2}
+.sq-act i{display:block;font-style:normal;font-size:8px;opacity:.65;font-weight:700;margin-top:2px}
 .sq-detail{
-  position:sticky;left:104px;z-index:20;width:132px;min-width:132px;background:var(--panel-2);
-  font-size:10px;font-weight:600;color:var(--muted);padding:3px 8px;white-space:nowrap;
+  position:sticky;left:112px;z-index:20;width:140px;min-width:140px;
+  font-size:10px;padding:2px 8px;white-space:nowrap;letter-spacing:.01em;
 }
-.sq-detail.pct{background:#eaf4ee;color:#1a6b4a}
-.sq-detail.glob{background:var(--navy);color:#fff;font-weight:800;letter-spacing:.03em}
-.sq-cell{padding:0;text-align:center;height:23px}
+.sq-cell{padding:0;text-align:center;height:21px;position:relative}
+.sq-num{display:flex;align-items:center;justify-content:center;gap:1px}
+.sq-num b{font-family:var(--mono);font-size:9px;font-weight:800;opacity:.75}
 .sq-in{
-  width:100%;border:none;background:transparent;text-align:center;font-family:var(--mono);font-size:10.5px;
-  padding:3px 2px;color:inherit;font-weight:600;
+  border:none;background:transparent;text-align:center;font-family:var(--mono);font-size:10px;
+  padding:2px 1px;color:inherit;font-weight:700;width:100%;min-width:0;
 }
-.sq-in:focus{outline:2px solid var(--primary);outline-offset:-2px;background:#fff}
-.sq-in.sq-q{color:var(--muted);font-weight:500}
-.sq-in::placeholder{color:#c4cad3;font-weight:500}
-.sq-agg{background:#eef2f8;font-family:var(--mono);font-weight:800;font-size:10.5px;padding:3px}
-.sq-qagg{color:var(--muted)}
-.sq-na{color:#b3bac5;font-family:var(--mono);font-size:10px}
-.sq-globrow td{border-top:2px solid var(--navy);border-bottom:2px solid var(--navy)}
-.sq-globcell{font-family:var(--mono);font-weight:800;font-size:10.5px;background:#f7f8fa}
-
-/* ====== IMPORT EXCEL ====== */
-.imp-steps{font-size:11.5px;color:var(--muted);line-height:1.75;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 13px;margin-bottom:11px}
-.imp-txt{width:100%;min-height:120px;font-family:var(--mono);font-size:10.5px;background:var(--panel-2);border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;resize:vertical;white-space:pre;overflow:auto}
-.imp-txt:focus{outline:none;border-color:var(--primary);background:#fff}
-.imp-ok{font-size:11.5px;color:#1a6b4a;background:var(--green-soft);border:1px solid #b9e3cd;border-radius:8px;padding:9px 12px;margin:11px 0;line-height:1.5}
-.imp-warn{font-size:11.5px;color:#8a2a1d;background:var(--red-soft);border:1px solid #f2c4bd;border-radius:8px;padding:9px 12px;margin:11px 0}
-.imp-map{max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;padding:8px}
-.imp-row{display:flex;align-items:center;gap:8px;padding:3px 0}
-.imp-lib{font-size:11.5px;font-weight:600;width:180px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.imp-arrow{color:var(--muted-2);flex-shrink:0}
-.imp-sel{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:11px}
+.sq-num .sq-in{text-align:right;width:calc(100% - 10px)}
+.sq-in:focus{outline:2px solid var(--primary);outline-offset:-2px;background:#fff;border-radius:2px}
+.sq-in::placeholder{color:#c9ced6;font-weight:600}
+.sq-qcell{background:#fff}
+.sq-in.sq-q{color:#5e6c84;font-weight:600}
+.sq-agg{font-family:var(--mono);font-weight:800;font-size:10px;padding:2px}
+.sq-wk{border-left:2px solid #2f6db5 !important;border-right:2px solid #2f6db5 !important}
+.sq-mo{border-left:3px solid #132c52 !important}
+.sq-qagg{background:#eef2f8;color:#42526e}
+.sq-globrow td{border-top:2px solid #6b2fa0;border-bottom:2px solid #6b2fa0}
+.sq-globcell{font-family:var(--mono);font-weight:800;font-size:10px}
+.sq-legend{display:flex;gap:15px;flex-wrap:wrap;padding:11px 4px 26px;font-size:10.5px;color:var(--muted);font-weight:600}
+.sq-legend span{display:flex;align-items:center;gap:6px}
+.sq-legend i{width:13px;height:13px;border-radius:3px;border:1px solid #cfd6e0;display:inline-block}
+.sq-legend i.tri{border:none;width:0;height:0;border-top:9px solid var(--red);border-left:9px solid transparent;border-radius:0}
+.sq-cfg{border:1px solid var(--line);border-radius:9px}
 
 /* ====== ACCUEIL : modes d'affichage ====== */
 .home-bar{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px;flex-wrap:wrap}
@@ -1189,6 +1186,7 @@ window.__paErrors = [];
   <div class="modal" id="modal-content"></div>
 </div>
 
+<div class="note-pop" id="note-pop"></div>
 <div class="toast" id="toast"><span class="t-dot"></span><span id="toast-msg"></span></div>
 <script>
 /* ============================================================
@@ -3673,7 +3671,7 @@ function slug(s){ return (s||'export').toLowerCase().normalize('NFD').replace(/[
 document.addEventListener('keydown', (e)=>{
   const tag = (document.activeElement||{}).tagName;
   const typing = tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';
-  if(e.key==='Escape'){ closeDrawer(); closeModal(); return; }
+  if(e.key==='Escape'){ otdFermerNote(); closeDrawer(); closeModal(); return; }
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='z' && !typing){ e.preventDefault(); undoLast(); return; }
 });
 
@@ -3689,6 +3687,10 @@ function showToast(msg){
   showToast._tm = setTimeout(()=>t.classList.remove('show'), 2600);
 }
 window.addEventListener('resize', ()=>{ if(route.view==='board') requestAnimationFrame(drawDependencies); });
+document.addEventListener('mousedown', (e)=>{
+  const pop = document.getElementById('note-pop');
+  if(pop && pop.classList.contains('show') && !pop.contains(e.target)) otdFermerNote();
+});
 </script>
 
 <script>
@@ -4304,7 +4306,7 @@ function renderOtdBoard(main, b){
     </div>
     <button class="btn small ghost" onclick="ui.otdLundi=fmtDate(lundiDe(new Date()));renderMain()">↦ Semaine en cours</button>`}
     <div class="toolbar-spacer"></div>
-    ${route.sub==='mois'?'<button class="btn small" onclick="openOtdImport()">⬆ Importer depuis Excel</button>':''}
+    ${route.sub==='mois'?'<button class="btn small" onclick="openOtdImport()">⬆ Importer depuis Excel</button><button class="btn small danger" onclick="otdViderMois()">🗑 Vider le mois</button>':''}
     <button class="btn small" onclick="openOtdConfig()">⚙ Activités</button>
     <button class="btn small primary" onclick="captureScreen()">📸 Capture</button>
   </div>`;
@@ -4321,9 +4323,11 @@ function renderOtdBoard(main, b){
       const cellules = jours.map(j=>{
         const key = fmtDate(j);
         const v = otdVal(b.id, a.key, se, key) || {};
-        return `<td class="otd-cell">
+        const note = otdNoteTxt(b.id, a.key, se, key);
+        return `<td class="otd-cell${note?' has-note':''}" ${noteAttrs(a.key, se, key, note)}>
           ${a.mode==='qte'?`<input type="number" class="otd-q" placeholder="qté" value="${v.quantite!=null?v.quantite:''}" onchange="otdSave('${a.key}','${escAttr(se)}','${key}','quantite',this.value)">`:''}
           <input type="number" step="0.1" class="otd-p" placeholder="%" value="${v.pct!=null?v.pct:''}" onchange="otdSave('${a.key}','${escAttr(se)}','${key}','pct',this.value)">
+          ${note?'<i class="sq-note"></i>':''}
         </td>`;
       }).join('');
       const moyenne = otdCalc(b.id, {...a, series:[se]}, jours);
@@ -4352,6 +4356,69 @@ function renderOtdBoard(main, b){
       <div class="otd-hint">Saisis la quantité traitée et le % OTD par priorité : le % global est recalculé en moyenne pondérée par les quantités, comme dans ton fichier SQDCP.</div>
     </div></div>`;
 }
+/* ============ COMMENTAIRES DE CELLULE (façon Excel) ============ */
+function noteAttrs(act, serie, jour, note){
+  return `oncontextmenu="otdOuvrirNote(event,'${act}','${escAttr(serie)}','${jour}')" `
+       + `ondblclick="otdOuvrirNote(event,'${act}','${escAttr(serie)}','${jour}')"`
+       + (note ? ` title="${escAttr(note)}"` : '');
+}
+let noteCtx = null;
+function otdOuvrirNote(ev, act, serie, jour){
+  if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+  const b = currentBoard();
+  noteCtx = {act, serie, jour};
+  const actuel = otdNoteTxt(b.id, act, serie, jour);
+  const a = otdActivites(b).find(x=>x.key===act);
+  const pop = document.getElementById('note-pop');
+  const libSerie = (serie===GLOB_SERIE) ? '% Global' : (serie===QTE_SERIE ? (a&&a.qteLabel||'Quantité') : (serie||'OTD'));
+  pop.innerHTML = `<div class="np-head">${escapeHtml(a?a.nom:'')} · ${escapeHtml(libSerie)}<span>${fmtFR(jour)}</span></div>
+    <textarea id="np-txt" placeholder="Justification : panne, absence, pic d'activité, blocage client…">${escapeHtml(actuel)}</textarea>
+    <div class="np-foot">
+      ${actuel?'<button class="btn small danger" onclick="otdSupprimerNote()">Supprimer</button>':''}
+      <span style="flex:1"></span>
+      <button class="btn small ghost" onclick="otdFermerNote()">Annuler</button>
+      <button class="btn small primary" onclick="otdEnregistrerNote()">Enregistrer</button>
+    </div>`;
+  pop.classList.add('show');
+  const x = Math.min((ev?ev.clientX:200), window.innerWidth-320);
+  const y = Math.min((ev?ev.clientY:200), window.innerHeight-230);
+  pop.style.left = Math.max(8,x)+'px';
+  pop.style.top = Math.max(8,y)+'px';
+  setTimeout(()=>{ const t=document.getElementById('np-txt'); if(t) t.focus(); }, 40);
+}
+function otdFermerNote(){
+  const pop = document.getElementById('note-pop');
+  if(pop) pop.classList.remove('show');
+  noteCtx = null;
+}
+async function otdEnregistrerNote(){
+  if(!noteCtx) return;
+  const txt = (document.getElementById('np-txt').value||'').trim();
+  await otdSaveChamp(noteCtx.act, noteCtx.serie, noteCtx.jour, 'commentaire', txt||null);
+  otdFermerNote();
+  renderMain();
+  showToast(txt?'Commentaire enregistré':'Commentaire supprimé');
+}
+async function otdSupprimerNote(){
+  if(!noteCtx) return;
+  await otdSaveChamp(noteCtx.act, noteCtx.serie, noteCtx.jour, 'commentaire', null);
+  otdFermerNote();
+  renderMain();
+  showToast('Commentaire supprimé');
+}
+async function otdSaveChamp(act, serie, jour, champ, valeur){
+  const b = currentBoard();
+  const v = otdVal(b.id, act, serie, jour);
+  if(v){
+    const patch = {}; patch[champ] = valeur;
+    await dbUpdate('otd_values', v.id, patch);
+  } else {
+    const row = {board_id:b.id, activite:act, serie, jour, quantite:null, pct:null, commentaire:null};
+    row[champ] = valeur;
+    await dbInsert('otd_values', row);
+  }
+}
+
 function otdSemaine(delta){
   ui.otdLundi = fmtDate(addDays(otdSemaineCourante(), delta*7));
   renderMain();
@@ -4364,7 +4431,7 @@ async function otdSave(act, serie, jour, champ, valeur){
     const patch = {}; patch[champ] = val;
     await dbUpdate('otd_values', v.id, patch);
   } else {
-    const row = {board_id:b.id, activite:act, serie, jour, quantite:null, pct:null};
+    const row = {board_id:b.id, activite:act, serie, jour, quantite:null, pct:null, commentaire:null};
     row[champ] = val;
     await dbInsert('otd_values', row);
   }
@@ -4412,6 +4479,15 @@ function otdSyntheseHtml(b, acts, jours, sem){
       <thead><tr><th class="sy-act-h">Activité</th>${entete}<th class="sy-moy-h">Moyenne semaine</th><th>vs S-1</th><th>Statut</th></tr></thead>
       <tbody>${lignes}</tbody>
     </table>
+    ${(function(){
+      const notes = otdNotes(b.id, jours);
+      if(!notes.length) return '';
+      const nomAct = k=>{ const a2 = acts.find(x=>x.key===k); return a2?a2.nom:k; };
+      return `<div class="sy-notes">
+        <div class="sy-notes-t">Faits marquants de la semaine</div>
+        ${notes.map(n=>`<div class="sy-note"><span class="sn-j">${fmtFR(n.jour)}</span><span class="sn-a">${escapeHtml(nomAct(n.activite))}${n.serie&&n.serie!==GLOB_SERIE&&n.serie!==QTE_SERIE?' · '+escapeHtml(n.serie):''}</span><span class="sn-t">${escapeHtml(n.commentaire)}</span></div>`).join('')}
+      </div>`;
+    })()}
     <div class="sy-foot">Moyennes pondérées par les quantités traitées · généré le ${new Date().toLocaleDateString('fr-FR')} par ${escapeHtml(ui.userName||'')}</div>
   </div>`;
 }
@@ -4629,6 +4705,18 @@ function moisColonnes(ym){
   cols.push({type:'mois', jours});
   return cols;
 }
+const GLOB_SERIE = '__glob__';
+function otdNoteTxt(boardId, act, serie, jour){
+  const v = otdVal(boardId, act, serie, jour);
+  return (v && v.commentaire) ? v.commentaire : '';
+}
+/* Tous les commentaires d'une période, pour la synthèse */
+function otdNotes(boardId, jours){
+  const keys = new Set(jours.map(fmtDate));
+  return state.otd_values
+    .filter(v=>v.board_id===boardId && v.commentaire && keys.has(v.jour))
+    .sort((a,b)=>a.jour.localeCompare(b.jour));
+}
 function otdRaw(boardId, act, serie, jour){
   const v = otdVal(boardId, act, serie, jour);
   return v || {};
@@ -4679,6 +4767,32 @@ function otdQteSomme(boardId, a, serie, jours){
   });
   return vu ? s : null;
 }
+const SQ_PAL = {
+  ok:      {bg:'#c6efce', c:'#0b6b32'},
+  bon:     {bg:'#dff3e3', c:'#0b6b32'},
+  moyen:   {bg:'#ffeb9c', c:'#8a5a00'},
+  mauvais: {bg:'#ffc7ce', c:'#9c0006'},
+  na:      {bg:'#f4f5f7', c:'#b3bac5'},
+};
+function sqFill(v, obj){
+  if(v==null || isNaN(v)) return SQ_PAL.na;
+  if(v>=100) return SQ_PAL.ok;
+  if(v>=obj) return SQ_PAL.bon;
+  if(v>=obj-5) return SQ_PAL.moyen;
+  return SQ_PAL.mauvais;
+}
+function sqTxt(v){
+  if(v==null || isNaN(v)) return 'NA';
+  return (Math.round(v*10)/10).toString().replace('.',',')+'%';
+}
+function sqLabelStyle(L){
+  if(L.kind==='glob') return 'background:#6b2fa0;color:#fff;font-weight:800';
+  if(L.kind==='qte')  return 'background:#fff;color:#5e6c84;font-weight:600';
+  const se = sansAccents(L.serie||'');
+  if(se.indexOf('urg')>=0) return 'background:#ffd966;color:#7a5800;font-weight:800';
+  if(se.indexOf('aog')>=0) return 'background:#f5615c;color:#fff;font-weight:800';
+  return 'background:#c6e0b4;color:#1e5230;font-weight:800';
+}
 function sqCellPct(val, objectif){
   if(val==null) return {txt:'NA', cls:'sq-na'};
   const c = otdCouleur(val, objectif);
@@ -4693,7 +4807,10 @@ function renderOtdMois(b, acts){
   const libMois = new Date(y,m-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}).toUpperCase();
 
   const thJours = cols.map(c=>{
-    if(c.type==='jour') return `<th class="sq-day ${fmtDate(c.d)===fmtDate(todayMid())?'today':''}"><b>${c.d.getDate()}</b><span>${c.d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3)}</span></th>`;
+    if(c.type==='jour'){
+      const we = c.d.getDay();
+      return `<th class="sq-day${fmtDate(c.d)===fmtDate(todayMid())?' today':''}"><b>${c.d.getDate()}</b><span>${['dim','lun','mar','mer','jeu','ven','sam'][we]}</span></th>`;
+    }
     if(c.type==='semaine') return `<th class="sq-week">S${String(c.sem).padStart(2,'0')}</th>`;
     return `<th class="sq-month">Moyenne<span>mensuelle</span></th>`;
   }).join('');
@@ -4705,52 +4822,91 @@ function renderOtdMois(b, acts){
       if(a.mode==='qte') lignes.push({kind:'qte', serie:se, label:'Qté traitée'+(se?' '+se:'')});
       lignes.push({kind:'pct', serie:se, label:(a.mode==='pct'||a.mode==='pct_qte') ? se : '% OTD'+(se?' '+se:'')});
     });
-    /* quantité partagée : ligne placée sous les pourcentages, comme dans le fichier SQDCP */
     if(a.mode==='pct_qte') lignes.push({kind:'qte', serie:QTE_SERIE, label:a.qteLabel||'Quantité de colis'});
     if(a.global!==false && (a.series.filter(Boolean).length>1 || a.mode==='qte'))
       lignes.push({kind:'glob', label:'% Global'+(a.court?' '+a.court:'')});
 
     return lignes.map((L,li)=>{
       const cellules = cols.map(c=>{
+        const cls = c.type==='semaine' ? ' sq-wk' : (c.type==='mois' ? ' sq-mo' : '');
+
+        /* ---- ligne % Global ---- */
         if(L.kind==='glob'){
           const js = c.type==='jour' ? [c.d] : c.jours;
           const v = otdGlobal(b.id, a, js);
-          const cc = sqCellPct(v, a.objectif);
-          return `<td class="sq-cell sq-globcell ${c.type!=='jour'?'sq-agg':''} ${cc.cls||''}" style="${cc.style||''}">${cc.txt}</td>`;
+          const f = sqFill(v, a.objectif);
+          if(c.type!=='jour')
+            return `<td class="sq-cell sq-agg sq-globcell${cls}" style="background:${f.bg};color:${f.c}">${sqTxt(v)}</td>`;
+          const key = fmtDate(c.d);
+          const note = otdNoteTxt(b.id, a.key, GLOB_SERIE, key);
+          return `<td class="sq-cell sq-globcell${note?' has-note':''}" style="background:${f.bg};color:${f.c}" ${noteAttrs(a.key, GLOB_SERIE, key, note)}>${sqTxt(v)}${note?'<i class="sq-note"></i>':''}</td>`;
         }
+
+        /* ---- lignes de quantité ---- */
         if(L.kind==='qte'){
           if(c.type==='jour'){
             const key = fmtDate(c.d);
             const v = otdRaw(b.id, a.key, L.serie, key).quantite;
-            return `<td class="sq-cell"><input class="sq-in sq-q" type="number" value="${v!=null?v:''}" onchange="otdSave('${a.key}','${escAttr(L.serie)}','${key}','quantite',this.value)"></td>`;
+            const note = otdNoteTxt(b.id, a.key, L.serie, key);
+            return `<td class="sq-cell sq-qcell${note?' has-note':''}" ${noteAttrs(a.key, L.serie, key, note)}><input class="sq-in sq-q" type="number" value="${v!=null?v:''}" onchange="otdSave('${a.key}','${escAttr(L.serie)}','${key}','quantite',this.value)">${note?'<i class="sq-note"></i>':''}</td>`;
           }
-          const s = otdQteSomme(b.id, a, L.serie, c.jours);
-          return `<td class="sq-cell sq-agg sq-qagg">${s==null?'0':s}</td>`;
+          const s2 = otdQteSomme(b.id, a, L.serie, c.jours);
+          return `<td class="sq-cell sq-agg sq-qagg${cls}">${s2==null?'—':s2}</td>`;
         }
+
+        /* ---- lignes de pourcentage ---- */
         if(c.type==='jour'){
           const key = fmtDate(c.d);
-          const v = otdRaw(b.id, a.key, L.serie, key).pct;
-          const cc = v!=null && v!=='' ? sqCellPct(Number(v), a.objectif) : {style:''};
-          return `<td class="sq-cell" style="${cc.style||''}"><input class="sq-in sq-p" type="number" step="0.1" placeholder="NA" value="${v!=null?v:''}" onchange="otdSave('${a.key}','${escAttr(L.serie)}','${key}','pct',this.value)"></td>`;
+          const raw = otdRaw(b.id, a.key, L.serie, key).pct;
+          const v = (raw==null||raw==='') ? null : Number(raw);
+          const f = sqFill(v, a.objectif);
+          const note = otdNoteTxt(b.id, a.key, L.serie, key);
+          return `<td class="sq-cell sq-pcell${note?' has-note':''}" style="background:${f.bg}" ${noteAttrs(a.key, L.serie, key, note)}>
+            <span class="sq-num"><input class="sq-in sq-p" type="text" inputmode="decimal" placeholder="NA" style="color:${f.c}" value="${v==null?'':String(v).replace('.',',')}" onchange="otdSave('${a.key}','${escAttr(L.serie)}','${key}','pct', numFR(this.value))"><b style="color:${f.c}">${v==null?'':'%'}</b></span>${note?'<i class="sq-note"></i>':''}</td>`;
         }
-        const v = otdSerieMoy(b.id, a, L.serie, c.jours);
-        const cc = sqCellPct(v, a.objectif);
-        return `<td class="sq-cell sq-agg ${cc.cls||''}" style="${cc.style||''}">${cc.txt}</td>`;
+        const v2 = otdSerieMoy(b.id, a, L.serie, c.jours);
+        const f2 = sqFill(v2, a.objectif);
+        return `<td class="sq-cell sq-agg${cls}" style="background:${f2.bg};color:${f2.c}">${sqTxt(v2)}</td>`;
       }).join('');
-      const tete = li===0 ? `<td class="sq-act" rowspan="${lignes.length}" style="background:${coul}1a;border-left:4px solid ${coul}"><span style="color:${coul}">${escapeHtml(a.nom)}</span><i>obj. ${a.objectif}%</i></td>` : '';
-      return `<tr class="${L.kind==='glob'?'sq-globrow':''}">${tete}<td class="sq-detail ${L.kind}">${escapeHtml(L.label)}</td>${cellules}</tr>`;
+
+      const tete = li===0
+        ? `<td class="sq-act" rowspan="${lignes.length}" style="background:${coul}1c;border-left:5px solid ${coul}"><span style="color:${coul}">${escapeHtml(a.nom)}</span><i>obj. ${a.objectif}%</i></td>`
+        : '';
+      return `<tr class="${L.kind==='glob'?'sq-globrow':''}">${tete}<td class="sq-detail" style="${sqLabelStyle(L)}">${escapeHtml(L.label)}</td>${cellules}</tr>`;
     }).join('');
   }).join('');
 
   return `<div class="sq-scroll" id="sq-sheet">
     <table class="sq-table">
       <thead>
-        <tr><th class="sq-title" colspan="${cols.length+2}">SUIVI KPI SQDCP — ${libMois} · ${jours.length} jours ouvrés</th></tr>
+        <tr><th class="sq-title" colspan="${cols.length+2}">SUIVI KPI SQDCP — ${libMois} <em>·</em> ${jours.length} jours ouvrés</th></tr>
         <tr><th class="sq-h1">KPI</th><th class="sq-h2">Détail</th>${thJours}</tr>
       </thead>
       <tbody>${corps}</tbody>
     </table>
+    <div class="sq-legend">
+      <span><i style="background:#c6efce"></i>100 %</span>
+      <span><i style="background:#dff3e3"></i>objectif tenu</span>
+      <span><i style="background:#ffeb9c"></i>à moins de 5 points</span>
+      <span><i style="background:#ffc7ce"></i>sous objectif</span>
+      <span><i style="background:#f4f5f7"></i>NA</span>
+      <span><i class="tri"></i>commentaire — clic droit ou double-clic sur une cellule</span>
+    </div>
   </div>`;
+}
+
+async function otdViderMois(){
+  const b = currentBoard();
+  const ym = otdMoisCourant();
+  const cles = new Set(moisJoursOuvres(ym).map(fmtDate));
+  const cibles = state.otd_values.filter(v=>v.board_id===b.id && cles.has(v.jour));
+  const lib = new Date(ym+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+  if(!cibles.length){ showToast('Ce mois ne contient aucun relevé'); return; }
+  if(!confirm('Effacer les '+cibles.length+' relevés de '+lib+' (commentaires compris) ? Les autres mois ne sont pas touchés.')) return;
+  for(const v of cibles) await dbDelete('otd_values', v.id);
+  await logActivity('a vidé les relevés de', '« '+b.nom+' »', lib, b.id);
+  renderMain();
+  showToast(cibles.length+' relevés effacés');
 }
 function otdMois(delta){
   const [y,m] = otdMoisCourant().split('-').map(Number);
@@ -4872,7 +5028,7 @@ function otdAnalyser(){
   /* alignement : soit la mise en page complète (jours + semaines + mois), soit les seuls jours */
   let plan;
   if(maxVal === cols.length){
-    plan = cols.map(c=>c.type==='jour' ? c.d : null);
+    plan = cols.map(c=>c.type==='jour' ? c.d : 'ignorer');   /* S.. et moyenne : jamais réécrites */
   } else {
     plan = [];
     for(let i=0;i<maxVal;i++) plan.push(null);
@@ -4881,7 +5037,7 @@ function otdAnalyser(){
   const cibles = otdCibles(b);
   otdImp = {lignes, nbLib, plan, cibles, sep, maxVal};
 
-  const detectees = plan.filter(Boolean).length;
+  const detectees = plan.filter(x=>x && x!=='ignorer').length;
   const info = (maxVal === cols.length)
     ? `<div class="imp-ok">Mise en page reconnue : ${detectees} colonnes de jours + ${cols.length-detectees} colonnes de synthèse (S.. et moyenne), qui seront ignorées.</div>`
     : (maxVal > jours.length
@@ -4932,7 +5088,7 @@ async function otdImporter(){
     const cells = otdImp.lignes[li].slice(otdImp.nbLib);
     cells.forEach((cell, k)=>{
       let jour = otdImp.plan[k];
-      if(jour === undefined) return;
+      if(jour === undefined || jour === 'ignorer') return;
       if(jour === null){
         const idx = offset + otdImp.plan.slice(0,k).filter(x=>x===null).length;
         jour = jours[idx];
@@ -4965,7 +5121,7 @@ async function otdBulkApply(b, liste){
       }
     } else {
       const row = {id:uid(), board_id:b.id, activite:e.activite, serie:e.serie, jour:e.jour,
-                   quantite:null, pct:null, created_at:new Date().toISOString()};
+                   quantite:null, pct:null, commentaire:null, created_at:new Date().toISOString()};
       row[e.champ] = e.valeur;
       state.otd_values.push(row);
       nouveaux.push(row);
@@ -5059,7 +5215,7 @@ function tryUnlock(){
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v8.4 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v9.1 · boutons câblés'; st.classList.add('ready'); }
 })();
 </script>
 </body>
