@@ -4850,14 +4850,20 @@ function otdAnalyser(){
   const sep = nbTab >= nbPv ? '\t' : ';';
   const lignes = txt.replace(/\r/g,'').split('\n').filter(l=>l.trim()!=='').map(l=>l.split(sep));
 
-  /* séparation libellés / valeurs */
-  let nbLib = 0;
+  /* séparation libellés / valeurs : une cellule « N/A » est une valeur, pas un libellé */
+  const estValeur = (c)=>{
+    const t = String(c==null?'':c).trim();
+    if(t==='') return false;
+    if(numFR(t)!==null) return true;
+    return /^(na|n\/a|nd|#n\/a|#div\/0!?|-|—)$/i.test(t);
+  };
+  let nbLib = 99;
   lignes.forEach(cells=>{
     let i = 0;
-    while(i < cells.length && numFR(cells[i])===null && !/^(na)$/i.test(String(cells[i]).trim())) i++;
-    if(i > nbLib && i < cells.length) nbLib = i;
+    while(i < cells.length && !estValeur(cells[i])) i++;
+    if(i < cells.length) nbLib = Math.min(nbLib, i);
   });
-  if(nbLib===0) nbLib = 1;
+  if(nbLib===99 || nbLib<1) nbLib = 1;
 
   const cols = moisColonnes(otdMoisCourant());
   const jours = moisJoursOuvres(otdMoisCourant());
@@ -4878,7 +4884,9 @@ function otdAnalyser(){
   const detectees = plan.filter(Boolean).length;
   const info = (maxVal === cols.length)
     ? `<div class="imp-ok">Mise en page reconnue : ${detectees} colonnes de jours + ${cols.length-detectees} colonnes de synthèse (S.. et moyenne), qui seront ignorées.</div>`
-    : `<div class="imp-ok">${maxVal} colonnes de valeurs détectées : elles seront posées sur ${maxVal} jours ouvrés consécutifs à partir du jour choisi ci-dessus.${maxVal>jours.length?' <b>Attention : plus de colonnes que de jours ouvrés dans le mois.</b>':''}</div>`;
+    : (maxVal > jours.length
+      ? `<div class="imp-warn"><b>${maxVal} colonnes de valeurs détectées</b> alors que le mois ne compte que ${jours.length} jours ouvrés, et la mise en page complète en attend ${cols.length}. Reprends la sélection dans Excel : elle doit commencer aux colonnes de libellés et aller jusqu'à la colonne « Moyenne Mensuelle » incluse.</div>`
+      : `<div class="imp-ok">${maxVal} colonnes de valeurs détectées : elles seront posées sur ${maxVal} jours ouvrés consécutifs à partir du jour choisi ci-dessus.</div>`);
 
   /* les cellules fusionnées d'Excel arrivent vides : on reporte le nom du bloc */
   let bloc = '';
@@ -4886,7 +4894,10 @@ function otdAnalyser(){
     const tete = String(cells[0]||'').trim();
     if(tete) bloc = tete;
     const reste = cells.slice(nbLib>1?1:0, nbLib).map(x=>String(x||'').trim()).filter(Boolean).join(' ');
-    return (nbLib>1 ? (bloc+' '+reste) : reste).trim();
+    if(nbLib<=1) return reste.trim();
+    if(!reste) return bloc.trim();
+    if(sansAccents(reste).indexOf(sansAccents(bloc))>=0) return reste.trim();
+    return (bloc+' '+reste).trim();
   });
 
   res.innerHTML = info + `<div class="imp-map">
@@ -5048,7 +5059,7 @@ function tryUnlock(){
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v8.3 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v8.4 · boutons câblés'; st.classList.add('ready'); }
 })();
 </script>
 </body>
