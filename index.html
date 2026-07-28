@@ -965,6 +965,57 @@ body.presentation .m6-add, body.presentation .m6-del, body.presentation .a3-head
 .sq-legend i.tri{border:none;width:0;height:0;border-top:9px solid var(--red);border-left:9px solid transparent;border-radius:0}
 .sq-cfg{border:1px solid var(--line);border-radius:9px}
 
+
+/* ====== COMMENTAIRES DE CELLULE ====== */
+.sq-cell.has-note, .otd-cell.has-note{position:relative}
+.sq-note{
+  position:absolute;top:0;right:0;width:0;height:0;
+  border-top:8px solid #d32f2f;border-left:8px solid transparent;pointer-events:none;z-index:3;
+}
+.note-pop{
+  position:fixed;z-index:3200;width:310px;background:#fff;border:1px solid var(--line);border-radius:11px;
+  box-shadow:0 18px 48px rgba(23,43,77,.28);padding:13px 14px;
+  opacity:0;pointer-events:none;transform:translateY(-6px) scale(.98);transition:opacity .12s,transform .12s;
+}
+.note-pop.show{opacity:1;pointer-events:auto;transform:translateY(0) scale(1)}
+.np-head{font-size:12px;font-weight:800;margin-bottom:9px;display:flex;align-items:center;gap:8px;color:var(--navy)}
+.np-head span{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--muted-2);font-weight:700}
+.note-pop textarea{
+  width:100%;min-height:84px;background:var(--panel-2);border:1.5px solid var(--line);border-radius:8px;
+  padding:9px 11px;font-size:12.5px;line-height:1.5;resize:vertical;font-family:var(--font);color:var(--txt);
+}
+.note-pop textarea:focus{outline:none;border-color:var(--primary);background:#fff}
+.np-foot{display:flex;gap:6px;align-items:center;margin-top:10px}
+.np-hint{font-size:10px;color:var(--muted-2);margin-top:6px}
+.sy-notes{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px 18px;margin-top:14px;box-shadow:var(--shadow-sm)}
+.sy-notes-t{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.sy-note{display:flex;gap:11px;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--line-soft);font-size:12px}
+.sy-note:last-child{border-bottom:none}
+.sn-j{font-family:var(--mono);font-size:10.5px;color:var(--muted-2);font-weight:700;width:62px;flex-shrink:0}
+.sn-a{font-weight:700;width:170px;flex-shrink:0;font-size:11.5px}
+.sn-t{color:var(--muted);line-height:1.5}
+
+.note-list{max-height:340px;overflow-y:auto}
+.note-item{border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-bottom:7px;background:var(--panel-2)}
+.ni-top{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.ni-j{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--muted-2)}
+.ni-a{font-size:11.5px;font-weight:700}
+.ni-del{margin-left:auto;background:none;border:none;color:var(--muted-2);font-size:12px}
+.ni-del:hover{color:var(--red)}
+.ni-t{font-size:12px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
+
+/* ====== IMPORT EXCEL ====== */
+.imp-steps{font-size:11.5px;color:var(--muted);line-height:1.75;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 13px;margin-bottom:11px}
+.imp-txt{width:100%;min-height:120px;font-family:var(--mono);font-size:10.5px;background:var(--panel-2);border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;resize:vertical;white-space:pre;overflow:auto}
+.imp-txt:focus{outline:none;border-color:var(--primary);background:#fff}
+.imp-ok{font-size:11.5px;color:#0b6b32;background:#dff3e3;border:1px solid #9fd8b4;border-radius:8px;padding:9px 12px;margin:11px 0;line-height:1.5}
+.imp-warn{font-size:11.5px;color:#9c0006;background:#ffc7ce;border:1px solid #f0a3ac;border-radius:8px;padding:9px 12px;margin:11px 0;line-height:1.5}
+.imp-map{max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;padding:8px}
+.imp-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.imp-lib{font-size:11.5px;font-weight:600;width:180px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imp-arrow{color:var(--muted-2);flex-shrink:0}
+.imp-sel{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:11px}
+
 /* ====== ACCUEIL : modes d'affichage ====== */
 .home-bar{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px;flex-wrap:wrap}
 .home-bar h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0}
@@ -3577,7 +3628,7 @@ function openProjectModal(parentId){
   document.getElementById('modal-content').innerHTML = `
     <div class="modal-head">${parent?'Nouveau sous-projet de « '+escapeHtml(truncate(parent.nom,30))+' »':'Nouveau projet'}</div>
     <div class="modal-body">
-      <div class="field"><label>Nom</label><input type="text" id="m-p-nom" placeholder="ex : Contrat Sénalia"></div>
+      <div class="field"><label>Nom</label><input type="text" id="m-p-nom" placeholder="ex : Projet A"></div>
       <div class="field-row">
         <div class="field"><label>Code</label><input type="text" id="m-p-code" placeholder="ex : CTR-002"></div>
         <div class="field"><label>Responsable</label><input type="text" id="m-p-resp" value="${escAttr(ui.userName)}"></div>
@@ -4306,7 +4357,9 @@ function renderOtdBoard(main, b){
     </div>
     <button class="btn small ghost" onclick="ui.otdLundi=fmtDate(lundiDe(new Date()));renderMain()">↦ Semaine en cours</button>`}
     <div class="toolbar-spacer"></div>
-    ${route.sub==='mois'?'<button class="btn small" onclick="openOtdImport()">⬆ Importer depuis Excel</button><button class="btn small danger" onclick="otdViderMois()">🗑 Vider le mois</button>':''}
+    ${route.sub==='mois'?`<button class="btn small" onclick="openOtdImport()">⬆ Importer depuis Excel</button>
+      <button class="btn small" onclick="otdOuvrirNotesMois()">💬 Commentaires${(function(){const n=otdNotes(b.id, moisJoursOuvres(otdMoisCourant())).length;return n?' ('+n+')':'';})()}</button>
+      <button class="btn small danger" onclick="otdViderMois()">🗑 Vider le mois</button>`:''}
     <button class="btn small" onclick="openOtdConfig()">⚙ Activités</button>
     <button class="btn small primary" onclick="captureScreen()">📸 Capture</button>
   </div>`;
@@ -4372,7 +4425,8 @@ function otdOuvrirNote(ev, act, serie, jour){
   const pop = document.getElementById('note-pop');
   const libSerie = (serie===GLOB_SERIE) ? '% Global' : (serie===QTE_SERIE ? (a&&a.qteLabel||'Quantité') : (serie||'OTD'));
   pop.innerHTML = `<div class="np-head">${escapeHtml(a?a.nom:'')} · ${escapeHtml(libSerie)}<span>${fmtFR(jour)}</span></div>
-    <textarea id="np-txt" placeholder="Justification : panne, absence, pic d'activité, blocage client…">${escapeHtml(actuel)}</textarea>
+    <textarea id="np-txt" placeholder="Justification : panne, absence, pic d'activité, blocage client…" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))otdEnregistrerNote()">${escapeHtml(actuel)}</textarea>
+    <div class="np-hint">Ctrl+Entrée pour enregistrer · Échap pour fermer</div>
     <div class="np-foot">
       ${actuel?'<button class="btn small danger" onclick="otdSupprimerNote()">Supprimer</button>':''}
       <span style="flex:1"></span>
@@ -4768,11 +4822,11 @@ function otdQteSomme(boardId, a, serie, jours){
   return vu ? s : null;
 }
 const SQ_PAL = {
-  ok:      {bg:'#c6efce', c:'#0b6b32'},
-  bon:     {bg:'#dff3e3', c:'#0b6b32'},
-  moyen:   {bg:'#ffeb9c', c:'#8a5a00'},
-  mauvais: {bg:'#ffc7ce', c:'#9c0006'},
-  na:      {bg:'#f4f5f7', c:'#b3bac5'},
+  ok:      {bg:'#4caf50', c:'#ffffff'},   /* 100 % */
+  bon:     {bg:'#a5d6a7', c:'#14532d'},   /* objectif tenu */
+  moyen:   {bg:'#ffca28', c:'#5d4200'},   /* à moins de 5 points */
+  mauvais: {bg:'#ef5350', c:'#ffffff'},   /* sous objectif */
+  na:      {bg:'#eceff1', c:'#9aa4b2'},
 };
 function sqFill(v, obj){
   if(v==null || isNaN(v)) return SQ_PAL.na;
@@ -4786,12 +4840,12 @@ function sqTxt(v){
   return (Math.round(v*10)/10).toString().replace('.',',')+'%';
 }
 function sqLabelStyle(L){
-  if(L.kind==='glob') return 'background:#6b2fa0;color:#fff;font-weight:800';
-  if(L.kind==='qte')  return 'background:#fff;color:#5e6c84;font-weight:600';
+  if(L.kind==='glob') return 'background:#6a1b9a;color:#fff;font-weight:800';
+  if(L.kind==='qte')  return 'background:#f7f8fa;color:#42526e;font-weight:600';
   const se = sansAccents(L.serie||'');
-  if(se.indexOf('urg')>=0) return 'background:#ffd966;color:#7a5800;font-weight:800';
-  if(se.indexOf('aog')>=0) return 'background:#f5615c;color:#fff;font-weight:800';
-  return 'background:#c6e0b4;color:#1e5230;font-weight:800';
+  if(se.indexOf('urg')>=0) return 'background:#ffb300;color:#3e2a00;font-weight:800';
+  if(se.indexOf('aog')>=0) return 'background:#e53935;color:#fff;font-weight:800';
+  return 'background:#43a047;color:#fff;font-weight:800';
 }
 function sqCellPct(val, objectif){
   if(val==null) return {txt:'NA', cls:'sq-na'};
@@ -4870,7 +4924,7 @@ function renderOtdMois(b, acts){
       }).join('');
 
       const tete = li===0
-        ? `<td class="sq-act" rowspan="${lignes.length}" style="background:${coul}1c;border-left:5px solid ${coul}"><span style="color:${coul}">${escapeHtml(a.nom)}</span><i>obj. ${a.objectif}%</i></td>`
+        ? `<td class="sq-act" rowspan="${lignes.length}" style="background:${coul}30;border-left:6px solid ${coul}"><span style="color:${coul}">${escapeHtml(a.nom)}</span><i>obj. ${a.objectif}%</i></td>`
         : '';
       return `<tr class="${L.kind==='glob'?'sq-globrow':''}">${tete}<td class="sq-detail" style="${sqLabelStyle(L)}">${escapeHtml(L.label)}</td>${cellules}</tr>`;
     }).join('');
@@ -4885,16 +4939,50 @@ function renderOtdMois(b, acts){
       <tbody>${corps}</tbody>
     </table>
     <div class="sq-legend">
-      <span><i style="background:#c6efce"></i>100 %</span>
-      <span><i style="background:#dff3e3"></i>objectif tenu</span>
-      <span><i style="background:#ffeb9c"></i>à moins de 5 points</span>
-      <span><i style="background:#ffc7ce"></i>sous objectif</span>
-      <span><i style="background:#f4f5f7"></i>NA</span>
+      <span><i style="background:#4caf50"></i>100 %</span>
+      <span><i style="background:#a5d6a7"></i>objectif tenu</span>
+      <span><i style="background:#ffca28"></i>à moins de 5 points</span>
+      <span><i style="background:#ef5350"></i>sous objectif</span>
+      <span><i style="background:#eceff1"></i>NA</span>
       <span><i class="tri"></i>commentaire — clic droit ou double-clic sur une cellule</span>
     </div>
   </div>`;
 }
 
+function otdOuvrirNotesMois(){
+  const b = currentBoard();
+  const ym = otdMoisCourant();
+  const jours = moisJoursOuvres(ym);
+  const notes = otdNotes(b.id, jours);
+  const acts = otdActivites(b);
+  const nomAct = k=>{ const a=acts.find(x=>x.key===k); return a?a.nom:k; };
+  const libSerie = (a,se)=>{
+    const act = acts.find(x=>x.key===a);
+    if(se===GLOB_SERIE) return '% Global';
+    if(se===QTE_SERIE) return (act&&act.qteLabel)||'Quantité';
+    return se||'OTD';
+  };
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Commentaires — ${new Date(ym+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</div>
+    <div class="modal-body">
+      ${notes.length ? `<div class="note-list">${notes.map(n=>`<div class="note-item">
+        <div class="ni-top"><span class="ni-j">${fmtFR(n.jour)}</span><span class="ni-a">${escapeHtml(nomAct(n.activite))} · ${escapeHtml(libSerie(n.activite,n.serie))}</span>
+          <button class="ni-del" title="Supprimer" onclick="otdSupprimerNoteId('${n.id}')">🗑</button></div>
+        <div class="ni-t">${escapeHtml(n.commentaire)}</div>
+      </div>`).join('')}</div>`
+      : '<div style="color:var(--muted-2);font-size:12.5px;padding:10px 0">Aucun commentaire ce mois-ci. Clic droit ou double-clic sur une cellule pour en ajouter un.</div>'}
+    </div>
+    <div class="modal-foot"><button class="btn primary" onclick="closeModal()">Fermer</button></div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+async function otdSupprimerNoteId(id){
+  const v = state.otd_values.find(x=>x.id===id);
+  if(!v) return;
+  await dbUpdate('otd_values', id, {commentaire:null});
+  renderMain();
+  otdOuvrirNotesMois();
+  showToast('Commentaire supprimé');
+}
 async function otdViderMois(){
   const b = currentBoard();
   const ym = otdMoisCourant();
@@ -5215,7 +5303,7 @@ function tryUnlock(){
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v9.1 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v9.2 · boutons câblés'; st.classList.add('ready'); }
 })();
 </script>
 </body>
