@@ -905,66 +905,68 @@ body.presentation .m6-add, body.presentation .m6-del, body.presentation .a3-head
 @media (max-width:1100px){ .news-cols{grid-template-columns:1fr} }
 
 
-/* ====== GRILLE MENSUELLE SQDCP ====== */
-.sq-scroll{flex:1;overflow:auto;padding:12px;background:var(--bg)}
-.sq-table{border-collapse:separate;border-spacing:0;font-size:10.5px;background:#fff;box-shadow:var(--shadow-md);border-radius:6px;overflow:hidden}
+/* ====== GRILLE MENSUELLE SQDCP (rendu Excel) ====== */
+.sq-scroll{flex:1;overflow:auto;padding:14px;background:#fff}
+.sq-table{
+  border-collapse:collapse;font-size:10.5px;background:#fff;
+  font-family:var(--font);font-variant-numeric:tabular-nums;
+}
 .sq-title{
-  background:linear-gradient(90deg,#1f3864,#2b4a7d);color:#fff;font-size:13.5px;font-weight:800;letter-spacing:.1em;
-  padding:10px 14px;text-align:center;position:sticky;top:0;z-index:40;
+  background:#1f3864;color:#fff;font-size:13px;font-weight:700;letter-spacing:.11em;
+  padding:9px 14px;text-align:center;position:sticky;top:0;z-index:40;border:1px solid #1f3864;
 }
-.sq-title em{font-style:normal;opacity:.55;padding:0 8px}
-.sq-table th{border:1px solid #24406e}
-.sq-table td{border:1px solid #d7dce4}
+.sq-title em{font-style:normal;opacity:.5;padding:0 10px}
+.sq-table th{border:1px solid #2c4a78}
+.sq-table td{border:1px solid #d0d7de}
 .sq-h1,.sq-h2{
-  background:#1f3864;color:#fff;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 8px;
-  position:sticky;z-index:35;top:35px;
+  background:#1f3864;color:#fff;font-size:10.5px;font-weight:700;padding:6px 8px;
+  position:sticky;z-index:35;top:33px;text-align:center;
 }
-.sq-h1{left:0;width:112px;min-width:112px}
-.sq-h2{left:112px;width:140px;min-width:140px}
+.sq-h1{left:0;width:104px;min-width:104px}
+.sq-h2{left:104px;width:136px;min-width:136px}
 .sq-day,.sq-week,.sq-month{
-  background:#1f3864;color:#fff;font-size:9.5px;font-weight:700;padding:3px 2px;min-width:44px;
-  position:sticky;top:35px;z-index:30;text-align:center;line-height:1.2;
+  background:#1f3864;color:#fff;font-size:10px;font-weight:700;padding:3px 2px;min-width:46px;
+  position:sticky;top:33px;z-index:30;text-align:center;line-height:1.15;
 }
-.sq-day b{display:block;font-size:11.5px}
-.sq-day span{display:block;font-weight:500;opacity:.65;font-size:8px;text-transform:lowercase}
-.sq-day.today{background:#e34935}
-.sq-week{background:#2f6db5;min-width:50px;font-size:10.5px;font-weight:800}
-.sq-month{background:#132c52;min-width:62px}
-.sq-month span{display:block;font-weight:500;opacity:.65;font-size:8px}
+.sq-day b{display:block;font-size:11px;font-weight:700}
+.sq-day span{display:block;font-weight:400;opacity:.8;font-size:8.5px;text-transform:capitalize}
+.sq-day.today{background:#c00000}
+.sq-week{background:#2e75b6;min-width:50px}
+.sq-month{background:#2e75b6;min-width:64px;font-size:9.5px}
+.sq-month span{display:block;font-weight:400;opacity:.8;font-size:8.5px}
 .sq-act{
-  position:sticky;left:0;z-index:20;width:112px;min-width:112px;font-weight:800;font-size:11px;
-  padding:5px 7px;vertical-align:middle;text-align:center;
+  position:sticky;left:0;z-index:20;width:104px;min-width:104px;font-weight:700;font-size:11px;
+  padding:4px 6px;vertical-align:middle;text-align:center;color:#1f3864;
 }
 .sq-act span{display:block;line-height:1.2}
-.sq-act i{display:block;font-style:normal;font-size:8px;opacity:.65;font-weight:700;margin-top:2px}
+.sq-act i{display:block;font-style:normal;font-size:8px;color:#7a828e;font-weight:600;margin-top:2px}
 .sq-detail{
-  position:sticky;left:112px;z-index:20;width:140px;min-width:140px;
-  font-size:10px;padding:2px 8px;white-space:nowrap;letter-spacing:.01em;
+  position:sticky;left:104px;z-index:20;width:136px;min-width:136px;
+  font-size:10px;padding:2px 8px;white-space:nowrap;
 }
-.sq-cell{padding:0;text-align:center;height:21px;position:relative}
-.sq-num{display:flex;align-items:center;justify-content:center;gap:1px}
-.sq-num b{font-family:var(--mono);font-size:9px;font-weight:800;opacity:.75}
+.sq-cell{padding:0;text-align:center;height:19px;position:relative;background:#fff}
+.sq-num{display:flex;align-items:center;justify-content:center}
+.sq-num b{font-size:9.5px;font-weight:600;opacity:.85;padding-left:1px}
 .sq-in{
-  border:none;background:transparent;text-align:center;font-family:var(--mono);font-size:10px;
-  padding:2px 1px;color:inherit;font-weight:700;width:100%;min-width:0;
+  border:none;background:transparent;text-align:center;font-family:inherit;font-size:10.5px;
+  padding:2px 1px;color:inherit;font-weight:600;width:100%;min-width:0;font-variant-numeric:tabular-nums;
 }
-.sq-num .sq-in{text-align:right;width:calc(100% - 10px)}
-.sq-in:focus{outline:2px solid var(--primary);outline-offset:-2px;background:#fff;border-radius:2px}
-.sq-in::placeholder{color:#c9ced6;font-weight:600}
+.sq-num .sq-in{text-align:right;width:calc(100% - 11px)}
+.sq-in:focus{outline:2px solid #2e75b6;outline-offset:-2px;background:#fff}
+.sq-in::placeholder{color:#c9ced6;font-weight:400}
 .sq-qcell{background:#fff}
-.sq-in.sq-q{color:#5e6c84;font-weight:600}
-.sq-agg{font-family:var(--mono);font-weight:800;font-size:10px;padding:2px}
-.sq-wk{border-left:2px solid #2f6db5 !important;border-right:2px solid #2f6db5 !important}
-.sq-mo{border-left:3px solid #132c52 !important}
-.sq-qagg{background:#eef2f8;color:#42526e}
-.sq-globrow td{border-top:2px solid #6b2fa0;border-bottom:2px solid #6b2fa0}
-.sq-globcell{font-family:var(--mono);font-weight:800;font-size:10px}
-.sq-legend{display:flex;gap:15px;flex-wrap:wrap;padding:11px 4px 26px;font-size:10.5px;color:var(--muted);font-weight:600}
+.sq-in.sq-q{color:#333;font-weight:400}
+.sq-agg{font-weight:700;font-size:10.5px;padding:2px}
+.sq-wk{border-left:1px solid #2e75b6 !important;border-right:1px solid #2e75b6 !important}
+.sq-mo{border-left:2px solid #2e75b6 !important}
+.sq-qagg{background:#f2f2f2;color:#333}
+.sq-globrow td{border-top:1px solid #7030a0;border-bottom:1px solid #7030a0}
+.sq-globcell{font-weight:700;font-size:10.5px}
+.sq-legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 4px 26px;font-size:10.5px;color:var(--muted);font-weight:600}
 .sq-legend span{display:flex;align-items:center;gap:6px}
-.sq-legend i{width:13px;height:13px;border-radius:3px;border:1px solid #cfd6e0;display:inline-block}
-.sq-legend i.tri{border:none;width:0;height:0;border-top:9px solid var(--red);border-left:9px solid transparent;border-radius:0}
-.sq-cfg{border:1px solid var(--line);border-radius:9px}
-
+.sq-legend i{width:14px;height:12px;border:1px solid #b9c0c9;display:inline-block}
+.sq-legend i.tri{border:none;width:0;height:0;border-top:9px solid #d32f2f;border-left:9px solid transparent}
+.sq-na{color:#b7b7b7;font-weight:400}
 
 /* ====== COMMENTAIRES DE CELLULE ====== */
 .sq-cell.has-note, .otd-cell.has-note{position:relative}
@@ -4822,12 +4824,14 @@ function otdQteSomme(boardId, a, serie, jours){
   return vu ? s : null;
 }
 const SQ_PAL = {
-  ok:      {bg:'#4caf50', c:'#ffffff'},   /* 100 % */
-  bon:     {bg:'#a5d6a7', c:'#14532d'},   /* objectif tenu */
-  moyen:   {bg:'#ffca28', c:'#5d4200'},   /* à moins de 5 points */
-  mauvais: {bg:'#ef5350', c:'#ffffff'},   /* sous objectif */
-  na:      {bg:'#eceff1', c:'#9aa4b2'},
+  ok:      {bg:'#c6efce', c:'#006100'},   /* 100 %  — vert Excel */
+  bon:     {bg:'#e2efda', c:'#1e6b34'},   /* objectif tenu */
+  moyen:   {bg:'#ffeb9c', c:'#9c6500'},   /* à moins de 5 points — jaune Excel */
+  mauvais: {bg:'#ffc7ce', c:'#9c0006'},   /* sous objectif — rouge Excel */
+  na:      {bg:'#ffffff', c:'#b7b7b7'},
 };
+/* teintes pastel des blocs d'activité, façon Excel */
+const OTD_TINTS = ['#f2f2f2','#ddebf7','#e2efda','#e4dfec','#fff2cc','#fce4ec','#dcefef'];
 function sqFill(v, obj){
   if(v==null || isNaN(v)) return SQ_PAL.na;
   if(v>=100) return SQ_PAL.ok;
@@ -4836,16 +4840,16 @@ function sqFill(v, obj){
   return SQ_PAL.mauvais;
 }
 function sqTxt(v){
-  if(v==null || isNaN(v)) return 'NA';
+  if(v==null || isNaN(v)) return '<span class="sq-na">NA</span>';
   return (Math.round(v*10)/10).toString().replace('.',',')+'%';
 }
 function sqLabelStyle(L){
-  if(L.kind==='glob') return 'background:#6a1b9a;color:#fff;font-weight:800';
-  if(L.kind==='qte')  return 'background:#f7f8fa;color:#42526e;font-weight:600';
+  if(L.kind==='glob') return 'background:#7030a0;color:#fff;font-weight:700';
+  if(L.kind==='qte')  return 'background:#ffffff;color:#333333;font-weight:400';
   const se = sansAccents(L.serie||'');
-  if(se.indexOf('urg')>=0) return 'background:#ffb300;color:#3e2a00;font-weight:800';
-  if(se.indexOf('aog')>=0) return 'background:#e53935;color:#fff;font-weight:800';
-  return 'background:#43a047;color:#fff;font-weight:800';
+  if(se.indexOf('urg')>=0) return 'background:#ffc000;color:#3f3000;font-weight:700';
+  if(se.indexOf('aog')>=0) return 'background:#ff0000;color:#fff;font-weight:700';
+  return 'background:#00b050;color:#fff;font-weight:700';
 }
 function sqCellPct(val, objectif){
   if(val==null) return {txt:'NA', cls:'sq-na'};
@@ -4924,7 +4928,7 @@ function renderOtdMois(b, acts){
       }).join('');
 
       const tete = li===0
-        ? `<td class="sq-act" rowspan="${lignes.length}" style="background:${coul}30;border-left:6px solid ${coul}"><span style="color:${coul}">${escapeHtml(a.nom)}</span><i>obj. ${a.objectif}%</i></td>`
+        ? `<td class="sq-act" rowspan="${lignes.length}" style="background:${OTD_TINTS[ai%OTD_TINTS.length]}"><span>${escapeHtml(a.nom)}</span><i>obj. ${a.objectif}%</i></td>`
         : '';
       return `<tr class="${L.kind==='glob'?'sq-globrow':''}">${tete}<td class="sq-detail" style="${sqLabelStyle(L)}">${escapeHtml(L.label)}</td>${cellules}</tr>`;
     }).join('');
@@ -4939,11 +4943,11 @@ function renderOtdMois(b, acts){
       <tbody>${corps}</tbody>
     </table>
     <div class="sq-legend">
-      <span><i style="background:#4caf50"></i>100 %</span>
-      <span><i style="background:#a5d6a7"></i>objectif tenu</span>
-      <span><i style="background:#ffca28"></i>à moins de 5 points</span>
-      <span><i style="background:#ef5350"></i>sous objectif</span>
-      <span><i style="background:#eceff1"></i>NA</span>
+      <span><i style="background:#c6efce"></i>100 %</span>
+      <span><i style="background:#e2efda"></i>objectif tenu</span>
+      <span><i style="background:#ffeb9c"></i>à moins de 5 points</span>
+      <span><i style="background:#ffc7ce"></i>sous objectif</span>
+      <span><i style="background:#fff;border-color:#d0d7de"></i>sans donnée</span>
       <span><i class="tri"></i>commentaire — clic droit ou double-clic sur une cellule</span>
     </div>
   </div>`;
@@ -5303,7 +5307,7 @@ function tryUnlock(){
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v9.2 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v9.3 · boutons câblés'; st.classList.add('ready'); }
 })();
 </script>
 </body>
