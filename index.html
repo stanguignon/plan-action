@@ -956,6 +956,18 @@ body.presentation .m6-add, body.presentation .m6-del, body.presentation .a3-head
 .sq-globrow td{border-top:2px solid var(--navy);border-bottom:2px solid var(--navy)}
 .sq-globcell{font-family:var(--mono);font-weight:800;font-size:10.5px;background:#f7f8fa}
 
+/* ====== IMPORT EXCEL ====== */
+.imp-steps{font-size:11.5px;color:var(--muted);line-height:1.75;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 13px;margin-bottom:11px}
+.imp-txt{width:100%;min-height:120px;font-family:var(--mono);font-size:10.5px;background:var(--panel-2);border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;resize:vertical;white-space:pre;overflow:auto}
+.imp-txt:focus{outline:none;border-color:var(--primary);background:#fff}
+.imp-ok{font-size:11.5px;color:#1a6b4a;background:var(--green-soft);border:1px solid #b9e3cd;border-radius:8px;padding:9px 12px;margin:11px 0;line-height:1.5}
+.imp-warn{font-size:11.5px;color:#8a2a1d;background:var(--red-soft);border:1px solid #f2c4bd;border-radius:8px;padding:9px 12px;margin:11px 0}
+.imp-map{max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;padding:8px}
+.imp-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.imp-lib{font-size:11.5px;font-weight:600;width:180px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.imp-arrow{color:var(--muted-2);flex-shrink:0}
+.imp-sel{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:11px}
+
 /* ====== ACCUEIL : modes d'affichage ====== */
 .home-bar{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px;flex-wrap:wrap}
 .home-bar h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0}
@@ -4292,6 +4304,7 @@ function renderOtdBoard(main, b){
     </div>
     <button class="btn small ghost" onclick="ui.otdLundi=fmtDate(lundiDe(new Date()));renderMain()">↦ Semaine en cours</button>`}
     <div class="toolbar-spacer"></div>
+    ${route.sub==='mois'?'<button class="btn small" onclick="openOtdImport()">⬆ Importer depuis Excel</button>':''}
     <button class="btn small" onclick="openOtdConfig()">⚙ Activités</button>
     <button class="btn small primary" onclick="captureScreen()">📸 Capture</button>
   </div>`;
@@ -4749,6 +4762,215 @@ function otdMois(delta){
 
 <script>
 /* ============================================================
+   IMPORT DEPUIS EXCEL (collage direct)
+   ============================================================ */
+let otdImp = {lignes:[], valeurs:[], cibles:[], sep:'\t'};
+
+function numFR(v){
+  if(v==null) return null;
+  let s = String(v).replace(/\u00a0/g,' ').trim();
+  if(!s || /^(na|n\/a|nd|-|—|#n\/a|#div\/0!?)$/i.test(s)) return null;
+  s = s.replace(/\s/g,'').replace('%','').replace(/\u202f/g,'');
+  if(s.indexOf(',')>=0 && s.indexOf('.')>=0) s = s.replace(/\./g,'').replace(',','.');
+  else s = s.replace(',','.');
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function sansAccents(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+/* Toutes les destinations possibles de l'espace courant */
+function otdCibles(b){
+  const out = [];
+  otdActivites(b).forEach(a=>{
+    a.series.forEach(se=>{
+      if(a.mode==='qte') out.push({act:a.key, serie:se, champ:'quantite', lib:a.nom+' · Qté traitée'+(se?' '+se:'')});
+      out.push({act:a.key, serie:se, champ:'pct', lib:a.nom+' · '+((a.mode==='pct'||a.mode==='pct_qte')?se:'% OTD'+(se?' '+se:''))});
+    });
+    if(a.mode==='pct_qte') out.push({act:a.key, serie:QTE_SERIE, champ:'quantite', lib:a.nom+' · '+(a.qteLabel||'Quantité de colis')});
+  });
+  return out;
+}
+/* Devine la destination d'une ligne collée d'après son libellé */
+function otdDevine(libelle, cibles){
+  const l = sansAccents(libelle);
+  if(!l.trim()) return -1;
+  if(/global/.test(l)) return -1;            /* les lignes globales sont recalculées */
+  let best = -1, bestScore = 0;
+  cibles.forEach((c,i)=>{
+    const t = sansAccents(c.lib);
+    let sc = 0;
+    ['std','urg','aog','avant','apres','colis','apu','att','emballage','recep','manut'].forEach(k=>{
+      if(l.indexOf(k)>=0 && t.indexOf(k)>=0) sc += 2;
+      if(l.indexOf(k)>=0 !== t.indexOf(k)>=0) sc -= 0.6;
+    });
+    const ligneQte = /(qte|quantite)/.test(l);
+    const cibleQte = c.champ==='quantite';
+    if(ligneQte === cibleQte) sc += 2.5; else sc -= 3;
+    if(/otd|%/.test(l) && c.champ==='pct') sc += 1;
+    if(sc > bestScore){ bestScore = sc; best = i; }
+  });
+  return bestScore >= 2 ? best : -1;
+}
+function openOtdImport(){
+  const b = currentBoard();
+  const jours = moisJoursOuvres(otdMoisCourant());
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Importer depuis Excel</div>
+    <div class="modal-body">
+      <div class="imp-steps">
+        <b>1.</b> Dans Excel, sélectionne le bloc à reprendre — colonne(s) de libellés comprises — puis <b>Ctrl+C</b>.<br>
+        <b>2.</b> Clique dans le cadre ci-dessous et fais <b>Ctrl+V</b>.<br>
+        <b>3.</b> Vérifie la correspondance des lignes, puis importe.
+      </div>
+      <textarea id="imp-txt" class="imp-txt" placeholder="Colle ici (Ctrl+V)…"></textarea>
+      <div class="field-row" style="margin-top:10px">
+        <div class="field"><label>Mois de destination</label>
+          <input type="text" value="${new Date(otdMoisCourant()+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'})} — ${jours.length} jours ouvrés" disabled>
+        </div>
+        <div class="field"><label>La 1re colonne de valeurs correspond au</label>
+          <select id="imp-offset">${jours.map((j,i)=>`<option value="${i}">${j.getDate()} ${j.toLocaleDateString('fr-FR',{weekday:'short',month:'short'})}</option>`).join('')}</select>
+        </div>
+      </div>
+      <button class="btn primary small" onclick="otdAnalyser()">Analyser le collage</button>
+      <div id="imp-res"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" id="imp-go" onclick="otdImporter()" disabled>Importer</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+  setTimeout(()=>document.getElementById('imp-txt').focus(),60);
+}
+function otdAnalyser(){
+  const b = currentBoard();
+  const txt = document.getElementById('imp-txt').value;
+  const res = document.getElementById('imp-res');
+  if(!txt.trim()){ res.innerHTML = '<div class="imp-warn">Rien à analyser : colle d\u2019abord ton bloc Excel.</div>'; return; }
+  const nbTab = (txt.match(/\t/g)||[]).length, nbPv = (txt.match(/;/g)||[]).length;
+  const sep = nbTab >= nbPv ? '\t' : ';';
+  const lignes = txt.replace(/\r/g,'').split('\n').filter(l=>l.trim()!=='').map(l=>l.split(sep));
+
+  /* séparation libellés / valeurs */
+  let nbLib = 0;
+  lignes.forEach(cells=>{
+    let i = 0;
+    while(i < cells.length && numFR(cells[i])===null && !/^(na)$/i.test(String(cells[i]).trim())) i++;
+    if(i > nbLib && i < cells.length) nbLib = i;
+  });
+  if(nbLib===0) nbLib = 1;
+
+  const cols = moisColonnes(otdMoisCourant());
+  const jours = moisJoursOuvres(otdMoisCourant());
+  const maxVal = Math.max(...lignes.map(c=>c.length - nbLib));
+
+  /* alignement : soit la mise en page complète (jours + semaines + mois), soit les seuls jours */
+  let plan;
+  if(maxVal === cols.length){
+    plan = cols.map(c=>c.type==='jour' ? c.d : null);
+  } else {
+    plan = [];
+    for(let i=0;i<maxVal;i++) plan.push(null);
+  }
+
+  const cibles = otdCibles(b);
+  otdImp = {lignes, nbLib, plan, cibles, sep, maxVal};
+
+  const detectees = plan.filter(Boolean).length;
+  const info = (maxVal === cols.length)
+    ? `<div class="imp-ok">Mise en page reconnue : ${detectees} colonnes de jours + ${cols.length-detectees} colonnes de synthèse (S.. et moyenne), qui seront ignorées.</div>`
+    : `<div class="imp-ok">${maxVal} colonnes de valeurs détectées : elles seront posées sur ${maxVal} jours ouvrés consécutifs à partir du jour choisi ci-dessus.${maxVal>jours.length?' <b>Attention : plus de colonnes que de jours ouvrés dans le mois.</b>':''}</div>`;
+
+  /* les cellules fusionnées d'Excel arrivent vides : on reporte le nom du bloc */
+  let bloc = '';
+  const libelles = lignes.map(cells=>{
+    const tete = String(cells[0]||'').trim();
+    if(tete) bloc = tete;
+    const reste = cells.slice(nbLib>1?1:0, nbLib).map(x=>String(x||'').trim()).filter(Boolean).join(' ');
+    return (nbLib>1 ? (bloc+' '+reste) : reste).trim();
+  });
+
+  res.innerHTML = info + `<div class="imp-map">
+    ${lignes.map((cells,i)=>{
+      const lib = libelles[i];
+      const g = otdDevine(lib, cibles);
+      return `<div class="imp-row">
+        <span class="imp-lib" title="${escAttr(lib)}">${escapeHtml(truncate(lib,34)||'(ligne '+(i+1)+')')}</span>
+        <span class="imp-arrow">→</span>
+        <select class="imp-sel" data-i="${i}">
+          <option value="-1">— ignorer —</option>
+          ${cibles.map((c,ci)=>`<option value="${ci}" ${ci===g?'selected':''}>${escapeHtml(c.lib)}</option>`).join('')}
+        </select>
+      </div>`;
+    }).join('')}
+  </div>`;
+  document.getElementById('imp-go').disabled = false;
+}
+async function otdImporter(){
+  const b = currentBoard();
+  const jours = moisJoursOuvres(otdMoisCourant());
+  const offset = parseInt(document.getElementById('imp-offset').value,10)||0;
+  const sels = [...document.querySelectorAll('.imp-sel')];
+  const aEcrire = [];
+  let ignorees = 0;
+
+  sels.forEach(sel=>{
+    const ci = parseInt(sel.value,10);
+    const li = parseInt(sel.dataset.i,10);
+    if(ci<0){ ignorees++; return; }
+    const cible = otdImp.cibles[ci];
+    const cells = otdImp.lignes[li].slice(otdImp.nbLib);
+    cells.forEach((cell, k)=>{
+      let jour = otdImp.plan[k];
+      if(jour === undefined) return;
+      if(jour === null){
+        const idx = offset + otdImp.plan.slice(0,k).filter(x=>x===null).length;
+        jour = jours[idx];
+      }
+      if(!jour) return;
+      const val = numFR(cell);
+      if(val===null) return;
+      aEcrire.push({activite:cible.act, serie:cible.serie, jour:fmtDate(jour), champ:cible.champ, valeur:val});
+    });
+  });
+
+  if(!aEcrire.length){ showToast('Aucune valeur exploitable dans ce collage'); return; }
+  showToast('Import en cours ('+aEcrire.length+' valeurs)…');
+  await otdBulkApply(b, aEcrire);
+  await logActivity('a importé des relevés OTD dans', '« '+b.nom+' »', aEcrire.length+' valeurs', b.id);
+  closeModal();
+  renderMain();
+  showToast(aEcrire.length+' valeurs importées'+(ignorees?' · '+ignorees+' ligne(s) ignorée(s)':''));
+}
+async function otdBulkApply(b, liste){
+  const nouveaux = [];
+  for(const e of liste){
+    const ex = otdVal(b.id, e.activite, e.serie, e.jour);
+    if(ex){
+      const patch = {}; patch[e.champ] = e.valeur;
+      Object.assign(ex, patch);
+      if(USE_SUPABASE){
+        const {error} = await sbClient.from('otd_values').update(patch).eq('id', ex.id);
+        if(error) console.warn(error);
+      }
+    } else {
+      const row = {id:uid(), board_id:b.id, activite:e.activite, serie:e.serie, jour:e.jour,
+                   quantite:null, pct:null, created_at:new Date().toISOString()};
+      row[e.champ] = e.valeur;
+      state.otd_values.push(row);
+      nouveaux.push(row);
+    }
+  }
+  if(USE_SUPABASE && nouveaux.length){
+    for(let i=0;i<nouveaux.length;i+=250){
+      const {error} = await sbClient.from('otd_values').insert(nouveaux.slice(i,i+250));
+      if(error) showToast('Erreur import : '+error.message);
+    }
+  } else if(!USE_SUPABASE) persistLocal();
+}
+</script>
+
+<script>
+/* ============================================================
    DERNIER BLOC — logique d'entrée + voyant.
    Si le voyant « Système prêt » est vert, ce bloc s'est exécuté :
    les boutons ci-dessous sont donc câblés, sans exception possible.
@@ -4826,7 +5048,7 @@ function tryUnlock(){
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v8.1 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v8.3 · boutons câblés'; st.classList.add('ready'); }
 })();
 </script>
 </body>
