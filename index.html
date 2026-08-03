@@ -4677,14 +4677,31 @@ function otdVal(boardId, act, serie, jour){
 function otdCalc(boardId, a, jours){
   return otdGlobal(boardId, a, jours);
 }
-/* Valeur retenue pour la synthèse : la série de référence si l'activité en
-   déclare une (ex. Réception -> Après détails), sinon le global pondéré. */
+/* Série de référence effective d'une activité.
+   - refSerie renseigné            -> cette série
+   - refSerie explicitement vidé   -> global pondéré (choix assumé de l'utilisateur)
+   - refSerie jamais paramétré     -> pour le mode « % + quantité partagée », la
+     dernière série fait foi (ex. Réception : « Après détails »), car c'est la
+     mesure finale ; les espaces créés avant ce réglage en bénéficient donc. */
+function otdRefSerie(a){
+  if(a.refSerie !== undefined){
+    return (a.refSerie && a.series.indexOf(a.refSerie)>=0) ? a.refSerie : null;
+  }
+  if(a.mode==='pct_qte' && a.series.filter(Boolean).length>1){
+    const l = a.series.filter(Boolean);
+    return l[l.length-1];
+  }
+  return null;
+}
+/* Valeur retenue pour la synthèse hebdo. La pondération par les quantités
+   reste celle de la grille mensuelle. */
 function otdSyntheseVal(boardId, a, jours){
-  if(a.refSerie && a.series.indexOf(a.refSerie)>=0) return otdSerieMoy(boardId, a, a.refSerie, jours);
-  return otdGlobal(boardId, a, jours);
+  const ref = otdRefSerie(a);
+  return ref ? otdSerieMoy(boardId, a, ref, jours) : otdGlobal(boardId, a, jours);
 }
 function otdLibValeur(a){
-  return (a.refSerie && a.series.indexOf(a.refSerie)>=0) ? a.refSerie : '% global pondéré';
+  const ref = otdRefSerie(a);
+  return ref ? ref+' uniquement' : '% global pondéré';
 }
 function otdQte(boardId, a, jours){
   let sq=0;
@@ -4949,7 +4966,7 @@ function openOtdConfig(){
           <div class="field" style="margin-bottom:0"><label>Valeur reprise dans la synthèse hebdo</label>
             <select class="c-ref">
               <option value="">Global pondéré (toutes séries)</option>
-              ${a.series.filter(Boolean).map(se=>`<option value="${escAttr(se)}" ${a.refSerie===se?'selected':''}>${escapeHtml(se)} uniquement</option>`).join('')}
+              ${a.series.filter(Boolean).map(se=>`<option value="${escAttr(se)}" ${otdRefSerie(a)===se?'selected':''}>${escapeHtml(se)} uniquement</option>`).join('')}
             </select>
           </div>
         </div>`).join('')}
@@ -6037,7 +6054,7 @@ function tryUnlock(){
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v10.1'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v10.2'; st.classList.add('ready'); }
 })();
 </script>
 </body>
