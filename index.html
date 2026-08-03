@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plan d'Action — ONET × REVIMA</title>
+<title>Espace de pilotage</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,8 +13,8 @@
 
 <style>
 /* ============================================================
-   PLAN D'ACTION ONET × REVIMA — v3
-   Thème clair professionnel, inspiration Trello/Atlassian
+   ESPACE DE PILOTAGE — plateforme modulaire
+   Thème clair professionnel, modules paramétrables
    ============================================================ */
 :root{
   --bg:#f4f5f7;
@@ -853,7 +853,9 @@ body.presentation .m6-add, body.presentation .m6-del, body.presentation .a3-head
 .sy-head{display:flex;align-items:center;gap:18px;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--primary);border-radius:11px;padding:16px 22px;box-shadow:var(--shadow-sm);margin-bottom:14px}
 .sy-t{font-size:19px;font-weight:800;letter-spacing:-.01em}
 .sy-sub{font-size:12px;color:var(--muted);margin-top:3px;font-weight:500}
-.sy-score{margin-left:auto;text-align:center;background:var(--panel-2);border-radius:10px;padding:9px 18px}
+.sy-score{text-align:center;background:var(--panel-2);border-radius:10px;padding:9px 18px}
+.sy-btn{margin-left:auto;white-space:nowrap}
+body.presentation .sy-btn{display:none !important}
 .sy-score-n{font-family:var(--mono);font-size:22px;font-weight:800}
 .sy-score-l{font-size:10px;color:var(--muted);font-weight:600}
 .sy-table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:11px;overflow:hidden;box-shadow:var(--shadow-sm)}
@@ -1077,6 +1079,80 @@ body.presentation .m6-add, body.presentation .m6-del, body.presentation .a3-head
 .hrow:hover .bc-del{opacity:1}
 @media (max-width:1150px){ .dense-grid{grid-template-columns:1fr} }
 
+
+/* ====== RITUEL SQCDP ====== */
+.crumb .b-type.sqcdp{background:#f0edff;color:#6554c0}
+.sqc-wrap{flex:1;overflow:auto;padding:20px 24px 40px;background:var(--bg)}
+.sqc-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.sqc-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 17px 13px;box-shadow:var(--shadow-sm)}
+.sqc-head{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.sqc-letter{
+  width:38px;height:38px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:19px;font-weight:800;flex-shrink:0;
+}
+.sqc-titre{flex:1;min-width:0}
+.sqc-titre b{display:block;font-size:13.5px;font-weight:800}
+.sqc-titre span{display:block;font-size:10.5px;color:var(--muted-2);line-height:1.35;margin-top:2px}
+.sqc-score{text-align:center;flex-shrink:0}
+.sqc-taux{font-family:var(--mono);font-size:19px;font-weight:800}
+.sqc-lbl{font-size:9px;color:var(--muted-2);font-weight:700;letter-spacing:.04em}
+.sqc-sem{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.sqc-sem span{text-align:center;font-size:9px;font-weight:800;color:var(--muted-2)}
+.sqc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.sqc-day,.sq-day-empty{
+  aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:700;cursor:pointer;position:relative;user-select:none;transition:transform .08s;
+}
+.sqc-day:hover{transform:scale(1.09);box-shadow:var(--shadow-sm);z-index:2}
+.sqc-day.we{opacity:.55}
+.sqc-day.today{outline:2px solid var(--navy);outline-offset:1px}
+.sq-day-empty{background:transparent;cursor:default}
+.sqc-tri{position:absolute;top:1px;right:1px;width:0;height:0;border-top:6px solid #172b4d;border-left:6px solid transparent}
+.sqc-foot{display:flex;align-items:center;gap:6px;margin-top:11px;flex-wrap:wrap}
+.sqc-chip{font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:10px}
+.sqc-chip.ok{background:var(--green-soft);color:var(--green)}
+.sqc-chip.al{background:var(--orange-soft);color:var(--orange)}
+.sqc-chip.ko{background:var(--red-soft);color:var(--red)}
+.sqc-streak{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--muted-2);font-weight:700}
+.sqc-legend{display:flex;gap:15px;flex-wrap:wrap;align-items:center;margin-top:18px;font-size:11px;color:var(--muted);font-weight:600}
+.sqc-legend span{display:flex;align-items:center;gap:6px}
+.sqc-legend i{width:14px;height:14px;border-radius:4px;border:1px solid transparent;display:inline-block}
+.sqc-legend i.tri{border:none;width:0;height:0;border-top:10px solid #172b4d;border-left:10px solid transparent;border-radius:0}
+.sqt-wrap{flex:1;overflow:auto;padding:16px}
+.sqt-table{border-collapse:collapse;background:#fff;box-shadow:var(--shadow-sm);font-size:11px}
+.sqt-table th,.sqt-table td{border:1px solid #d0d7de}
+.sqt-h,.sqt-h2,.sqt-day{background:#172b4d;color:#fff;font-size:9.5px;font-weight:700;padding:4px 3px;text-align:center;position:sticky;top:0;z-index:10}
+.sqt-h{left:0;z-index:12;min-width:150px;text-align:left;padding-left:12px}
+.sqt-h2{min-width:56px}
+.sqt-day{min-width:26px}
+.sqt-day b{display:block;font-size:10px}
+.sqt-day span{display:block;font-size:8px;opacity:.65;text-transform:uppercase}
+.sqt-day.we{background:#2c4470}
+.sqt-day.today{background:#c00000}
+.sqt-axe{position:sticky;left:0;background:#fff;z-index:8;font-weight:700;font-size:11.5px;padding:5px 12px;white-space:nowrap}
+.sqt-let{display:inline-flex;width:19px;height:19px;border-radius:5px;background:var(--navy);color:#fff;align-items:center;justify-content:center;font-size:10px;font-weight:800;margin-right:8px}
+.sqt-cell{height:26px;cursor:pointer;position:relative}
+.sqt-cell:hover{outline:2px solid var(--primary);outline-offset:-2px}
+.sqt-res{text-align:center;font-family:var(--mono);font-weight:800;font-size:11px;background:#f2f2f2}
+.sqt-res.ko{color:var(--red)}
+.sqcdp-cfg{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.sqcdp-cfg .c-key{width:52px;text-align:center;font-weight:800}
+.sqcdp-cfg .c-nom{width:130px}
+.sqcdp-cfg .c-q{flex:1;min-width:0}
+.sqcdp-cfg input{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px}
+.sqcdp-st{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.sqcdp-st .st-pill{width:44px;text-align:center;border-radius:6px;padding:3px 0;font-size:10px;font-weight:800}
+.sqcdp-st .s-nom{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px}
+.sqcdp-st .s-col{width:38px;height:30px;border:1px solid var(--line);border-radius:6px;background:none;padding:2px}
+.st-fix{font-size:9.5px;color:var(--muted-2);font-weight:700;width:66px;text-align:right}
+
+/* ====== ESPACE PROJET : paramétrage ====== */
+.pc-st,.pc-ch{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.pc-st .p-nom,.pc-ch .c-lab{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:12.5px}
+.pc-st .p-col{width:40px;height:30px;border:1px solid var(--line);border-radius:6px;background:none;padding:2px}
+.pc-ch .c-typ{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px}
+.sub-count{font-size:9.5px;font-weight:700;color:var(--violet);background:var(--violet-soft);border-radius:9px;padding:1px 7px;margin-left:7px}
+
 /* ====== MODE PRÉSENTATION ====== */
 body.presentation .search-box, body.presentation #btn-export, body.presentation .conn-badge,
 body.presentation #btn-share, body.presentation .bc-del, body.presentation .kpix-tools, body.presentation .kpix-entry, body.presentation .kpix-card.new-kpi,
@@ -1136,12 +1212,12 @@ window.__paErrors = [];
         </svg>
       </div>
       <div class="logo-words">
-        <div class="logo-l1">ONET<span class="x">×</span>REVIMA</div>
-        <div class="logo-l2">Plan d'action</div>
+        <div class="logo-l1">MON ESPACE</div>
+        <div class="logo-l2">Pilotage &amp; performance</div>
       </div>
     </div>
     <h1>Bienvenue</h1>
-    <p>Plateforme de pilotage des plans d'action et projets du site. Indique ton prénom : chaque action est tracée dans le journal d'équipe.</p>
+    <p>Plateforme de pilotage : plans d'action, projets, résolution de problème, indicateurs et rituels. Indique ton prénom : chaque action est tracée dans le journal d'équipe.</p>
     <label>Ton prénom</label>
     <input type="text" id="gate-name" placeholder="ex : Stan" autocomplete="off">
     <button class="enter" id="btn-enter" type="button" onclick="tryUnlock()">Entrer</button>
@@ -1150,6 +1226,10 @@ window.__paErrors = [];
     <div class="gate-config">
       <div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px">⚙ Configuration Supabase</div>
       <div id="gate-config-body">
+        <label>Nom de l'espace</label>
+        <input type="text" id="cfg-nom" placeholder="ex : SITE DE ROUEN" autocomplete="off">
+        <label>Sous-titre</label>
+        <input type="text" id="cfg-sous" placeholder="ex : Pilotage &amp; performance" autocomplete="off">
         <label>Project URL</label>
         <input type="text" id="cfg-url" placeholder="https://xxxxx.supabase.co" autocomplete="off">
         <label>Clé anon / publishable</label>
@@ -1171,8 +1251,8 @@ window.__paErrors = [];
         </svg>
       </div>
       <div class="logo-words">
-        <div class="logo-l1">ONET<span class="x">×</span>REVIMA</div>
-        <div class="logo-l2">Plan d'action</div>
+        <div class="logo-l1">MON ESPACE</div>
+        <div class="logo-l2">Pilotage &amp; performance</div>
       </div>
     </div>
 
@@ -1188,6 +1268,7 @@ window.__paErrors = [];
     <div class="presence-row" id="presence-row" title="Connectés en ce moment"></div>
     <span class="conn-badge" id="conn-badge"><span class="dot"></span><span id="conn-text">…</span></span>
 
+    <button class="btn" id="btn-reglages" onclick="openReglages()" title="Nom de l'espace et connexion">⚙</button>
     <button class="btn" id="btn-news" onclick="setRoute({view:'news'})" title="Ce qui s'est passé sur l'application">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9h4"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
       Actualité
@@ -1253,6 +1334,14 @@ const SUPABASE_URL = 'YOUR_SUPABASE_URL';
 const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
 /* ---- Référentiels ---- */
+/* ---- Identité de l'espace, entièrement paramétrable ---- */
+function appNom(){ try{ return localStorage.getItem('pa_app_nom') || 'MON ESPACE'; }catch(e){ return 'MON ESPACE'; } }
+function appSous(){ try{ return localStorage.getItem('pa_app_sous') || 'Pilotage & performance'; }catch(e){ return 'Pilotage & performance'; } }
+function appliquerIdentite(){
+  document.querySelectorAll('.logo-l1').forEach(el=>{ el.textContent = appNom(); });
+  document.querySelectorAll('.logo-l2').forEach(el=>{ el.textContent = appSous(); });
+  document.title = appNom();
+}
 const ACTION_STATUTS = ['À faire','En cours','Bloqué','Fait'];
 const ACTION_COLORS = {
   'À faire':  {main:'#5e6c84', soft:'#eef0f3'},
@@ -1269,6 +1358,23 @@ const PROJ_COLORS = {
   'En attente': {main:'#e77b1e', soft:'#fdf0e3'},
 };
 const HEALTH = {vert:'#22a06b', orange:'#e77b1e', rouge:'#e34935'};
+/* Un espace projet peut redéfinir ses statuts et ajouter ses propres champs */
+function projStatuts(b){
+  if(b && b.config && b.config.statuts && b.config.statuts.length) return b.config.statuts;
+  return PROJ_STATUTS.map(n=>({nom:n, couleur:PROJ_COLORS[n].main}));
+}
+function projStatutsNoms(b){ return projStatuts(b).map(x=>x.nom); }
+function projCol(b, statut){
+  const st = projStatuts(b).find(x=>x.nom===statut);
+  if(st) return {main:st.couleur, soft:st.couleur+'22'};
+  return PROJ_COLORS[statut] || PROJ_COLORS['Planifié'];
+}
+function projChamps(b){ return (b && b.config && b.config.champs) ? b.config.champs : []; }
+function projStatutTermine(b){
+  const l = projStatuts(b);
+  const t = l.find(x=>x.fin) || l.find(x=>/termin/i.test(x.nom));
+  return t ? t.nom : 'Terminé';
+}
 const PRIOS = {'Haute':'#e34935','Moyenne':'#e77b1e','Basse':'#5e6c84'};
 const BOARD_COLORS = ['#0c66e4','#22a06b','#e77b1e','#6554c0','#e34935','#00a3bf','#d6377b'];
 const DEFAULT_COLS = [
@@ -1299,12 +1405,12 @@ const FRENCH_HOLIDAYS = new Set([
 
 let sbClient = null; // renommé : la librairie CDN crée déjà une globale « supabase »
 let USE_SUPABASE = false;
-let state = { boards: [], actions: [], projects: [], tasks: [], activity: [], comments: [], kpis: [], kpi_values: [], a3: [], otd_values: [] };
+let state = { boards: [], actions: [], projects: [], tasks: [], activity: [], comments: [], kpis: [], kpi_values: [], a3: [], otd_values: [], sqcdp_values: [] };
 let route = { view:'home', boardId:null, sub:'liste' }; // sub: liste|kanban (actions) / gantt|kanban|dash (projet)
 let ui = {
   pxPerDay: 34, userName:'', drawer:{kind:null,id:null,tab:'infos'},
   filterStatuts:new Set(), filterResp:new Set(), onlyLate:false,
-  expandedProjects:new Set(), horizonPlus:0, otdLundi:null, otdMois:null, homeMode:null,
+  expandedProjects:new Set(), horizonPlus:0, otdLundi:null, otdMois:null, sqcdpMois:null, homeMode:null,
 };
 let undoStack = [];
 
@@ -1328,7 +1434,7 @@ function initials(name){ return (name||'?').trim().split(/\s+/).map(w=>w[0]).joi
 
 /* ============ STOCKAGE ============ */
 function uid(){ return 'id-'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
-const TABLES = ['boards','actions','projects','tasks','activity','comments','kpis','kpi_values','a3','otd_values'];
+const TABLES = ['boards','actions','projects','tasks','activity','comments','kpis','kpi_values','a3','otd_values','sqcdp_values'];
 
 async function init(){
   try{
@@ -1377,6 +1483,7 @@ async function loadAll(){
       sbClient.from('kpi_values').select('*').order('ts'),
       sbClient.from('a3').select('*').order('created_at'),
       sbClient.from('otd_values').select('*').order('jour'),
+      sbClient.from('sqcdp_values').select('*').order('jour'),
     ]);
     TABLES.forEach((t,i)=>{ state[t] = res[i].data || []; });
   } else {
@@ -1494,7 +1601,10 @@ function projEndDate(p){
   return (c < t && p.statut !== 'Terminé') ? t : c;
 }
 function projLate(p){
-  if(p.statut==='Terminé' || p.date_fin) return false;
+  if(p.date_fin) return false;
+  const bp = state.boards.find(z=>z.id===p.board_id);
+  if(bp && p.statut===projStatutTermine(bp)) return false;
+  if(p.statut==='Terminé') return false;
   const cible = projCible(p);
   return !!cible && dateFromStr(cible) < todayMid();
 }
@@ -1531,7 +1641,7 @@ function goHome(){ setRoute({view:'home'}); }
 function openBoard(id){
   const b = state.boards.find(x=>x.id===id);
   if(!b) return;
-  setRoute({view:'board', boardId:id, sub: b.type==='projet' ? 'gantt' : (b.type==='otd' ? 'mois' : 'liste')});
+  setRoute({view:'board', boardId:id, sub: b.type==='projet' ? 'gantt' : (b.type==='otd' ? 'mois' : (b.type==='sqcdp' ? 'croix' : 'liste'))});
 }
 function setSub(sub){ route.sub = sub; renderMain(); }
 
@@ -1543,7 +1653,7 @@ function renderCrumb(){
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
       <span class="sep">/</span>
       <span class="b-name">${escapeHtml(b.nom)}</span>
-      <span class="b-type ${b.type}">${b.type==='actions'?'Plan d\u2019actions':(b.type==='resolution'?'Résolution de problème':(b.type==='otd'?'Suivi OTD':'Espace projet'))}</span>`;
+      <span class="b-type ${b.type}">${b.type==='actions'?'Plan d\u2019actions':(b.type==='resolution'?'Résolution de problème':(b.type==='otd'?'Suivi d\u2019indicateurs':(b.type==='sqcdp'?'Rituel SQCDP':'Espace projet')))}</span>`;
   } else if(route.view==='news'){
     c.innerHTML = `<button class="btn-home" onclick="goHome()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
@@ -1581,6 +1691,7 @@ function renderMain(){
     if(b.type==='actions') renderActionsBoard(main, b);
     else if(b.type==='resolution') renderA3Board(main, b);
     else if(b.type==='otd') renderOtdBoard(main, b);
+    else if(b.type==='sqcdp') renderSqcdpBoard(main, b);
     else renderProjectBoard(main, b);
   }
 }
@@ -1600,6 +1711,13 @@ function boardStats(b){
     return {n:acts.length, done:tenus, late:mesures.length-tenus,
       pct: mesures.length?Math.round(mesures.reduce((x,y)=>x+y,0)/mesures.length):0,
       meta: acts.length+' activité'+(acts.length>1?'s':'')+' suivie'+(acts.length>1?'s':'')};
+  } else if(b.type==='sqcdp'){
+    const axes = sqcdpAxes(b);
+    const jours = sqcdpJoursMois(sqcdpMois());
+    let ok=0, ko=0, tot=0;
+    axes.forEach(a=>{ const c=sqcdpCompte(b,a.key,jours); ok+=c.ok; ko+=c.ko; tot+=c.ok+c.alerte+c.ko; });
+    return {n:axes.length, done:ok, late:ko, pct: tot?Math.round(ok/tot*100):0,
+      meta: axes.length+' axe'+(axes.length>1?'s':'')+' suivi'+(axes.length>1?'s':'')};
   } else if(b.type==='resolution'){
     const items = state.a3.filter(x=>x.board_id===b.id);
     const done = items.filter(x=>x.statut==='Clôturé').length;
@@ -1622,9 +1740,9 @@ function setHomeMode(m){
   try{ localStorage.setItem('pa_home_mode', m); }catch(e){}
   renderMain();
 }
-const TYPE_LABELS = {actions:'Plan d\u2019actions', projet:'Espace projet', resolution:'Résolution A3', otd:'Suivi OTD'};
-const TYPE_ICONS  = {actions:'☑', projet:'📅', resolution:'🔍', otd:'📈'};
-const TYPE_ORDRE  = ['actions','projet','otd','resolution'];
+const TYPE_LABELS = {actions:'Plan d\u2019actions', projet:'Espace projet', resolution:'Résolution A3', otd:'Suivi d\u2019indicateurs', sqcdp:'Rituel SQCDP'};
+const TYPE_ICONS  = {actions:'☑', projet:'📅', resolution:'🔍', otd:'📈', sqcdp:'✚'};
+const TYPE_ORDRE  = ['actions','projet','sqcdp','otd','resolution'];
 
 function renderHome(main){
   const totalActions = state.actions.length, lateActions = state.actions.filter(actionLate).length;
@@ -1990,10 +2108,11 @@ function renderProjectBoard(main, b){
   const toolbar = `<div class="board-toolbar">
     <div class="seg">
       <button class="${route.sub==='gantt'?'active':''}" onclick="setSub('gantt')">📅 Gantt</button>
+      <button class="${route.sub==='liste'?'active':''}" onclick="setSub('liste')">☰ Liste</button>
       <button class="${route.sub==='kanban'?'active':''}" onclick="setSub('kanban')">▤ Kanban</button>
       <button class="${route.sub==='dash'?'active':''}" onclick="setSub('dash')">◔ Dashboard</button>
     </div>
-    ${route.sub==='gantt'?`<div class="seg">
+    ${route.sub==='liste'?'':''}${route.sub==='gantt'?`<div class="seg">
       <button class="${ui.pxPerDay>=30?'active':''}" onclick="ui.pxPerDay=34;renderMain()">Semaine</button>
       <button class="${ui.pxPerDay<30&&ui.pxPerDay>=10?'active':''}" onclick="ui.pxPerDay=14;renderMain()">Mois</button>
       <button class="${ui.pxPerDay<10&&ui.pxPerDay>3?'active':''}" onclick="ui.pxPerDay=5.5;renderMain()">Trimestre</button>
@@ -2002,18 +2121,20 @@ function renderProjectBoard(main, b){
     <button class="btn small ghost" onclick="ui.horizonPlus=(ui.horizonPlus||0)+365;renderMain();showToast('Horizon étendu d\u2019un an')" title="Ajouter un an de planification à droite">+1 an ▸</button>
     <button class="btn small ghost" onclick="scrollToToday()">↦ Aujourd'hui</button>
     <button class="btn small ghost" onclick="undoLast()" title="Ctrl+Z">↩</button>`:''}
-    ${filterChipsHtml(PROJ_STATUTS, PROJ_COLORS, resps)}
+    ${filterChipsHtml(projStatutsNoms(b), null, resps)}
     <div class="toolbar-spacer"></div>
     ${route.sub==='gantt'?`<div class="gantt-legend">
       <span><i style="background:#0c66e4"></i>En cours</span><span><i style="background:#e34935"></i>Retard</span>
       <span><i style="background:#22a06b"></i>Terminé</span><span><i class="diam" style="background:#e77b1e"></i>Jalon</span>
       <span><i style="background:transparent;border-top:2px solid #e77b1e;height:0;width:10px"></i>Engagement</span>
     </div>`:''}
+    <button class="btn small" onclick="openProjConfig()">⚙ Paramétrer</button>
     <button class="btn primary small" id="btn-new-item" onclick="openProjectModal()">＋ Projet</button>
   </div>`;
 
   let content;
-  if(route.sub==='kanban') content = renderProjKanban(b);
+  if(route.sub==='liste') content = renderProjListe(b);
+  else if(route.sub==='kanban') content = renderProjKanban(b);
   else if(route.sub==='dash') content = renderProjDash(b);
   else content = `<div class="gantt-scroll" id="gantt-scroll"><div class="gantt-inner" id="gantt-inner">
       <div class="gantt-canvas-bg" id="gantt-bg"></div>
@@ -2215,7 +2336,7 @@ function renderGantt(b){
     if(r.kind==='project'){
       const p = r.item;
       const parent = projHasChildren(p);
-      const col = PROJ_COLORS[p.statut] || PROJ_COLORS['Planifié'];
+      const col = projCol(b, p.statut);
       const span = projSpan(p);
       const sd = parent ? span.d : dateFromStr(p.date_debut||fmtDate(today));
       const ed = parent ? span.f : projEndDate(p);
@@ -2278,7 +2399,7 @@ function renderGantt(b){
       }
     } else {
       const t = r.item, p = r.parent;
-      const col = PROJ_COLORS[p.statut] || PROJ_COLORS['Planifié'];
+      const col = projCol(b, p.statut);
       const wbs = `<div class="wbs-cell task" style="padding-left:${7+r.depth*15}px" onclick="openProjectDrawer('${p.id}')">
         <span class="wbs-bullet">${t.jalon?'◆':'▪'}</span>
         <span class="wbs-name" title="${escAttr(t.nom)}">${escapeHtml(t.nom)}</span>
@@ -2418,11 +2539,132 @@ document.addEventListener('mouseup', async ()=>{
   }
 });
 
+/* ---- Vue liste des projets ---- */
+function renderProjListe(b){
+  const items = getFilteredProjects(b).sort((a,c)=>(projDepth(a)-projDepth(c))||String(a.nom).localeCompare(String(c.nom)));
+  const champs = projChamps(b);
+  const lignes = items.map(p=>{
+    const col = projCol(b, p.statut);
+    const late = projLate(p);
+    const dep = projDepassementJours(p);
+    const nb = projChildren(p.id).length;
+    return `<tr class="${late?'is-late':''}" onclick="openProjectDrawer('${p.id}')">
+      <td class="pa-num">${escapeHtml(p.code||'')}</td>
+      <td class="pa-title" style="padding-left:${12+projDepth(p)*16}px">${projDepth(p)?'<span style="color:var(--muted-2)">└ </span>':''}${escapeHtml(p.nom)}${nb?`<span class="sub-count">${nb} sous-projet${nb>1?'s':''}</span>`:''}${late?`<span class="pa-late-badge">DÉRIVE +${dep}j</span>`:''}</td>
+      <td><span class="pa-resp"><span class="av">${initials(p.responsable||'?')}</span>${escapeHtml(p.responsable||'—')}</span></td>
+      <td><span class="status-pill" style="background:${col.soft};color:${col.main}"><span class="d" style="background:${col.main}"></span>${escapeHtml(p.statut||'')}</span></td>
+      <td><span class="prio-flag" style="color:${PRIOS[p.priorite]||'#888'}">⚑ ${escapeHtml(p.priorite||'')}</span></td>
+      <td><span class="kc-health" style="background:${HEALTH[p.sante]||HEALTH.vert};display:inline-block;width:10px;height:10px;border-radius:50%"></span></td>
+      <td><span class="pa-date">${p.date_debut?fmtFR(p.date_debut):'—'}</span></td>
+      <td><span class="pa-date ${late?'past':''}">${projCible(p)?fmtFR(projCible(p)):'—'}</span></td>
+      <td><span class="pa-date">${p.date_fin?fmtFR(p.date_fin):'<span style="color:var(--muted-2)">en cours</span>'}</span></td>
+      <td><span class="pa-prog"><span class="pa-prog-track"><span class="pa-prog-fill" style="display:block;width:${projAvancement(p)}%;background:${col.main}"></span></span><span class="pa-prog-val">${projAvancement(p)}%</span></span></td>
+      ${champs.map(c=>`<td style="color:var(--muted)">${escapeHtml((p.extra&&p.extra[c.key])||'')}</td>`).join('')}
+    </tr>`;
+  }).join('');
+  const all = state.projects.filter(p=>p.board_id===b.id);
+  const late = all.filter(projLate).length;
+  const fin = all.filter(p=>p.date_fin).length;
+  return `<div class="pa-wrap">
+    <div class="pa-summary">
+      <div class="pa-sum-item"><span class="n">${all.length}</span><span class="l">projets</span></div>
+      <div class="pa-sum-item late"><span class="n">${late}</span><span class="l">en dérive</span></div>
+      <div class="pa-sum-item done"><span class="n">${fin}</span><span class="l">livrés</span></div>
+      <div class="pa-sum-item"><span class="n">${all.length?Math.round(all.reduce((x,p)=>x+projAvancement(p),0)/all.length):0}%</span><span class="l">avancement moyen</span></div>
+    </div>
+    <div class="pa-table-card"><table class="pa-table">
+      <thead><tr><th>Code</th><th>Projet</th><th>Responsable</th><th>Statut</th><th>Priorité</th><th>Santé</th><th>Début</th><th>Engagement</th><th>Fin réelle</th><th>Avancement</th>
+        ${champs.map(c=>`<th>${escapeHtml(c.label)}</th>`).join('')}</tr></thead>
+      <tbody>${lignes}</tbody>
+    </table>
+    ${items.length?'':'<div class="pa-empty">Aucun projet ne correspond aux filtres.</div>'}
+    <div class="pa-add-row" onclick="openProjectModal()">＋ Ajouter un projet</div>
+    </div></div>`;
+}
+
+/* ---- Paramétrage de l'espace projet ---- */
+function openProjConfig(){
+  const b = currentBoard();
+  const sts = projStatuts(b), champs = projChamps(b);
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Paramétrer l'espace projet</div>
+    <div class="modal-body">
+      <div class="section-div" style="border:none;margin:0;padding:0"><h4>Statuts &amp; couleurs</h4></div>
+      <div id="pc-sts">
+        ${sts.map(x=>`<div class="pc-st">
+          <input type="text" class="p-nom" value="${escAttr(x.nom)}">
+          <input type="color" class="p-col" value="${x.couleur}">
+          <label class="k-check" style="font-size:11px"><input type="radio" name="pfin" class="p-fin" ${x.fin||/termin/i.test(x.nom)?'checked':''}> clôture</label>
+          <button class="del-task" onclick="pcDel(this)">✕</button>
+        </div>`).join('')}
+      </div>
+      <button class="btn small" style="margin-top:8px" onclick="pcAddStatut()">＋ Ajouter un statut</button>
+      <div class="section-div"><h4>Champs personnalisés</h4></div>
+      <div id="pc-champs">
+        ${champs.map(c=>`<div class="pc-ch" data-key="${c.key}">
+          <input type="text" class="c-lab" value="${escAttr(c.label)}">
+          <select class="c-typ">
+            <option value="texte" ${c.type==='texte'?'selected':''}>Texte</option>
+            <option value="nombre" ${c.type==='nombre'?'selected':''}>Nombre</option>
+            <option value="date" ${c.type==='date'?'selected':''}>Date</option>
+          </select>
+          <button class="del-task" onclick="pcDelCh(this)">✕</button>
+        </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input type="text" id="pc-new" placeholder="ex : Budget, Client, Site…" style="flex:1;background:var(--panel-2);border:1.5px solid var(--line);border-radius:8px;padding:8px 11px;font-size:12.5px">
+        <button class="btn small" onclick="pcAddChamp()">Ajouter</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted-2);margin-top:10px;line-height:1.55">Le statut marqué « clôture » déclenche le remplissage automatique de la date de fin réelle. Les champs personnalisés apparaissent dans la fiche projet et dans la vue Liste.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="saveProjConfig()">Enregistrer</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function pcDel(btn){ const e=btn.closest('.pc-st'); if(e) e.remove(); }
+function pcDelCh(btn){ const e=btn.closest('.pc-ch'); if(e) e.remove(); }
+function pcAddStatut(){
+  const d=document.createElement('div');
+  d.innerHTML = `<div class="pc-st"><input type="text" class="p-nom" value="Nouveau statut"><input type="color" class="p-col" value="#5e6c84">
+    <label class="k-check" style="font-size:11px"><input type="radio" name="pfin" class="p-fin"> clôture</label>
+    <button class="del-task" onclick="pcDel(this)">✕</button></div>`;
+  document.getElementById('pc-sts').appendChild(d.firstElementChild);
+}
+function pcAddChamp(){
+  const inp = document.getElementById('pc-new');
+  const lab = inp.value.trim(); if(!lab) return;
+  const key = 'p_'+lab.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').slice(0,20);
+  const d=document.createElement('div');
+  d.innerHTML = `<div class="pc-ch" data-key="${key}"><input type="text" class="c-lab" value="${escAttr(lab)}">
+    <select class="c-typ"><option value="texte">Texte</option><option value="nombre">Nombre</option><option value="date">Date</option></select>
+    <button class="del-task" onclick="pcDelCh(this)">✕</button></div>`;
+  document.getElementById('pc-champs').appendChild(d.firstElementChild);
+  inp.value='';
+}
+async function saveProjConfig(){
+  const b = currentBoard();
+  const statuts = [...document.querySelectorAll('#pc-sts .pc-st')].map(el=>({
+    nom: el.querySelector('.p-nom').value.trim()||'Statut',
+    couleur: el.querySelector('.p-col').value,
+    fin: el.querySelector('.p-fin').checked,
+  })).filter(x=>x.nom);
+  const champs = [...document.querySelectorAll('#pc-champs .pc-ch')].map(el=>({
+    key: el.dataset.key,
+    label: el.querySelector('.c-lab').value.trim()||el.dataset.key,
+    type: el.querySelector('.c-typ').value,
+  }));
+  await dbUpdate('boards', b.id, {config:{...(b.config||{}), statuts: statuts.length?statuts:undefined, champs}});
+  await logActivity('a paramétré l\u2019espace', '« '+b.nom+' »', statuts.length+' statuts · '+champs.length+' champs', b.id);
+  closeModal(); renderMain(); showToast('Espace paramétré');
+}
+
 /* ---- Kanban projets ---- */
 function renderProjKanban(b){
   const items = getFilteredProjects(b);
-  return `<div class="kanban">${PROJ_STATUTS.map(s=>{
-    const col = PROJ_COLORS[s];
+  return `<div class="kanban">${projStatutsNoms(b).map(s=>{
+    const col = projCol(b, s);
     const cards = items.filter(p=>p.statut===s);
     return `<div class="kb-col" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="projDrop(event,'${s}')">
       <div class="kb-col-head"><span class="dot" style="background:${col.main}"></span><span class="kname">${s}</span><span class="kcount">${cards.length}</span></div>
@@ -2450,8 +2692,9 @@ async function projDrop(e, statut){
   const p = state.projects.find(x=>x.id===id);
   if(!p || p.statut===statut) return;
   const old = p.statut;
+  const bK = state.boards.find(z=>z.id===p.board_id);
   const patch = {statut};
-  if(statut==='Terminé'){ patch.avancement=100; if(!p.date_fin) patch.date_fin = fmtDate(new Date()); }
+  if(statut===projStatutTermine(bK)){ patch.avancement=100; if(!p.date_fin) patch.date_fin = fmtDate(new Date()); }
   else if(p.date_fin) patch.date_fin = null;
   await dbUpdate('projects', id, patch);
   await logActivity('a fait passer', '« '+p.nom+' »', old+' → '+statut);
@@ -2479,7 +2722,9 @@ function donutSVG(counts, statuts, colors){
 function renderProjDash(b){
   const projs = getFilteredProjects(b);
   const today = todayMid();
-  const counts = {}; PROJ_STATUTS.forEach(s=>counts[s]=0);
+  const noms = projStatutsNoms(b);
+  const cols = {}; noms.forEach(n=>cols[n]=projCol(b,n));
+  const counts = {}; noms.forEach(s=>counts[s]=0);
   projs.forEach(p=>counts[p.statut]=(counts[p.statut]||0)+1);
   const avgProg = projs.length?Math.round(projs.reduce((a,p)=>a+(p.avancement||0),0)/projs.length):0;
   const lateOnes = projs.filter(projLate);
@@ -2499,28 +2744,28 @@ function renderProjDash(b){
   return `<div class="dash">
     <div class="dash-grid-top">
       <div class="kpi-card tot"><div class="num mono">${projs.length}</div><div class="lbl">Projets</div></div>
-      <div class="kpi-card cours" onclick="ui.filterStatuts=new Set(['En cours']);renderMain()"><div class="num mono">${counts['En cours']}</div><div class="lbl">En cours</div></div>
+      <div class="kpi-card cours" onclick="ui.filterStatuts=new Set(['En cours']);renderMain()"><div class="num mono">${counts['En cours']||0}</div><div class="lbl">En cours</div></div>
       <div class="kpi-card retard"><div class="num mono">${lateOnes.length}</div><div class="lbl">Dérives détectées</div></div>
-      <div class="kpi-card termine" onclick="ui.filterStatuts=new Set(['Terminé']);renderMain()"><div class="num mono">${counts['Terminé']}</div><div class="lbl">Terminés</div></div>
+      <div class="kpi-card termine" onclick="ui.filterStatuts=new Set([projStatutTermine(currentBoard())]);renderMain()"><div class="num mono">${counts[projStatutTermine(b)]||0}</div><div class="lbl">Terminés</div></div>
       <div class="kpi-card moy"><div class="num mono">${avgProg}<span style="font-size:15px">%</span></div><div class="lbl">Avancement moyen</div></div>
     </div>
     <div class="dash-grid-mid">
       <div class="panel-card"><h3>Répartition</h3>
-        <div class="donut-wrap">${donutSVG(counts, PROJ_STATUTS, PROJ_COLORS)}
-          <div class="donut-legend">${PROJ_STATUTS.map(s=>`<div><i style="background:${PROJ_COLORS[s].main}"></i>${s}<b>${counts[s]}</b></div>`).join('')}</div>
+        <div class="donut-wrap">${donutSVG(counts, noms, cols)}
+          <div class="donut-legend">${noms.map(s=>`<div><i style="background:${cols[s].main}"></i>${s}<b>${counts[s]}</b></div>`).join('')}</div>
         </div>
       </div>
       <div class="panel-card"><h3>Charge par responsable <span class="n">${Object.keys(byResp).length} pers.</span></h3>
         ${Object.entries(byResp).sort((a,c)=>Object.values(c[1]).reduce((x,y)=>x+y,0)-Object.values(a[1]).reduce((x,y)=>x+y,0)).map(([who,o])=>{
           const tot = Object.values(o).reduce((a,c)=>a+c,0);
           return `<div class="bar-row"><div class="who">${escapeHtml(who)}</div>
-            <div class="bar-track">${PROJ_STATUTS.map(s=>o[s]?`<div class="bar-seg" style="width:${o[s]/maxLoad*100}%;background:${PROJ_COLORS[s].main}"></div>`:'').join('')}</div>
+            <div class="bar-track">${noms.map(s=>o[s]?`<div class="bar-seg" style="width:${o[s]/maxLoad*100}%;background:${cols[s].main}"></div>`:'').join('')}</div>
             <div class="val mono">${tot}</div></div>`;
         }).join('')||'<div style="color:var(--muted-2);font-size:12px">Aucune donnée</div>'}
       </div>
       <div class="panel-card"><h3>Échéances à 30 jours <span class="n">${upcoming.length}</span></h3>
         ${upcoming.slice(0,8).map(p=>{
-          const col = PROJ_COLORS[p.statut];
+          const col = projCol(b, p.statut);
           const days = dayIndex(dateFromStr(p.date_fin),today);
           return `<div class="echeance-item" onclick="openProjectDrawer('${p.id}')">
             <div class="edate mono" style="background:${col.soft};color:${col.main}">${fmtFR(p.date_fin).slice(0,5)}</div>
@@ -2902,7 +3147,7 @@ function filterEditorHtml(prefix, f, source, titre, aide){
       <div class="kpi-chips" id="k-${prefix}-prios">${Object.keys(PRIOS).map(p=>`<span class="chip ${(f.priorites||[]).includes(p)?'active':''}" data-s="${p}" onclick="this.classList.toggle('active')">${p}</span>`).join('')}</div>
     </div>
     <div class="field-row">
-      <div class="field"><label>Responsable contient</label><input type="text" id="k-${prefix}-resp" value="${escAttr(f.responsable||'')}" placeholder="ex : ONET"></div>
+      <div class="field"><label>Responsable contient</label><input type="text" id="k-${prefix}-resp" value="${escAttr(f.responsable||'')}" placeholder="ex : nom ou service"></div>
       <div class="field"><label>État d'avancement</label>
         <select id="k-${prefix}-cloture">
           ${Object.entries(clotureOptions(source)).map(([k2,v])=>`<option value="${k2}" ${(f.cloture||'any')===k2?'selected':''}>${v}</option>`).join('')}
@@ -3172,6 +3417,7 @@ async function deleteBoard(ev, id){
     state.kpis = state.kpis.filter(k=>k.board_id!==id);
     state.a3 = state.a3.filter(x=>x.board_id!==id);
     state.otd_values = state.otd_values.filter(x=>x.board_id!==id);
+    state.sqcdp_values = state.sqcdp_values.filter(x=>x.board_id!==id);
   }
   await dbDelete('boards', id); // côté Supabase : les clés étrangères cascadent
   await logActivity('a supprimé le plan', '« '+b.nom+' »', '', null);
@@ -3197,22 +3443,108 @@ function ensureHtml2Canvas(){
   });
   return h2cPromise;
 }
-async function captureScreen(){
+async function captureScreen(cibleId, nomFichier){
   try{
     showToast('Capture en cours…');
     await ensureHtml2Canvas();
-    const target = document.getElementById('app');
-    const canvas = await window.html2canvas(target, {backgroundColor:'#f4f5f7', scale:2, useCORS:true, logging:false});
+    const target = document.getElementById(cibleId || 'app');
+    if(!target) throw new Error('zone introuvable');
+    const opts = {backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false};
+    if(cibleId){ opts.width = target.scrollWidth; opts.height = target.scrollHeight;
+                 opts.windowWidth = target.scrollWidth + 40; opts.scrollX = 0; opts.scrollY = 0; }
+    const canvas = await window.html2canvas(target, opts);
     const a = document.createElement('a');
     a.href = canvas.toDataURL('image/png');
     const b = currentBoard();
-    const ctx = b ? slug(b.nom)+'-'+route.sub : route.view;
-    a.download = 'capture-'+ctx+'-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.png';
+    const ctx = nomFichier || (b ? slug(b.nom)+'-'+route.sub : route.view);
+    a.download = (nomFichier?'':'capture-')+ctx+'-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.png';
     a.click();
-    showToast('Capture PNG téléchargée ✓');
+    showToast('Image téléchargée dans « Téléchargements » ✓');
+    return true;
   }catch(e){
     showToast('Capture impossible ('+(e.message||e)+') — utilise Win+Maj+S en secours');
+    return false;
   }
+}
+
+/* ============================================================
+   SYNTHÈSE COMPLÈTE : image téléchargée + courrier pré-rempli
+   ============================================================ */
+async function otdSyntheseComplete(){
+  const b = currentBoard();
+  const acts = otdActivites(b);
+  const lundi = otdSemaineCourante();
+  const nbJ = (b.config && b.config.jours) || 5;
+  const jours = otdJours(lundi, nbJ);
+  const joursPrec = otdJours(addDays(lundi,-7), nbJ);
+  const sem = numSemaine(lundi);
+  const du = fmtFR(fmtDate(jours[0])), au = fmtFR(fmtDate(jours[jours.length-1]));
+
+  /* 1. Image de la synthèse dans le dossier Téléchargements */
+  await captureScreen('sy-sheet', 'synthese-otd-S'+String(sem).padStart(2,'0'));
+
+  /* 2. Corps du courrier */
+  const L = [];
+  L.push('SYNTHÈSE OTD — SEMAINE ' + String(sem).padStart(2,'0'));
+  L.push(escapeMail(b.nom) + ' · du ' + du + ' au ' + au);
+  L.push('');
+  let tenus = 0, mesures = 0;
+  const lignes = [];
+  acts.forEach(a=>{
+    const moy = otdSyntheseVal(b.id, a, jours);
+    const prec = otdSyntheseVal(b.id, a, joursPrec);
+    if(moy==null){ lignes.push('- ' + a.nom + ' : pas de relevé cette semaine'); return; }
+    mesures++;
+    const ok = moy >= a.objectif;
+    if(ok) tenus++;
+    const ecart = (prec!=null) ? (Math.round((moy-prec)*10)/10) : null;
+    const vs = ecart==null ? 'pas de référence S-1'
+      : (ecart>0 ? '+'+String(ecart).replace('.',',')+' pt vs S-1'
+      : (ecart<0 ? String(ecart).replace('.',',')+' pt vs S-1' : 'stable vs S-1'));
+    lignes.push('- ' + a.nom + ' : ' + String(moy).replace('.',',') + ' % (objectif ' + a.objectif + ' %) — '
+      + (ok ? 'TENU' : 'ÉCART de ' + String(Math.round((a.objectif-moy)*10)/10).replace('.',',') + ' pt')
+      + ' — ' + vs);
+  });
+  L.push('Objectifs tenus : ' + (mesures ? tenus + '/' + mesures : '—'));
+  L.push('');
+  L.push('RÉSULTATS DE LA SEMAINE');
+  lignes.forEach(x=>L.push(x));
+
+  /* 3. Commentaires saisis dans la semaine */
+  const notes = otdNotes(b.id, jours);
+  L.push('');
+  L.push('FAITS MARQUANTS');
+  if(notes.length){
+    notes.forEach(n=>{
+      const a = acts.find(x=>x.key===n.activite);
+      const nomA = a ? a.nom : n.activite;
+      const se = (n.serie && n.serie!==GLOB_SERIE && n.serie!==QTE_SERIE) ? ' · ' + n.serie : '';
+      L.push('- ' + fmtFR(n.jour) + ' — ' + nomA + se + ' : ' + n.commentaire.replace(/\s*\n\s*/g,' '));
+    });
+  } else {
+    L.push('- Aucun fait particulier signalé sur la semaine.');
+  }
+  L.push('');
+  L.push("Le tableau de synthèse vient d'être téléchargé au format image dans votre dossier Téléchargements : insérez-le ci-dessous.");
+  L.push('');
+  L.push('Bien cordialement,');
+  L.push(ui.userName || '');
+
+  let corps = L.join('\r\n');
+  if(corps.length > 1900){
+    corps = corps.slice(0, 1880) + '\r\n[…] Voir l\u2019image jointe pour le détail complet.';
+  }
+  const sujet = 'Synthèse OTD — semaine ' + String(sem).padStart(2,'0') + ' (' + du + ' au ' + au + ')';
+  const lien = 'mailto:?subject=' + encodeURIComponent(sujet) + '&body=' + encodeURIComponent(corps);
+
+  await logActivity('a diffusé la synthèse OTD', '« '+b.nom+' »', 'semaine '+sem, b.id);
+  ouvrirCourrier(lien);
+  setTimeout(()=>showToast('Courrier ouvert · colle l\u2019image téléchargée dans le message'), 900);
+}
+function escapeMail(t){ return String(t==null?'':t); }
+function ouvrirCourrier(lien){
+  try{ window.location.href = lien; }
+  catch(e){ const a=document.createElement('a'); a.href=lien; a.click(); }
 }
 
 /* ============================================================
@@ -3381,7 +3713,7 @@ function renderProjectDrawer(){
         <div class="field"><label>Responsable</label><input type="text" id="f-resp" value="${escAttr(p.responsable||'')}"></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Statut</label><select id="f-statut" onchange="onProjStatutChange(this.value)">${PROJ_STATUTS.map(s=>`<option ${s===p.statut?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="field"><label>Statut</label><select id="f-statut" onchange="onProjStatutChange(this.value)">${projStatutsNoms(state.boards.find(z=>z.id===p.board_id)).map(s=>`<option ${s===p.statut?'selected':''}>${s}</option>`).join('')}</select></div>
         <div class="field"><label>Priorité</label><select id="f-prio">${Object.keys(PRIOS).map(pr=>`<option ${pr===p.priorite?'selected':''}>${pr}</option>`).join('')}</select></div>
       </div>
       <div class="field-row">
@@ -3424,6 +3756,7 @@ function renderProjectDrawer(){
         </div>
       </div>
       <div class="field"><label>Notes</label><textarea id="f-notes">${escapeHtml(p.notes||'')}</textarea></div>
+      ${projChamps(state.boards.find(z=>z.id===p.board_id)).map(c=>`<div class="field"><label>${escapeHtml(c.label)}</label><input type="${c.type==='nombre'?'number':(c.type==='date'?'date':'text')}" data-pextra="${c.key}" value="${escAttr((p.extra&&p.extra[c.key])||'')}"></div>`).join('')}
       <div class="section-div">
         <h4>Tâches &amp; jalons <button class="add-mini" onclick="addTaskRow()">+ Ajouter</button></h4>
         <div id="tasks-list">${tasks.map(t=>taskItemHtml(t,tasks)).join('')||'<div style="color:var(--muted-2);font-size:12px;padding:6px 0">Aucune tâche.</div>'}</div>
@@ -3479,7 +3812,9 @@ function addTaskRow(){
 function onProjStatutChange(v){
   const fin = document.getElementById('f-fin'), av = document.getElementById('f-avancement');
   if(!fin) return;
-  if(v==='Terminé'){
+  const p0 = state.projects.find(x=>x.id===ui.drawer.id);
+  const FIN = projStatutTermine(p0?state.boards.find(z=>z.id===p0.board_id):currentBoard());
+  if(v===FIN){
     if(!fin.value) fin.value = fmtDate(new Date());
     if(av){ av.value = 100; document.getElementById('f-av-val').textContent = '100%'; }
   } else fin.value = '';
@@ -3504,10 +3839,13 @@ async function saveProjectDrawer(){
     parent_id: document.getElementById('f-parent').value || null,
     depends_on: document.getElementById('f-depends').value || null,
     verrou: !!document.getElementById('f-verrou').checked,
+    extra: (function(){ const e={}; document.querySelectorAll('#drawer-body [data-pextra]').forEach(el=>{ e[el.dataset.pextra]=el.value.trim(); }); return e; })(),
   };
-  if(patch.date_fin && patch.statut!=='Terminé'){ patch.statut='Terminé'; patch.avancement=100; }
-  if(patch.statut==='Terminé' && !patch.date_fin) patch.date_fin = fmtDate(new Date());
-  if(patch.statut!=='Terminé') patch.date_fin = null;
+  const bb = state.boards.find(z=>z.id===p.board_id);
+  const FIN = projStatutTermine(bb);
+  if(patch.date_fin && patch.statut!==FIN){ patch.statut=FIN; patch.avancement=100; }
+  if(patch.statut===FIN && !patch.date_fin) patch.date_fin = fmtDate(new Date());
+  if(patch.statut!==FIN) patch.date_fin = null;
   await dbUpdate('projects', p.id, patch);
   const prop = await propagateFrom(p.id);
   const existingIds = new Set(state.tasks.filter(t=>t.project_id===p.id).map(t=>t.id));
@@ -3560,6 +3898,39 @@ function closeDrawer(){
   ui.drawer = {kind:null,id:null,tab:'infos'};
 }
 
+/* ============ RÉGLAGES DE L'ESPACE ============ */
+function openReglages(){
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Réglages de l'espace</div>
+    <div class="modal-body">
+      <div class="field"><label>Nom affiché</label><input type="text" id="r-nom" value="${escAttr(appNom())}" placeholder="ex : SITE DE ROUEN"></div>
+      <div class="field"><label>Sous-titre</label><input type="text" id="r-sous" value="${escAttr(appSous())}" placeholder="ex : Pilotage & performance"></div>
+      <div class="section-div"><h4>Connexion partagée</h4>
+        <div class="field"><label>Supabase — Project URL</label><input type="text" id="r-url" value="${escAttr((function(){try{return localStorage.getItem('pa_sb_url')||''}catch(e){return ''}})())}" placeholder="https://xxxxx.supabase.co"></div>
+        <div class="field"><label>Supabase — clé anon / publishable</label><input type="text" id="r-key" value="${escAttr((function(){try{return localStorage.getItem('pa_sb_key')||''}catch(e){return ''}})())}"></div>
+        <div style="font-size:11px;color:var(--muted-2);line-height:1.55">Après modification de la connexion, recharge la page. Le bouton <b>Partager</b> génère un lien qui configure automatiquement les collègues.</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="saveReglages()">Enregistrer</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function saveReglages(){
+  try{
+    localStorage.setItem('pa_app_nom', document.getElementById('r-nom').value.trim()||'MON ESPACE');
+    localStorage.setItem('pa_app_sous', document.getElementById('r-sous').value.trim()||'Pilotage & performance');
+    const u = document.getElementById('r-url').value.trim().replace(/\/+$/,'');
+    const k = document.getElementById('r-key').value.trim();
+    if(u) localStorage.setItem('pa_sb_url', u);
+    if(k) localStorage.setItem('pa_sb_key', k);
+  }catch(e){}
+  appliquerIdentite();
+  closeModal();
+  showToast('Réglages enregistrés');
+}
+
 /* ============ MODALS ============ */
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('show'); }
 document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') closeModal(); });
@@ -3584,8 +3955,12 @@ function openBoardModal(type){
           <div class="to-desc">Fiches A3 : QQOQCCP, Ishikawa 6M, 5 Pourquoi, plan d'actions, synthèse et RETEX.</div>
         </div>
         <div class="type-opt ${modalBoardType==='otd'?'sel':''}" onclick="pickBoardType('otd',this)">
-          <div class="to-icon">📈</div><div class="to-name">Suivi OTD</div>
-          <div class="to-desc">Relevé quotidien par activité et priorité, moyennes pondérées, synthèse hebdo projetable.</div>
+          <div class="to-icon">📈</div><div class="to-name">Suivi d'indicateurs</div>
+          <div class="to-desc">Relevé quotidien par activité et priorité, moyennes pondérées, grille mensuelle et synthèse hebdo.</div>
+        </div>
+        <div class="type-opt ${modalBoardType==='sqcdp'?'sel':''}" onclick="pickBoardType('sqcdp',this)">
+          <div class="to-icon">✚</div><div class="to-name">Rituel SQCDP</div>
+          <div class="to-desc">Management visuel quotidien : croix du mois, statuts au clic, commentaires, taux de conformité.</div>
         </div>
       </div>
       <div class="field"><label>Nom du plan</label><input type="text" id="m-b-nom" placeholder="ex : Plan d'actions Audit ISO 9001"></div>
@@ -3614,7 +3989,8 @@ async function submitBoard(){
   if(!nom) return;
   const couleur = document.querySelector('#m-b-colors .color-dot.sel').dataset.c;
   const config = modalBoardType==='actions' ? {cols: DEFAULT_COLS.map(c=>({...c, visible:true}))}
-    : (modalBoardType==='otd' ? {activites: OTD_DEFAUT.map(a=>({...a})), jours:5} : {});
+    : (modalBoardType==='otd' ? {activites: OTD_DEFAUT.map(a=>({...a})), jours:5}
+    : (modalBoardType==='sqcdp' ? {axes: SQCDP_AXES.map(a=>({...a})), statuts: SQCDP_STATUTS.map(a=>({...a}))} : {}));
   const b = await dbInsert('boards', {nom, type:modalBoardType, couleur, config});
   await logActivity('a créé le plan', '« '+nom+' »', modalBoardType==='actions'?'plan d\u2019actions':(modalBoardType==='resolution'?'espace A3':'espace projet'), b.id);
   closeModal();
@@ -3657,7 +4033,7 @@ async function submitProject(){
     ordre: state.projects.filter(x=>x.board_id===b.id).length + 1,
     code: document.getElementById('m-p-code').value.trim(),
     responsable: document.getElementById('m-p-resp').value.trim(),
-    statut:'Planifié', priorite:'Moyenne', sante:'vert',
+    statut: projStatutsNoms(b)[0]||'Planifié', priorite:'Moyenne', sante:'vert', extra:{},
     date_debut: document.getElementById('m-p-debut').value,
     date_fin: null,
     engagement_date: document.getElementById('m-p-fin').value,
@@ -4251,7 +4627,8 @@ async function deleteA3Action(){
    ============================================================ */
 const OTD_DEFAUT = [
   {key:'recep', nom:'Réception',  mode:'pct_qte', objectif:95, couleur:'#5e6c84', global:false,
-   qteLabel:'Quantité de colis', series:['Récep Avant détails','Récep Après détails']},
+   qteLabel:'Quantité de colis', refSerie:'Récep Après détails',
+   series:['Récep Avant détails','Récep Après détails']},
   {key:'rapu',  nom:'Récep. APU', mode:'qte', objectif:95, couleur:'#0c66e4', court:'RcpAPU', series:['']},
   {key:'ratt',  nom:'Récep. ATT', mode:'qte', objectif:95, couleur:'#22a06b', court:'RcpATT', series:['']},
   {key:'emb',   nom:'Emballage',  mode:'qte', objectif:95, couleur:'#6554c0', court:'Emballage', series:['STD','URG','AOG']},
@@ -4295,23 +4672,19 @@ function otdVal(boardId, act, serie, jour){
   return state.otd_values.find(v=>v.board_id===boardId && v.activite===act && v.serie===serie && v.jour===jour) || null;
 }
 /* Moyenne pondérée d'une activité sur un jour (ou sur une plage) */
+/* Toutes les vues (semaine, mois, synthèse) passent par le même calcul :
+   moyenne pondérée par les quantités, gestion de la quantité partagée. */
 function otdCalc(boardId, a, jours){
-  let sq=0, sqp=0, sp=0, np=0;
-  jours.forEach(j=>{
-    const key = fmtDate(j);
-    a.series.forEach(se=>{
-      const v = otdVal(boardId, a.key, se, key);
-      if(!v || v.pct==null || v.pct==='') return;
-      const pct = Number(v.pct);
-      if(isNaN(pct)) return;
-      if(a.mode==='qte'){
-        const q = Number(v.quantite||0);
-        if(q>0){ sq += q; sqp += q*pct; }
-      } else { sp += pct; np++; }
-    });
-  });
-  if(a.mode==='qte') return sq>0 ? Math.round(sqp/sq*10)/10 : null;
-  return np ? Math.round(sp/np*10)/10 : null;
+  return otdGlobal(boardId, a, jours);
+}
+/* Valeur retenue pour la synthèse : la série de référence si l'activité en
+   déclare une (ex. Réception -> Après détails), sinon le global pondéré. */
+function otdSyntheseVal(boardId, a, jours){
+  if(a.refSerie && a.series.indexOf(a.refSerie)>=0) return otdSerieMoy(boardId, a, a.refSerie, jours);
+  return otdGlobal(boardId, a, jours);
+}
+function otdLibValeur(a){
+  return (a.refSerie && a.series.indexOf(a.refSerie)>=0) ? a.refSerie : '% global pondéré';
 }
 function otdQte(boardId, a, jours){
   let sq=0;
@@ -4501,31 +4874,32 @@ function otdSyntheseHtml(b, acts, jours, sem){
   const entete = jours.map(j=>`<th class="otd-day">${j.toLocaleDateString('fr-FR',{weekday:'short'})}<span>${String(j.getDate()).padStart(2,'0')}/${String(j.getMonth()+1).padStart(2,'0')}</span></th>`).join('');
   const lignes = acts.map(a=>{
     const cells = jours.map(j=>{
-      const g = otdCalc(b.id, a, [j]);
+      const g = otdSyntheseVal(b.id, a, [j]);
       const c = otdCouleur(g, a.objectif);
       return `<td class="sy-cell" style="color:${c.c};background:${c.bg}">${g==null?'—':g+'%'}</td>`;
     }).join('');
-    const moy = otdCalc(b.id, a, jours);
-    const prec = otdCalc(b.id, a, joursPrec);
+    const moy = otdSyntheseVal(b.id, a, jours);
+    const prec = otdSyntheseVal(b.id, a, joursPrec);
     const c = otdCouleur(moy, a.objectif);
     const ecart = (moy!=null && prec!=null) ? Math.round((moy-prec)*10)/10 : null;
     const q = otdQte(b.id, a, jours);
     return `<tr>
-      <td class="sy-act"><b>${escapeHtml(a.nom)}</b><span>objectif ${a.objectif}%${q?' · '+q+' unités':''}</span></td>
+      <td class="sy-act"><b>${escapeHtml(a.nom)}</b><span>objectif ${a.objectif}% · ${escapeHtml(otdLibValeur(a))}${q?' · '+q+' unités':''}</span></td>
       ${cells}
       <td class="sy-moy" style="color:${c.c};background:${c.bg}">${moy==null?'—':moy+'%'}</td>
       <td class="sy-delta">${ecart==null?'—':`<span style="color:${ecart>=0?'var(--green)':'var(--red)'}">${ecart>0?'▲ +':(ecart<0?'▼ ':'')}${ecart}</span>`}</td>
       <td class="sy-stat">${moy==null?'':(moy>=a.objectif?'<span class="sy-ok">✓ TENU</span>':'<span class="sy-ko">✗ ÉCART '+(Math.round((a.objectif-moy)*10)/10)+'</span>')}</td>
     </tr>`;
   }).join('');
-  const tenus = acts.filter(a=>{ const m=otdCalc(b.id,a,jours); return m!=null && m>=a.objectif; }).length;
-  const mesures = acts.filter(a=>otdCalc(b.id,a,jours)!=null).length;
+  const tenus = acts.filter(a=>{ const m=otdSyntheseVal(b.id,a,jours); return m!=null && m>=a.objectif; }).length;
+  const mesures = acts.filter(a=>otdSyntheseVal(b.id,a,jours)!=null).length;
   return `<div class="sy-wrap" id="sy-sheet">
     <div class="sy-head">
       <div>
         <div class="sy-t">Synthèse OTD — Semaine ${String(sem).padStart(2,'0')}</div>
         <div class="sy-sub">${escapeHtml(b.nom)} · du ${fmtFR(fmtDate(jours[0]))} au ${fmtFR(fmtDate(jours[jours.length-1]))}</div>
       </div>
+      <button class="btn primary sy-btn" onclick="otdSyntheseComplete()" title="Télécharge l'image de la synthèse et prépare le courrier">✉ Faire synthèse complète</button>
       <div class="sy-score">
         <div class="sy-score-n">${mesures?tenus+'/'+mesures:'—'}</div>
         <div class="sy-score-l">objectifs tenus</div>
@@ -4571,6 +4945,12 @@ function openOtdConfig(){
             </div>
             <div class="field"><label>Objectif %</label><input type="number" class="c-obj" value="${a.objectif}"></div>
             <div class="field"><label>Séries</label><input type="text" class="c-series" value="${escAttr(a.series.filter(Boolean).join(', '))}" placeholder="vide = série unique"></div>
+          </div>
+          <div class="field" style="margin-bottom:0"><label>Valeur reprise dans la synthèse hebdo</label>
+            <select class="c-ref">
+              <option value="">Global pondéré (toutes séries)</option>
+              ${a.series.filter(Boolean).map(se=>`<option value="${escAttr(se)}" ${a.refSerie===se?'selected':''}>${escapeHtml(se)} uniquement</option>`).join('')}
+            </select>
           </div>
         </div>`).join('')}
       </div>
@@ -4622,6 +5002,7 @@ async function saveOtdConfig(){
     mode: el.querySelector('.c-mode').value,
     objectif: parseFloat(el.querySelector('.c-obj').value)||95,
     couleur: el.dataset.couleur || OTD_PALETTE[0],
+    refSerie: (el.querySelector('.c-ref')||{value:''}).value || null,
     series: (function(){
       const l = el.querySelector('.c-series').value.split(',').map(x=>x.trim()).filter(Boolean);
       return l.length ? l : [''];   /* série unique sans libellé */
@@ -4657,6 +5038,15 @@ function alertesActuelles(){
   });
   state.a3.filter(x=>x.statut!=='Clôturé' && (a3AgeJours(x)||0)>45).forEach(x=>{
     out.push({sev:'moyen', ordre:a3AgeJours(x), txt:`<b>${escapeHtml(truncate(x.titre,60))}</b> — fiche A3 ouverte depuis ${a3AgeJours(x)} j`, sous:`${escapeHtml(x.pilote||'—')} · ${x.statut}`, go:`openA3('${x.id}')`});
+  });
+  state.boards.filter(b=>b.type==='sqcdp').forEach(b=>{
+    const jours = sqcdpJoursMois(fmtDate(todayMid()).slice(0,7));
+    sqcdpAxes(b).forEach(a=>{
+      const c = sqcdpCompte(b, a.key, jours);
+      if(c.ko) out.push({sev:c.ko>2?'haut':'moyen', ordre:c.ko,
+        txt:`<b>${escapeHtml(a.nom)}</b> — ${c.ko} écart(s) ce mois-ci sur le rituel`,
+        sous:escapeHtml(b.nom), go:`openBoard('${b.id}')`});
+    });
   });
   state.kpis.forEach(k=>{
     const v = evalKpi(k), t = kpiTargetState(k, v);
@@ -5230,6 +5620,339 @@ async function otdBulkApply(b, liste){
 
 <script>
 /* ============================================================
+   MODULE RITUEL SQCDP — management visuel quotidien
+   Axes et statuts entièrement paramétrables.
+   ============================================================ */
+const SQCDP_AXES = [
+  {key:'S', nom:'Sécurité',    question:'Accident, presqu\u2019accident, situation dangereuse ?'},
+  {key:'Q', nom:'Qualité',     question:'Non-conformité, réclamation, litige ?'},
+  {key:'C', nom:'Coût',        question:'Dérive de coût, heures supplémentaires, casse ?'},
+  {key:'D', nom:'Délai',       question:'Retard de livraison, engagement non tenu ?'},
+  {key:'P', nom:'Personnel',   question:'Absence, effectif, climat social, formation ?'},
+];
+const SQCDP_STATUTS = [
+  {key:'vide',  nom:'Non renseigné', couleur:'#eceff1', texte:'#9aa4b2'},
+  {key:'ok',    nom:'Conforme',      couleur:'#22a06b', texte:'#ffffff'},
+  {key:'alerte',nom:'Vigilance',     couleur:'#ffc000', texte:'#3f3000'},
+  {key:'ko',    nom:'Écart',         couleur:'#e34935', texte:'#ffffff'},
+  {key:'na',    nom:'Sans objet',    couleur:'#ffffff', texte:'#c4cad3'},
+];
+function sqcdpAxes(b){ return (b.config && b.config.axes) ? b.config.axes : SQCDP_AXES; }
+function sqcdpStatuts(b){ return (b.config && b.config.statuts) ? b.config.statuts : SQCDP_STATUTS; }
+function sqcdpStat(b, key){ return sqcdpStatuts(b).find(x=>x.key===key) || sqcdpStatuts(b)[0]; }
+function sqcdpVal(boardId, axe, jour){
+  return state.sqcdp_values.find(v=>v.board_id===boardId && v.axe===axe && v.jour===jour) || null;
+}
+function sqcdpStatutDe(boardId, axe, jour){
+  const v = sqcdpVal(boardId, axe, jour);
+  return (v && v.statut) ? v.statut : 'vide';
+}
+function sqcdpMois(){
+  if(!ui.sqcdpMois){ const t=todayMid(); ui.sqcdpMois = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0'); }
+  return ui.sqcdpMois;
+}
+function sqcdpJoursMois(ym){
+  const [y,m] = ym.split('-').map(Number);
+  const out=[]; const d=new Date(y,m-1,1);
+  while(d.getMonth()===m-1){ out.push(new Date(d)); d.setDate(d.getDate()+1); }
+  return out;
+}
+function sqcdpCompte(b, axe, jours){
+  const c = {ok:0, alerte:0, ko:0, na:0, vide:0};
+  jours.forEach(j=>{ c[sqcdpStatutDe(b.id, axe, fmtDate(j))] = (c[sqcdpStatutDe(b.id, axe, fmtDate(j))]||0)+1; });
+  return c;
+}
+function sqcdpSerie(b, axe, jours){
+  /* nombre de jours consécutifs sans écart, en remontant depuis aujourd'hui */
+  let n = 0;
+  const passes = jours.filter(j=>j<=todayMid()).sort((a,c)=>c-a);
+  for(const j of passes){
+    const st = sqcdpStatutDe(b.id, axe, fmtDate(j));
+    if(st==='ko') break;
+    if(st==='ok' || st==='alerte') n++;
+  }
+  return n;
+}
+
+/* ============ VUE CROIX (management visuel) ============ */
+function renderSqcdpBoard(main, b){
+  const axes = sqcdpAxes(b);
+  const ym = sqcdpMois();
+  const jours = sqcdpJoursMois(ym);
+  const libMois = new Date(ym+'-01').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+
+  const toolbar = `<div class="board-toolbar">
+    <div class="seg">
+      <button class="${route.sub!=='tableau'&&route.sub!=='synthese'?'active':''}" onclick="setSub('croix')">✚ Croix du mois</button>
+      <button class="${route.sub==='tableau'?'active':''}" onclick="setSub('tableau')">▦ Tableau</button>
+      <button class="${route.sub==='synthese'?'active':''}" onclick="setSub('synthese')">📊 Synthèse</button>
+    </div>
+    <div class="seg">
+      <button onclick="sqcdpNav(-1)">◀</button>
+      <button class="active" style="min-width:140px;text-transform:capitalize">${libMois}</button>
+      <button onclick="sqcdpNav(1)">▶</button>
+    </div>
+    <button class="btn small ghost" onclick="ui.sqcdpMois=null;renderMain()">↦ Mois en cours</button>
+    <div class="toolbar-spacer"></div>
+    <button class="btn small" onclick="openSqcdpConfig()">⚙ Axes &amp; statuts</button>
+    <button class="btn small primary" onclick="captureScreen()">📸 Capture</button>
+  </div>`;
+
+  let contenu;
+  if(route.sub==='tableau')      contenu = sqcdpTableauHtml(b, axes, jours);
+  else if(route.sub==='synthese')contenu = sqcdpSyntheseHtml(b, axes, jours, libMois);
+  else                           contenu = sqcdpCroixHtml(b, axes, jours, ym);
+
+  main.innerHTML = `<div style="display:flex;flex-direction:column;height:100%">${toolbar}${contenu}</div>`;
+}
+function sqcdpNav(d){
+  const [y,m] = sqcdpMois().split('-').map(Number);
+  const x = new Date(y, m-1+d, 1);
+  ui.sqcdpMois = x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0');
+  renderMain();
+}
+function sqcdpCroixHtml(b, axes, jours, ym){
+  const [y,m] = ym.split('-').map(Number);
+  const premier = new Date(y, m-1, 1);
+  const decalage = (premier.getDay()+6)%7;   /* lundi en tête */
+  const cartes = axes.map(a=>{
+    const c = sqcdpCompte(b, a.key, jours);
+    const total = c.ok + c.alerte + c.ko;
+    const taux = total ? Math.round(c.ok/total*100) : null;
+    const serie = sqcdpSerie(b, a.key, jours);
+    let cases = '';
+    for(let i=0;i<decalage;i++) cases += '<span class="sq-day-empty"></span>';
+    jours.forEach(j=>{
+      const key = fmtDate(j);
+      const st = sqcdpStatutDe(b.id, a.key, key);
+      const S = sqcdpStat(b, st);
+      const v = sqcdpVal(b.id, a.key, key);
+      const note = v && v.commentaire ? v.commentaire : '';
+      const auj = key===fmtDate(todayMid());
+      const we = j.getDay()===0 || j.getDay()===6;
+      cases += `<span class="sqc-day${auj?' today':''}${we?' we':''}${note?' has-note':''}"
+          style="background:${S.couleur};color:${S.texte}"
+          title="${escAttr(a.nom+' — '+fmtFR(key)+' : '+S.nom+(note?' — '+note:''))}"
+          onclick="sqcdpCycle('${a.key}','${key}')"
+          oncontextmenu="sqcdpNote(event,'${a.key}','${key}')"
+          ondblclick="sqcdpNote(event,'${a.key}','${key}')">${j.getDate()}${note?'<i class="sqc-tri"></i>':''}</span>`;
+    });
+    return `<div class="sqc-card">
+      <div class="sqc-head">
+        <span class="sqc-letter" style="background:${taux===null?'#b3bac5':(c.ko?'#e34935':(c.alerte?'#ffc000':'#22a06b'))}">${escapeHtml(a.key)}</span>
+        <div class="sqc-titre"><b>${escapeHtml(a.nom)}</b><span>${escapeHtml(a.question||'')}</span></div>
+        <div class="sqc-score">
+          <div class="sqc-taux">${taux===null?'—':taux+'%'}</div>
+          <div class="sqc-lbl">conformes</div>
+        </div>
+      </div>
+      <div class="sqc-sem">${['L','M','M','J','V','S','D'].map(d=>`<span>${d}</span>`).join('')}</div>
+      <div class="sqc-grid">${cases}</div>
+      <div class="sqc-foot">
+        <span class="sqc-chip ok">${c.ok} conformes</span>
+        <span class="sqc-chip al">${c.alerte} vigilance</span>
+        <span class="sqc-chip ko">${c.ko} écarts</span>
+        <span class="sqc-streak">${serie} j sans écart</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  const legende = sqcdpStatuts(b).map(S=>`<span><i style="background:${S.couleur};border-color:${S.couleur==='#ffffff'?'#d0d7de':S.couleur}"></i>${escapeHtml(S.nom)}</span>`).join('');
+  return `<div class="sqc-wrap" id="sqc-sheet">
+    <div class="sqc-cards">${cartes}</div>
+    <div class="sqc-legend">${legende}<span><i class="tri"></i>commentaire — clic droit ou double-clic</span>
+      <span style="margin-left:auto;color:var(--muted-2)">Clic sur un jour : fait défiler les statuts</span></div>
+  </div>`;
+}
+function sqcdpTableauHtml(b, axes, jours){
+  const entete = jours.map(j=>{
+    const we = j.getDay()===0||j.getDay()===6;
+    return `<th class="sqt-day${we?' we':''}${fmtDate(j)===fmtDate(todayMid())?' today':''}"><b>${j.getDate()}</b><span>${['d','l','m','m','j','v','s'][j.getDay()]}</span></th>`;
+  }).join('');
+  const lignes = axes.map(a=>{
+    const c = sqcdpCompte(b, a.key, jours);
+    const total = c.ok+c.alerte+c.ko;
+    const cells = jours.map(j=>{
+      const key = fmtDate(j);
+      const st = sqcdpStatutDe(b.id, a.key, key);
+      const S = sqcdpStat(b, st);
+      const v = sqcdpVal(b.id, a.key, key);
+      const note = v && v.commentaire ? v.commentaire : '';
+      return `<td class="sqt-cell${note?' has-note':''}" style="background:${S.couleur}"
+        title="${escAttr(fmtFR(key)+' : '+S.nom+(note?' — '+note:''))}"
+        onclick="sqcdpCycle('${a.key}','${key}')"
+        oncontextmenu="sqcdpNote(event,'${a.key}','${key}')"
+        ondblclick="sqcdpNote(event,'${a.key}','${key}')">${note?'<i class="sqc-tri"></i>':''}</td>`;
+    }).join('');
+    return `<tr>
+      <td class="sqt-axe"><span class="sqt-let">${escapeHtml(a.key)}</span>${escapeHtml(a.nom)}</td>
+      ${cells}
+      <td class="sqt-res">${total?Math.round(c.ok/total*100)+'%':'—'}</td>
+      <td class="sqt-res ko">${c.ko}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="sqt-wrap" id="sqt-sheet"><table class="sqt-table">
+    <thead><tr><th class="sqt-h">Axe</th>${entete}<th class="sqt-h2">% conf.</th><th class="sqt-h2">Écarts</th></tr></thead>
+    <tbody>${lignes}</tbody></table></div>`;
+}
+function sqcdpSyntheseHtml(b, axes, jours, libMois){
+  const notes = state.sqcdp_values.filter(v=>v.board_id===b.id && v.commentaire && jours.some(j=>fmtDate(j)===v.jour))
+    .sort((a,c)=>a.jour.localeCompare(c.jour));
+  const nomAxe = k=>{ const a = axes.find(x=>x.key===k); return a?a.key+' · '+a.nom:k; };
+  const lignes = axes.map(a=>{
+    const c = sqcdpCompte(b, a.key, jours);
+    const total = c.ok+c.alerte+c.ko;
+    const taux = total?Math.round(c.ok/total*100):null;
+    return `<tr>
+      <td class="sy-act"><b>${escapeHtml(a.key)} · ${escapeHtml(a.nom)}</b><span>${escapeHtml(a.question||'')}</span></td>
+      <td class="sy-cell" style="background:#e7f7ef;color:#22a06b">${c.ok}</td>
+      <td class="sy-cell" style="background:#fdf0e3;color:#e77b1e">${c.alerte}</td>
+      <td class="sy-cell" style="background:#ffedeb;color:#e34935">${c.ko}</td>
+      <td class="sy-moy">${taux===null?'—':taux+'%'}</td>
+      <td class="sy-stat">${sqcdpSerie(b, a.key, jours)} j</td>
+    </tr>`;
+  }).join('');
+  const totKo = axes.reduce((n,a)=>n+sqcdpCompte(b,a.key,jours).ko,0);
+  return `<div class="sy-wrap" id="sy-sheet">
+    <div class="sy-head">
+      <div><div class="sy-t" style="text-transform:capitalize">Rituel SQCDP — ${libMois}</div>
+        <div class="sy-sub">${escapeHtml(b.nom)} · ${axes.length} axes suivis</div></div>
+      <div class="sy-score"><div class="sy-score-n">${totKo}</div><div class="sy-score-l">écarts du mois</div></div>
+    </div>
+    <table class="sy-table">
+      <thead><tr><th class="sy-act-h">Axe</th><th>Conformes</th><th>Vigilance</th><th>Écarts</th><th>% conformité</th><th>Série en cours</th></tr></thead>
+      <tbody>${lignes}</tbody>
+    </table>
+    ${notes.length?`<div class="sy-notes"><div class="sy-notes-t">Faits marquants du mois</div>
+      ${notes.map(n=>`<div class="sy-note"><span class="sn-j">${fmtFR(n.jour)}</span><span class="sn-a">${escapeHtml(nomAxe(n.axe))}</span><span class="sn-t">${escapeHtml(n.commentaire)}</span></div>`).join('')}</div>`:''}
+    <div class="sy-foot">Généré le ${new Date().toLocaleDateString('fr-FR')} par ${escapeHtml(ui.userName||'')}</div>
+  </div>`;
+}
+
+/* ---- Saisie ---- */
+async function sqcdpCycle(axe, jour){
+  const b = currentBoard();
+  const sts = sqcdpStatuts(b).map(x=>x.key);
+  const actuel = sqcdpStatutDe(b.id, axe, jour);
+  const suivant = sts[(sts.indexOf(actuel)+1) % sts.length];
+  const v = sqcdpVal(b.id, axe, jour);
+  if(v) await dbUpdate('sqcdp_values', v.id, {statut:suivant});
+  else await dbInsert('sqcdp_values', {board_id:b.id, axe, jour, statut:suivant, commentaire:null});
+  if(suivant==='ko') await logActivity('a déclaré un écart', '« '+b.nom+' »', axe+' au '+fmtFR(jour), b.id);
+  renderMain();
+}
+let sqcdpCtx = null;
+function sqcdpNote(ev, axe, jour){
+  if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+  const b = currentBoard();
+  sqcdpCtx = {axe, jour};
+  const v = sqcdpVal(b.id, axe, jour);
+  const a = sqcdpAxes(b).find(x=>x.key===axe);
+  const pop = document.getElementById('note-pop');
+  pop.innerHTML = `<div class="np-head">${escapeHtml(a?a.key+' · '+a.nom:axe)}<span>${fmtFR(jour)}</span></div>
+    <textarea id="np-txt" placeholder="Ce qui s'est passé, décision prise, action déclenchée…" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))sqcdpEnregistrerNote()">${escapeHtml(v&&v.commentaire?v.commentaire:'')}</textarea>
+    <div class="np-hint">Ctrl+Entrée pour enregistrer · Échap pour fermer</div>
+    <div class="np-foot">
+      ${v&&v.commentaire?'<button class="btn small danger" onclick="sqcdpSupprimerNote()">Supprimer</button>':''}
+      <span style="flex:1"></span>
+      <button class="btn small ghost" onclick="otdFermerNote()">Annuler</button>
+      <button class="btn small primary" onclick="sqcdpEnregistrerNote()">Enregistrer</button>
+    </div>`;
+  pop.classList.add('show');
+  const x = Math.min((ev?ev.clientX:200), window.innerWidth-330);
+  const yy = Math.min((ev?ev.clientY:200), window.innerHeight-240);
+  pop.style.left = Math.max(8,x)+'px';
+  pop.style.top = Math.max(8,yy)+'px';
+  setTimeout(()=>{ const t=document.getElementById('np-txt'); if(t) t.focus(); },40);
+}
+async function sqcdpEnregistrerNote(){
+  if(!sqcdpCtx) return;
+  const b = currentBoard();
+  const txt = (document.getElementById('np-txt').value||'').trim();
+  const v = sqcdpVal(b.id, sqcdpCtx.axe, sqcdpCtx.jour);
+  if(v) await dbUpdate('sqcdp_values', v.id, {commentaire: txt||null});
+  else await dbInsert('sqcdp_values', {board_id:b.id, axe:sqcdpCtx.axe, jour:sqcdpCtx.jour, statut:'vide', commentaire: txt||null});
+  otdFermerNote(); sqcdpCtx = null;
+  renderMain();
+  showToast(txt?'Commentaire enregistré':'Commentaire supprimé');
+}
+async function sqcdpSupprimerNote(){
+  if(!sqcdpCtx) return;
+  const b = currentBoard();
+  const v = sqcdpVal(b.id, sqcdpCtx.axe, sqcdpCtx.jour);
+  if(v) await dbUpdate('sqcdp_values', v.id, {commentaire:null});
+  otdFermerNote(); sqcdpCtx = null;
+  renderMain(); showToast('Commentaire supprimé');
+}
+
+/* ---- Paramétrage ---- */
+function openSqcdpConfig(){
+  const b = currentBoard();
+  const axes = sqcdpAxes(b), sts = sqcdpStatuts(b);
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Axes &amp; statuts du rituel</div>
+    <div class="modal-body">
+      <div class="section-div" style="border:none;margin:0;padding:0"><h4>Axes suivis</h4></div>
+      <div id="sqcdp-axes">
+        ${axes.map(a=>`<div class="sqcdp-cfg">
+          <input type="text" class="c-key" value="${escAttr(a.key)}" maxlength="3" placeholder="S">
+          <input type="text" class="c-nom" value="${escAttr(a.nom)}" placeholder="Sécurité">
+          <input type="text" class="c-q" value="${escAttr(a.question||'')}" placeholder="Question posée au rituel">
+          <button class="del-task" onclick="this.closest('.sqcdp-cfg').remove()">✕</button>
+        </div>`).join('')}
+      </div>
+      <button class="btn small" style="margin-top:8px" onclick="sqcdpAddAxe()">＋ Ajouter un axe</button>
+      <div class="section-div"><h4>Statuts</h4></div>
+      <div id="sqcdp-sts">
+        ${sts.map(S=>`<div class="sqcdp-st" data-key="${S.key}">
+          <span class="st-pill" style="background:${S.couleur};color:${S.texte};border:1px solid #d0d7de">${escapeHtml(S.key)}</span>
+          <input type="text" class="s-nom" value="${escAttr(S.nom)}">
+          <input type="color" class="s-col" value="${S.couleur==='#ffffff'?'#ffffff':S.couleur}">
+          ${['vide','ok','ko'].includes(S.key)?'<span class="st-fix">obligatoire</span>':'<button class="del-task" onclick="sqcdpDelStatut(this)">✕</button>'}
+        </div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--muted-2);margin-top:9px;line-height:1.55">L'ordre des statuts est celui du défilement au clic. « Non renseigné », « Conforme » et « Écart » sont nécessaires au calcul des indicateurs.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="saveSqcdpConfig()">Enregistrer</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function sqcdpDelStatut(btn){ const el = btn.closest('.sqcdp-st'); if(el) el.remove(); }
+function sqcdpAddAxe(){
+  const div = document.createElement('div');
+  div.innerHTML = `<div class="sqcdp-cfg">
+    <input type="text" class="c-key" value="" maxlength="3" placeholder="E">
+    <input type="text" class="c-nom" value="" placeholder="Environnement">
+    <input type="text" class="c-q" value="" placeholder="Question posée au rituel">
+    <button class="del-task" onclick="this.closest('.sqcdp-cfg').remove()">✕</button>
+  </div>`;
+  document.getElementById('sqcdp-axes').appendChild(div.firstElementChild);
+}
+async function saveSqcdpConfig(){
+  const b = currentBoard();
+  const axes = [...document.querySelectorAll('#sqcdp-axes .sqcdp-cfg')].map(el=>({
+    key: (el.querySelector('.c-key').value.trim()||'?').toUpperCase().slice(0,3),
+    nom: el.querySelector('.c-nom').value.trim()||'Axe',
+    question: el.querySelector('.c-q').value.trim(),
+  })).filter(a=>a.key!=='?' || a.nom!=='Axe');
+  const anciens = sqcdpStatuts(b);
+  const statuts = [...document.querySelectorAll('#sqcdp-sts .sqcdp-st')].map(el=>{
+    const k = el.dataset.key;
+    const ref = anciens.find(x=>x.key===k) || {};
+    const col = el.querySelector('.s-col').value;
+    return {key:k, nom: el.querySelector('.s-nom').value.trim()||k, couleur:col,
+            texte: ref.texte || (parseInt(col.slice(1),16) > 0xaaaaaa ? '#3f3000' : '#ffffff')};
+  });
+  await dbUpdate('boards', b.id, {config:{...(b.config||{}), axes: axes.length?axes:SQCDP_AXES, statuts}});
+  await logActivity('a paramétré le rituel', '« '+b.nom+' »', axes.length+' axes', b.id);
+  closeModal(); renderMain(); showToast('Rituel paramétré');
+}
+</script>
+
+<script>
+/* ============================================================
    DERNIER BLOC — logique d'entrée + voyant.
    Si le voyant « Système prêt » est vert, ce bloc s'est exécuté :
    les boutons ci-dessous sont donc câblés, sans exception possible.
@@ -5277,6 +6000,9 @@ function tryUnlock(){
   const cu = document.getElementById('cfg-url'), ck = document.getElementById('cfg-key');
   if(cu) cu.addEventListener('input', ()=>{ try{ localStorage.setItem('pa_sb_url', cu.value.trim().replace(/\/+$/,'')); }catch(e){} });
   if(ck) ck.addEventListener('input', ()=>{ try{ localStorage.setItem('pa_sb_key', ck.value.trim()); }catch(e){} });
+  const cn = document.getElementById('cfg-nom'), cs = document.getElementById('cfg-sous');
+  if(cn) cn.addEventListener('input', ()=>{ try{ localStorage.setItem('pa_app_nom', cn.value.trim()||'MON ESPACE'); }catch(e){} appliquerIdentite(); });
+  if(cs) cs.addEventListener('input', ()=>{ try{ localStorage.setItem('pa_app_sous', cs.value.trim()||'Pilotage & performance'); }catch(e){} appliquerIdentite(); });
   /* filet de sécurité ultime : délégation au niveau du document */
   document.addEventListener('click', (e)=>{
     const t = e.target.closest ? e.target.closest('#btn-enter') : null;
@@ -5298,6 +6024,9 @@ function tryUnlock(){
     if(savedName) document.getElementById('gate-name').value = savedName;
     document.getElementById('cfg-url').value = localStorage.getItem('pa_sb_url')||'';
     document.getElementById('cfg-key').value = localStorage.getItem('pa_sb_key')||'';
+    document.getElementById('cfg-nom').value = localStorage.getItem('pa_app_nom')||'';
+    document.getElementById('cfg-sous').value = localStorage.getItem('pa_app_sous')||'';
+    appliquerIdentite();
     if(savedName){
       gateUnlocked = true;
       ui.userName = savedName;
@@ -5306,8 +6035,9 @@ function tryUnlock(){
       init();
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
+  appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v9.3 · boutons câblés'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v10.1'; st.classList.add('ready'); }
 })();
 </script>
 </body>
