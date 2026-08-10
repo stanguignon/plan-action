@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
 /* ============================================================
@@ -1168,6 +1169,58 @@ body.presentation{font-size:14.5px}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001s !important;transition-duration:.001s !important}
 }
+/* ============ MODULE SUIVI INVENTAIRE ============ */
+.inv-scroll{flex:1;overflow:auto;padding:18px 22px}
+.inv-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.inv-kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-sm)}
+.inv-kpi .n{font-size:26px;font-weight:800;color:var(--txt);line-height:1.1}
+.inv-kpi .l{font-size:12px;color:var(--muted);margin-top:4px;font-weight:600}
+.inv-kpi.bad{background:var(--red-soft);border-color:#f3b8b0}
+.inv-kpi.bad .n{color:var(--red)}
+.inv-kpi.info{background:var(--primary-soft);border-color:#b9d4fb}
+.inv-kpi.info .n{color:var(--primary-dark)}
+.inv-section-t{font-size:14px;font-weight:700;color:var(--txt);margin:20px 0 10px}
+.inv-section-t.red{color:var(--red)}
+.inv-section-t.orange{color:var(--orange)}
+.inv-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.inv-card{border-radius:var(--radius);padding:12px 14px;border:1px solid var(--line);background:var(--panel)}
+.inv-card.red{background:var(--red-soft);border-color:#f3b8b0}
+.inv-card-id{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;color:var(--txt)}
+.inv-card-meta{font-size:12px;color:var(--muted);margin-top:4px}
+.inv-card-act{margin-top:8px;font-size:12px;font-weight:700;color:var(--red)}
+.inv-ok-box{background:var(--green-soft);border:1px solid #a9e0c4;color:#1c7d52;border-radius:var(--radius);padding:14px 16px;font-weight:600;font-size:13.5px}
+.inv-notes{display:flex;flex-direction:column;gap:6px}
+.inv-note{border-radius:6px;padding:9px 12px;font-size:12.5px;border:1px solid var(--line)}
+.inv-note.orange{background:var(--orange-soft);border-color:#f2cf9e;color:#9a5c11}
+.inv-moves{display:flex;flex-direction:column;gap:6px}
+.inv-move{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 13px}
+.inv-move.into{background:var(--primary-soft);border-color:#b9d4fb}
+.inv-move.out{background:var(--green-soft);border-color:#a9e0c4}
+.inv-move .mv-id{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--txt)}
+.inv-move .mv-flow{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600}
+.inv-move .mv-flow .z{background:var(--bg-2);border-radius:5px;padding:2px 9px;color:var(--txt)}
+.inv-move .mv-flow .ar{color:var(--muted);font-weight:800}
+.inv-more{margin-top:8px;font-size:12.5px;color:var(--primary);cursor:pointer;font-weight:600}
+.inv-more:hover{text-decoration:underline}
+.inv-tablewrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+.inv-table{width:100%;border-collapse:collapse;font-size:13px}
+.inv-table th{background:var(--panel-2);text-align:left;padding:10px 14px;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);border-bottom:1px solid var(--line)}
+.inv-table td{padding:9px 14px;border-bottom:1px solid var(--line-soft);color:var(--txt)}
+.inv-table tr:last-child td{border-bottom:none}
+.inv-table tr.r-red td{background:var(--red-soft)}
+.inv-table .mono{font-family:'IBM Plex Mono',monospace}
+.inv-table .red-txt{color:var(--red)}
+.inv-zbadge{display:inline-block;background:var(--bg-2);border-radius:5px;padding:2px 9px;font-weight:600;font-size:12px}
+.inv-zbadge.an05{background:var(--orange-soft);color:#9a5c11}
+.inv-empty{max-width:520px;margin:40px auto;text-align:center}
+.inv-empty-ic{font-size:44px}
+.inv-empty-t{font-size:18px;font-weight:700;color:var(--txt);margin-top:8px}
+.inv-empty-d{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+.inv-imp-grid{display:flex;flex-direction:column;gap:8px}
+.inv-imp-grid > div{display:flex;justify-content:space-between;gap:14px;font-size:13.5px;border-bottom:1px solid var(--line-soft);padding-bottom:7px}
+.inv-imp-grid span{color:var(--muted)}
+.inv-imp-grid b{color:var(--txt);font-family:'IBM Plex Mono',monospace}
+
 </style>
 </head>
 <body>
@@ -1405,7 +1458,7 @@ const FRENCH_HOLIDAYS = new Set([
 
 let sbClient = null; // renommé : la librairie CDN crée déjà une globale « supabase »
 let USE_SUPABASE = false;
-let state = { boards: [], actions: [], projects: [], tasks: [], activity: [], comments: [], kpis: [], kpi_values: [], a3: [], otd_values: [], sqcdp_values: [] };
+let state = { boards: [], actions: [], projects: [], tasks: [], activity: [], comments: [], kpis: [], kpi_values: [], a3: [], otd_values: [], sqcdp_values: [], inv_semaines: [], inv_lignes: [] };
 let route = { view:'home', boardId:null, sub:'liste' }; // sub: liste|kanban (actions) / gantt|kanban|dash (projet)
 let ui = {
   pxPerDay: 34, userName:'', drawer:{kind:null,id:null,tab:'infos'},
@@ -1434,7 +1487,7 @@ function initials(name){ return (name||'?').trim().split(/\s+/).map(w=>w[0]).joi
 
 /* ============ STOCKAGE ============ */
 function uid(){ return 'id-'+Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
-const TABLES = ['boards','actions','projects','tasks','activity','comments','kpis','kpi_values','a3','otd_values','sqcdp_values'];
+const TABLES = ['boards','actions','projects','tasks','activity','comments','kpis','kpi_values','a3','otd_values','sqcdp_values','inv_semaines','inv_lignes'];
 
 async function init(){
   try{
@@ -1484,6 +1537,8 @@ async function loadAll(){
       sbClient.from('a3').select('*').order('created_at'),
       sbClient.from('otd_values').select('*').order('jour'),
       sbClient.from('sqcdp_values').select('*').order('jour'),
+      sbClient.from('inv_semaines').select('*').order('created_at'),
+      sbClient.from('inv_lignes').select('*'),
     ]);
     TABLES.forEach((t,i)=>{ state[t] = res[i].data || []; });
   } else {
@@ -1641,7 +1696,7 @@ function goHome(){ setRoute({view:'home'}); }
 function openBoard(id){
   const b = state.boards.find(x=>x.id===id);
   if(!b) return;
-  setRoute({view:'board', boardId:id, sub: b.type==='projet' ? 'gantt' : (b.type==='otd' ? 'mois' : (b.type==='sqcdp' ? 'croix' : 'liste'))});
+  setRoute({view:'board', boardId:id, sub: b.type==='projet' ? 'gantt' : (b.type==='otd' ? 'mois' : (b.type==='sqcdp' ? 'croix' : (b.type==='inventaire' ? 'synthese' : 'liste')))});
 }
 function setSub(sub){ route.sub = sub; renderMain(); }
 
@@ -1653,7 +1708,7 @@ function renderCrumb(){
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
       <span class="sep">/</span>
       <span class="b-name">${escapeHtml(b.nom)}</span>
-      <span class="b-type ${b.type}">${b.type==='actions'?'Plan d\u2019actions':(b.type==='resolution'?'Résolution de problème':(b.type==='otd'?'Suivi d\u2019indicateurs':(b.type==='sqcdp'?'Rituel SQCDP':'Espace projet')))}</span>`;
+      <span class="b-type ${b.type}">${b.type==='actions'?'Plan d\u2019actions':(b.type==='resolution'?'Résolution de problème':(b.type==='otd'?'Suivi d\u2019indicateurs':(b.type==='sqcdp'?'Rituel SQCDP':(b.type==='inventaire'?'Suivi de l\u2019inventaire':'Espace projet'))))}</span>`;
   } else if(route.view==='news'){
     c.innerHTML = `<button class="btn-home" onclick="goHome()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>Accueil</button>
@@ -1692,6 +1747,7 @@ function renderMain(){
     else if(b.type==='resolution') renderA3Board(main, b);
     else if(b.type==='otd') renderOtdBoard(main, b);
     else if(b.type==='sqcdp') renderSqcdpBoard(main, b);
+    else if(b.type==='inventaire') renderInventaireBoard(main, b);
     else renderProjectBoard(main, b);
   }
 }
@@ -1723,6 +1779,9 @@ function boardStats(b){
     const done = items.filter(x=>x.statut==='Clôturé').length;
     const late = items.filter(x=>x.statut!=='Clôturé' && (a3AgeJours(x)||0)>60).length;
     return {n:items.length, done, late, pct: items.length?Math.round(done/items.length*100):0, meta: items.length+' fiche'+(items.length>1?'s':'')+' A3'};
+  } else if(b.type==='inventaire'){
+    const st = invStats(b.id);
+    return {n: st.an05, done: st.nouveaux, late: st.depassements, pct: st.an05?Math.round((st.an05-st.depassements)/st.an05*100):0, meta: st.an05+' r\u00e9f. en AN05'};
   } else {
     const items = state.projects.filter(p=>p.board_id===b.id);
     const done = items.filter(p=>p.statut==='Terminé').length;
@@ -1740,9 +1799,9 @@ function setHomeMode(m){
   try{ localStorage.setItem('pa_home_mode', m); }catch(e){}
   renderMain();
 }
-const TYPE_LABELS = {actions:'Plan d\u2019actions', projet:'Espace projet', resolution:'Résolution A3', otd:'Suivi d\u2019indicateurs', sqcdp:'Rituel SQCDP'};
-const TYPE_ICONS  = {actions:'☑', projet:'📅', resolution:'🔍', otd:'📈', sqcdp:'✚'};
-const TYPE_ORDRE  = ['actions','projet','sqcdp','otd','resolution'];
+const TYPE_LABELS = {actions:'Plan d\u2019actions', projet:'Espace projet', resolution:'Résolution A3', otd:'Suivi d\u2019indicateurs', sqcdp:'Rituel SQCDP', inventaire:'Suivi de l\u2019inventaire'};
+const TYPE_ICONS  = {actions:'☑', projet:'📅', resolution:'🔍', otd:'📈', sqcdp:'✚', inventaire:'📦'};
+const TYPE_ORDRE  = ['actions','projet','sqcdp','otd','resolution','inventaire'];
 
 function renderHome(main){
   const totalActions = state.actions.length, lateActions = state.actions.filter(actionLate).length;
@@ -3962,6 +4021,10 @@ function openBoardModal(type){
           <div class="to-icon">✚</div><div class="to-name">Rituel SQCDP</div>
           <div class="to-desc">Management visuel quotidien : croix du mois, statuts au clic, commentaires, taux de conformité.</div>
         </div>
+        <div class="type-opt ${modalBoardType==='inventaire'?'sel':''}" onclick="pickBoardType('inventaire',this)">
+          <div class="to-icon">📦</div><div class="to-name">Suivi de l'inventaire</div>
+          <div class="to-desc">Import Excel de l'inventaire hebdo : alertes AN05, durée de séjour par identifiant et mouvements entre zones.</div>
+        </div>
       </div>
       <div class="field"><label>Nom du plan</label><input type="text" id="m-b-nom" placeholder="ex : Plan d'actions Audit ISO 9001"></div>
       <div class="field"><label>Couleur</label>
@@ -6026,6 +6089,292 @@ function tryUnlock(){
     if(t && !gateUnlocked) tryUnlock();
   }, true);
 })();
+/* ============================================================
+   MODULE SUIVI DE L'INVENTAIRE  (type de tableau « inventaire »)
+   Import Excel hebdo -> alertes AN05, durée de séjour, mouvements
+   ============================================================ */
+let invImpBuf = null;
+
+function invNorm(v){
+  let s = String(v==null?'':v).trim().toUpperCase();
+  s = s.replace(/[\u2010\u2011\u2012\u2013\u2014\u2015\uFF0D]/g,'-');
+  s = s.replace(/[\s\u00A0]+/g,'');
+  return s;
+}
+function invSansAccents(t){ return String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function invFmt(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
+function invLev(a,b){
+  if(a===b) return 0;
+  const la=a.length, lb=b.length;
+  if(Math.abs(la-lb)>1) return 2;
+  let prev=[]; for(let j=0;j<=lb;j++) prev[j]=j;
+  for(let i=1;i<=la;i++){
+    let cur=[i];
+    for(let j=1;j<=lb;j++){ const cost=a[i-1]===b[j-1]?0:1; cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+cost); }
+    prev=cur;
+  }
+  return prev[lb];
+}
+function invParseDate(v){
+  if(v==null||v==='') return null;
+  if(v instanceof Date && !isNaN(v)) return v;
+  if(typeof v==='number'){ const d=new Date(Math.round((v-25569)*86400*1000)); return isNaN(d)?null:d; }
+  const s=String(v).trim();
+  const m=s.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if(m){ let dd=+m[1], mm=+m[2], yy=+m[3]; if(yy<100) yy+=2000; const d=new Date(yy,mm-1,dd); return isNaN(d)?null:d; }
+  const d=new Date(s); return isNaN(d)?null:d;
+}
+function invSemaineKey(date){
+  const x=new Date(date); x.setHours(0,0,0,0);
+  x.setDate(x.getDate()+3-((x.getDay()+6)%7));
+  const jan4=new Date(x.getFullYear(),0,4);
+  const week=1+Math.round(((x-jan4)/86400000-3+((jan4.getDay()+6)%7))/7);
+  return x.getFullYear()+'-S'+String(week).padStart(2,'0');
+}
+
+/* ---- données du tableau ---- */
+function invData(bid){
+  const lignes = state.inv_lignes.filter(l=>l.board_id===bid);
+  const sems = [...new Set(lignes.map(l=>l.semaine))].sort();
+  const map = {}; sems.forEach(s=>map[s]={});
+  lignes.forEach(l=>{ if(!l.identifiant_norm) return; map[l.semaine][l.identifiant_norm]={zone:l.zone||'',brut:l.identifiant||'',date:l.date_saisie||''}; });
+  return {bid, lignes, sems, map};
+}
+function invSejour(d, semIndex, idnorm){
+  const cur=d.map[d.sems[semIndex]][idnorm];
+  if(!cur) return 0;
+  const zoneU=(cur.zone||'').toUpperCase();
+  let n=1;
+  for(let i=semIndex-1;i>=0;i--){ const e=d.map[d.sems[i]][idnorm]; if(e && (e.zone||'').toUpperCase()===zoneU) n++; else break; }
+  return n;
+}
+function invAnalyse(d){
+  if(!d.sems.length) return null;
+  const li=d.sems.length-1, sem=d.sems[li], semPrev=li>0?d.sems[li-1]:null;
+  const cur=d.map[sem], prev=semPrev?d.map[semPrev]:{};
+  const an05=[];
+  Object.keys(cur).forEach(k=>{ if((cur[k].zone||'').toUpperCase()==='AN05') an05.push({norm:k,brut:cur[k].brut,sejour:invSejour(d,li,k)}); });
+  const depassements=an05.filter(x=>x.sejour>=2).sort((a,b)=>b.sejour-a.sejour);
+  const nouveaux=an05.filter(x=>x.sejour<2);
+  const ids=new Set([...Object.keys(cur),...Object.keys(prev)]);
+  const mouvements=[], entrees=[], sorties=[];
+  ids.forEach(k=>{
+    const zp=prev[k]?prev[k].zone:null, zl=cur[k]?cur[k].zone:null;
+    if(zp&&zl){ if((zp||'').toUpperCase()!==(zl||'').toUpperCase()) mouvements.push({norm:k,brut:(cur[k].brut||prev[k].brut),from:zp,to:zl}); }
+    else if(zl&&!zp) entrees.push({norm:k,brut:cur[k].brut,zone:zl});
+    else if(zp&&!zl) sorties.push({norm:k,brut:prev[k].brut,zone:zp});
+  });
+  const prevAn05=Object.keys(prev).filter(k=>(prev[k].zone||'').toUpperCase()==='AN05');
+  const keysAn05=an05.map(x=>x.norm);
+  const pool=[...new Set([...keysAn05,...prevAn05])];
+  const doublons=[];
+  for(let i=0;i<keysAn05.length;i++){ for(let j=0;j<pool.length;j++){ if(keysAn05[i]!==pool[j] && invLev(keysAn05[i],pool[j])===1){ doublons.push(keysAn05[i]); break; } } }
+  const semRow=state.inv_semaines.find(s=>s.board_id===d.bid && s.semaine===sem);
+  const vides=semRow?(semRow.nb_an05_vides||0):0;
+  return {sem, semPrev, an05, depassements, nouveaux, mouvements, entrees, sorties, doublons:[...new Set(doublons)], vides};
+}
+function invStats(bid){
+  const d=invData(bid);
+  if(!d.sems.length) return {an05:0,nouveaux:0,depassements:0};
+  const a=invAnalyse(d);
+  return {an05:a.an05.length, nouveaux:a.nouveaux.length, depassements:a.depassements.length};
+}
+
+/* ---- rendu ---- */
+function renderInventaireBoard(main, b){
+  const d=invData(b.id);
+  const toolbar=`<div class="board-toolbar">
+    <div class="seg">
+      <button class="${route.sub==='synthese'?'active':''}" onclick="setSub('synthese')">🚨 Alertes</button>
+      <button class="${route.sub==='sejour'?'active':''}" onclick="setSub('sejour')">⏱ Durée de séjour</button>
+      <button class="${route.sub==='mouvements'?'active':''}" onclick="setSub('mouvements')">🔀 Mouvements</button>
+      <button class="${route.sub==='semaines'?'active':''}" onclick="setSub('semaines')">🗂 Semaines</button>
+    </div>
+    <div class="toolbar-spacer"></div>
+    <input type="file" id="inv-file" accept=".xlsx,.xls" style="display:none" onchange="invOnFile(this)">
+    <button class="btn small primary" onclick="document.getElementById('inv-file').click()">⬆ Importer un inventaire</button>
+    <button class="btn small" onclick="captureScreen()">📸 Capture</button>
+  </div>`;
+  let body;
+  if(!d.sems.length) body=invEmpty();
+  else if(route.sub==='sejour') body=invRenderSejour(b,d);
+  else if(route.sub==='mouvements') body=invRenderMouvements(b,d);
+  else if(route.sub==='semaines') body=invRenderSemaines(b,d);
+  else body=invRenderSynthese(b,d);
+  main.innerHTML=`<div style="display:flex;flex-direction:column;height:100%">${toolbar}<div class="inv-scroll">${body}</div></div>`;
+}
+function invEmpty(){
+  return `<div class="inv-empty"><div class="inv-empty-ic">📦</div>
+    <div class="inv-empty-t">Aucun inventaire importé</div>
+    <div class="inv-empty-d">Clique sur « Importer un inventaire » et sélectionne le fichier Excel hebdomadaire (InvFICHIER). Le suivi AN05, la durée de séjour par identifiant et les mouvements entre zones se construisent tout seuls.</div></div>`;
+}
+function invMoveRow(m){
+  const fromU=(m.from||'').toUpperCase(), toU=(m.to||'').toUpperCase();
+  const cls= toU==='AN05'?'into':(fromU==='AN05'?'out':'');
+  return `<div class="inv-move ${cls}"><span class="mv-id">${escapeHtml(m.brut||m.norm)}</span>
+    <span class="mv-flow"><span class="z">${escapeHtml(m.from)}</span><span class="ar">→</span><span class="z">${escapeHtml(m.to)}</span></span></div>`;
+}
+function invRenderSynthese(b,d){
+  const a=invAnalyse(d);
+  const kpi=`<div class="inv-kpis">
+    <div class="inv-kpi"><div class="n">${a.an05.length}</div><div class="l">Réf. en AN05</div></div>
+    <div class="inv-kpi ${a.depassements.length?'bad':''}"><div class="n">${a.depassements.length}</div><div class="l">Dépassements (&gt; 1 sem.)</div></div>
+    <div class="inv-kpi ${a.mouvements.length?'info':''}"><div class="n">${a.mouvements.length}</div><div class="l">Mouvements vs S-1</div></div>
+    <div class="inv-kpi"><div class="n" style="font-size:20px">${a.sem}</div><div class="l">Semaine analysée</div></div>
+  </div>`;
+  let alertes;
+  if(!a.depassements.length){
+    alertes=`<div class="inv-ok-box">✅ Aucun produit ne dépasse une semaine en AN05${a.semPrev?'':' — pas encore de semaine de référence, importe l\'inventaire suivant pour activer la détection.'}</div>`;
+  } else {
+    alertes=`<div class="inv-section-t red">🚨 À déplacer hors de l'AN05 — ${a.depassements.length} référence(s)</div>
+      <div class="inv-cards">${a.depassements.map(x=>`
+        <div class="inv-card red"><div class="inv-card-id">${escapeHtml(x.brut||x.norm)}</div>
+          <div class="inv-card-meta">En AN05 depuis <b>${x.sejour} semaines</b></div>
+          <div class="inv-card-act">À déplacer hors de l'AN05</div></div>`).join('')}</div>`;
+  }
+  let ctrl='';
+  if(a.doublons.length||a.vides){
+    ctrl=`<div class="inv-section-t orange">⚠ Contrôle de saisie</div><div class="inv-notes">`;
+    if(a.vides) ctrl+=`<div class="inv-note orange">${a.vides} ligne(s) AN05 sans identifiant renseigné.</div>`;
+    a.doublons.forEach(k=>{ const it=a.an05.find(x=>x.norm===k); ctrl+=`<div class="inv-note orange">Identifiant « ${escapeHtml(it?it.brut:k)} » très proche d'un autre — faute de saisie probable, à vérifier.</div>`; });
+    ctrl+=`</div>`;
+  }
+  let mv='';
+  if(a.mouvements.length){
+    mv=`<div class="inv-section-t">🔀 Mouvements entre zones${a.semPrev?' (vs '+a.semPrev+')':''}</div>
+      <div class="inv-moves">${a.mouvements.slice(0,12).map(invMoveRow).join('')}</div>
+      ${a.mouvements.length>12?`<div class="inv-more" onclick="setSub('mouvements')">+ ${a.mouvements.length-12} autres — voir tous les mouvements</div>`:''}`;
+  }
+  return kpi+alertes+ctrl+mv;
+}
+function invRenderSejour(b,d){
+  const li=d.sems.length-1, sem=d.sems[li], cur=d.map[sem];
+  const rows=Object.keys(cur).map(k=>({norm:k,brut:cur[k].brut,zone:cur[k].zone,sejour:invSejour(d,li,k)}));
+  rows.sort((a,b)=> (a.zone||'').localeCompare(b.zone||'') || b.sejour-a.sejour || (a.brut||'').localeCompare(b.brut||''));
+  const body=rows.map(r=>{
+    const an05=(r.zone||'').toUpperCase()==='AN05';
+    const warn=an05 && r.sejour>=2;
+    return `<tr class="${warn?'r-red':''}"><td class="mono">${escapeHtml(r.brut||r.norm)}</td>
+      <td><span class="inv-zbadge ${an05?'an05':''}">${escapeHtml(r.zone||'—')}</span></td>
+      <td style="text-align:center">${r.sejour} sem.</td>
+      <td>${warn?'<b class="red-txt">À déplacer hors de l\'AN05</b>':(r.sejour>1?'—':'nouveau')}</td></tr>`;
+  }).join('');
+  return `<div class="inv-tablewrap"><table class="inv-table">
+    <thead><tr><th>Identifiant</th><th>Zone actuelle (${sem})</th><th>Présent depuis</th><th>Statut</th></tr></thead>
+    <tbody>${body}</tbody></table></div>`;
+}
+function invRenderMouvements(b,d){
+  const a=invAnalyse(d);
+  if(!a.semPrev) return `<div class="inv-ok-box">Une seule semaine importée : les mouvements apparaîtront dès le prochain inventaire.</div>`;
+  const mv=a.mouvements.length?`<div class="inv-section-t">🔀 Changements de zone (${a.mouvements.length})</div><div class="inv-moves">${a.mouvements.map(invMoveRow).join('')}</div>`:`<div class="inv-ok-box">Aucun changement de zone entre les deux dernières semaines.</div>`;
+  const en=a.entrees.length?`<div class="inv-section-t">➕ Entrées (${a.entrees.length})</div><div class="inv-moves">${a.entrees.map(e=>`<div class="inv-move ${(e.zone||'').toUpperCase()==='AN05'?'into':''}"><span class="mv-id">${escapeHtml(e.brut||e.norm)}</span><span class="mv-flow"><span class="ar">→</span><span class="z">${escapeHtml(e.zone)}</span></span></div>`).join('')}</div>`:'';
+  const so=a.sorties.length?`<div class="inv-section-t">➖ Sorties (${a.sorties.length})</div><div class="inv-moves">${a.sorties.map(e=>`<div class="inv-move"><span class="mv-id">${escapeHtml(e.brut||e.norm)}</span><span class="mv-flow"><span class="z">${escapeHtml(e.zone)}</span><span class="ar">→</span><span class="muted">sorti</span></span></div>`).join('')}</div>`:'';
+  return mv+en+so;
+}
+function invRenderSemaines(b,d){
+  const sems=state.inv_semaines.filter(s=>s.board_id===b.id).sort((a,b)=>b.semaine.localeCompare(a.semaine));
+  if(!sems.length) return invEmpty();
+  const rows=sems.map(s=>`<tr><td class="mono">${s.semaine}</td><td>${escapeHtml(s.date_inv||'')}</td>
+    <td style="text-align:center">${s.nb_total||0}</td><td style="text-align:center">${s.nb_an05||0}</td>
+    <td class="muted">${escapeHtml(s.fichier||'')}</td>
+    <td><button class="btn small danger" onclick="invSupprimerSemaine('${s.semaine}')">Supprimer</button></td></tr>`).join('');
+  return `<div class="inv-tablewrap"><table class="inv-table">
+    <thead><tr><th>Semaine</th><th>Date inventaire</th><th>Lignes</th><th>AN05</th><th>Fichier</th><th></th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+/* ---- import ---- */
+function invOnFile(input){
+  const f=input.files&&input.files[0];
+  if(!f) return;
+  if(typeof XLSX==='undefined'){ showToast('Bibliothèque de lecture Excel non chargée (réseau ?).'); input.value=''; return; }
+  const reader=new FileReader();
+  reader.onload=(e)=>{ try{ invTraiter(e.target.result, f.name); }catch(err){ showToast('Fichier illisible : '+err.message); console.error(err);} input.value=''; };
+  reader.onerror=()=>{ showToast('Lecture du fichier impossible.'); input.value=''; };
+  reader.readAsArrayBuffer(f);
+}
+function invTraiter(buf, fichier){
+  const wb=XLSX.read(new Uint8Array(buf), {type:'array', cellDates:true});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:''});
+  const ZONES={'AN05':1,'M53':1,'PARC EXTERIEUR':1};
+  const lignes=[]; let maxDate=null, nbAn05=0, nbVides=0;
+  rows.forEach(r=>{
+    const zoneRaw=String(r[7]==null?'':r[7]).trim();
+    if(!zoneRaw) return;
+    const zu=invSansAccents(zoneRaw).toUpperCase();
+    if(!ZONES[zu]) return;
+    const d=invParseDate(r[1]);
+    if(d && (!maxDate||d>maxDate)) maxDate=d;
+    const brut=String(r[8]==null?'':r[8]);
+    const norm=invNorm(brut);
+    if(zu==='AN05'){ nbAn05++; if(!norm) nbVides++; }
+    lignes.push({zone:zoneRaw, brut, norm, date: d?invFmt(d):String(r[1]==null?'':r[1])});
+  });
+  if(!lignes.length){ showToast('Aucune ligne d\'inventaire reconnue (colonnes AN05 / M53 / Parc extérieur introuvables).'); return; }
+  if(!maxDate) maxDate=new Date();
+  invConfirmImport(invSemaineKey(maxDate), invFmt(maxDate), fichier, lignes, nbAn05, nbVides);
+}
+function invConfirmImport(sem, dateStr, fichier, lignes, nbAn05, nbVides){
+  const bid=route.boardId;
+  const exists=state.inv_semaines.some(s=>s.board_id===bid && s.semaine===sem);
+  invImpBuf={sem,dateStr,fichier,lignes,nbAn05,nbVides};
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-head">Importer l'inventaire</div>
+    <div class="modal-body">
+      <div class="inv-imp-grid">
+        <div><span>Fichier</span><b>${escapeHtml(fichier)}</b></div>
+        <div><span>Semaine détectée</span><b>${sem}</b></div>
+        <div><span>Date d'inventaire</span><b>${escapeHtml(dateStr)}</b></div>
+        <div><span>Lignes reconnues</span><b>${lignes.length}</b></div>
+        <div><span>Dont AN05</span><b>${nbAn05}${nbVides?' ('+nbVides+' sans identifiant)':''}</b></div>
+      </div>
+      ${exists?`<div class="inv-note orange" style="margin-top:12px">La semaine ${sem} existe déjà : elle sera remplacée par cet import.</div>`:''}
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="invEnregistrer()">Importer</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+async function invEnregistrer(){
+  if(!invImpBuf) return;
+  const {sem,dateStr,fichier,lignes,nbAn05,nbVides}=invImpBuf;
+  const bid=route.boardId;
+  state.inv_lignes=state.inv_lignes.filter(l=>!(l.board_id===bid && l.semaine===sem));
+  state.inv_semaines=state.inv_semaines.filter(s=>!(s.board_id===bid && s.semaine===sem));
+  const semRow={id:uid(), board_id:bid, semaine:sem, date_inv:dateStr, fichier:fichier, nb_total:lignes.length, nb_an05:nbAn05, nb_an05_vides:nbVides, created_at:new Date().toISOString()};
+  const rows=lignes.map(l=>({id:uid(), board_id:bid, semaine:sem, identifiant:l.brut, identifiant_norm:l.norm, zone:l.zone, date_saisie:l.date, created_at:new Date().toISOString()}));
+  state.inv_semaines.push(semRow);
+  state.inv_lignes=state.inv_lignes.concat(rows);
+  if(USE_SUPABASE){
+    try{
+      await sbClient.from('inv_lignes').delete().eq('board_id',bid).eq('semaine',sem);
+      await sbClient.from('inv_semaines').delete().eq('board_id',bid).eq('semaine',sem);
+      const {error:e1}=await sbClient.from('inv_semaines').insert(semRow); if(e1) throw e1;
+      for(let i=0;i<rows.length;i+=400){ const {error:e2}=await sbClient.from('inv_lignes').insert(rows.slice(i,i+400)); if(e2) throw e2; }
+    }catch(err){ showToast('Erreur enregistrement : '+err.message); console.error(err); }
+  } else persistLocal();
+  await logActivity('a importé un inventaire', 'Semaine '+sem, nbAn05+' réf. AN05', bid);
+  invImpBuf=null;
+  closeModal();
+  showToast('Semaine '+sem+' importée — '+lignes.length+' lignes, '+nbAn05+' en AN05');
+  renderMain();
+}
+async function invSupprimerSemaine(sem){
+  if(!confirm('Supprimer définitivement la semaine '+sem+' ?')) return;
+  const bid=route.boardId;
+  state.inv_lignes=state.inv_lignes.filter(l=>!(l.board_id===bid && l.semaine===sem));
+  state.inv_semaines=state.inv_semaines.filter(s=>!(s.board_id===bid && s.semaine===sem));
+  if(USE_SUPABASE){
+    try{ await sbClient.from('inv_lignes').delete().eq('board_id',bid).eq('semaine',sem); await sbClient.from('inv_semaines').delete().eq('board_id',bid).eq('semaine',sem); }
+    catch(err){ showToast('Erreur suppression : '+err.message); }
+  } else persistLocal();
+  showToast('Semaine '+sem+' supprimée');
+  renderMain();
+}
+
+
 (function bootFinal(){
   /* lien de partage : #cfg=... configure automatiquement l'appareil */
   try{
@@ -6054,7 +6403,7 @@ function tryUnlock(){
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v10.2'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v11.0 · suivi inventaire'; st.classList.add('ready'); }
 })();
 </script>
 </body>
