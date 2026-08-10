@@ -1801,7 +1801,7 @@ function setHomeMode(m){
 }
 const TYPE_LABELS = {actions:'Plan d\u2019actions', projet:'Espace projet', resolution:'Résolution A3', otd:'Suivi d\u2019indicateurs', sqcdp:'Rituel SQCDP', inventaire:'Suivi de l\u2019inventaire'};
 const TYPE_ICONS  = {actions:'☑', projet:'📅', resolution:'🔍', otd:'📈', sqcdp:'✚', inventaire:'📦'};
-const TYPE_ORDRE  = ['actions','projet','sqcdp','otd','resolution','inventaire'];
+const TYPE_ORDRE  = ['actions','projet','otd','resolution','inventaire'];
 
 function renderHome(main){
   const totalActions = state.actions.length, lateActions = state.actions.filter(actionLate).length;
@@ -4016,10 +4016,6 @@ function openBoardModal(type){
         <div class="type-opt ${modalBoardType==='otd'?'sel':''}" onclick="pickBoardType('otd',this)">
           <div class="to-icon">📈</div><div class="to-name">Suivi d'indicateurs</div>
           <div class="to-desc">Relevé quotidien par activité et priorité, moyennes pondérées, grille mensuelle et synthèse hebdo.</div>
-        </div>
-        <div class="type-opt ${modalBoardType==='sqcdp'?'sel':''}" onclick="pickBoardType('sqcdp',this)">
-          <div class="to-icon">✚</div><div class="to-name">Rituel SQCDP</div>
-          <div class="to-desc">Management visuel quotidien : croix du mois, statuts au clic, commentaires, taux de conformité.</div>
         </div>
         <div class="type-opt ${modalBoardType==='inventaire'?'sel':''}" onclick="pickBoardType('inventaire',this)">
           <div class="to-icon">📦</div><div class="to-name">Suivi de l'inventaire</div>
@@ -6403,7 +6399,7 @@ async function invSupprimerSemaine(sem){
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v11.0 · suivi inventaire'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v11.1'; st.classList.add('ready'); }
 })();
 </script>
 </body>
