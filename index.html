@@ -1779,6 +1779,183 @@ body.theme-sombre .toast{background:#242d3a;border:1px solid var(--line)}
 ::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb, var(--muted-2) 72%, transparent);background-clip:content-box}
 *{scrollbar-width:thin;scrollbar-color:color-mix(in srgb, var(--muted-2) 50%, transparent) transparent}
 
+
+/* ============ ACCUEIL — MODE PAGE UNIQUE ============ */
+.home.page{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;          /* la page ne défile jamais */
+  padding:22px 26px 18px;
+  gap:0;
+}
+.home.page .home-bar{flex-shrink:0;margin-bottom:12px}
+.home.page .home-kpis{flex-shrink:0;margin-bottom:14px}
+
+.pg-grid{
+  flex:1;
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(var(--cols,5), minmax(0,1fr));
+  gap:12px;
+}
+.pg-col{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg, 15px);
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+}
+.pg-col::before{content:'';height:3px;background:var(--tt);opacity:.9;flex-shrink:0}
+.pg-head{
+  display:flex;align-items:center;gap:8px;
+  padding:11px 13px 9px;
+  border-bottom:1px solid var(--line-soft);
+  flex-shrink:0;
+}
+.pg-rang{
+  width:19px;height:19px;border-radius:6px;flex-shrink:0;
+  background:var(--tt);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:800;
+}
+.pg-ic{font-size:13px;flex-shrink:0;opacity:.85}
+.pg-titre{
+  font-size:12.5px;font-weight:700;letter-spacing:-.01em;
+  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.pg-n{
+  font-family:var(--mono);font-size:10px;font-weight:700;color:var(--muted-2);
+  background:var(--bg-2);border-radius:999px;padding:2px 8px;flex-shrink:0;
+}
+.pg-liste{
+  flex:1;min-height:0;overflow-y:auto;   /* seule la colonne défile si besoin */
+  padding:8px;display:flex;flex-direction:column;gap:6px;
+}
+.pg-item{
+  position:relative;
+  display:grid;
+  grid-template-columns:8px 1fr auto auto;
+  grid-template-areas:'pt nom late pct' 'tr tr tr tr';
+  align-items:center;
+  gap:7px 8px;
+  padding:8px 10px;
+  border-radius:9px;
+  background:var(--panel-2);
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:border-color .14s ease, background .14s ease, transform .12s ease;
+}
+.pg-item:hover{
+  border-color:color-mix(in srgb, var(--tt) 45%, var(--line));
+  background:var(--panel);
+  transform:translateX(2px);
+}
+.pg-pt{grid-area:pt;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pg-nom{
+  grid-area:nom;font-size:12px;font-weight:650;line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.pg-late{
+  grid-area:late;font-size:9.5px;font-weight:800;
+  background:var(--red-soft);color:var(--red);
+  border-radius:999px;padding:1px 7px;flex-shrink:0;
+}
+.pg-pct{
+  grid-area:pct;font-family:var(--mono);font-size:10.5px;font-weight:700;
+  color:var(--muted-2);flex-shrink:0;
+}
+.pg-track{
+  grid-area:tr;height:4px;border-radius:999px;background:var(--bg-2);
+  overflow:hidden;display:block;
+}
+.pg-track i{display:block;height:100%;border-radius:999px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+.pg-item .bc-del{
+  position:absolute;top:5px;right:5px;width:20px;height:20px;font-size:10px;
+  opacity:0;z-index:2;
+}
+.pg-item:hover .bc-del{opacity:1}
+.pg-vide{
+  font-size:11px;color:var(--muted-2);text-align:center;padding:18px 8px;
+  border:1px dashed var(--line);border-radius:9px;
+}
+.pg-add{
+  flex-shrink:0;margin:0;padding:9px;width:100%;
+  border:none;border-top:1px solid var(--line-soft);
+  background:transparent;color:var(--muted);
+  font-size:11.5px;font-weight:700;
+  transition:background .12s ease, color .12s ease;
+}
+.pg-add:hover{background:color-mix(in srgb, var(--tt) 9%, transparent);color:var(--tt)}
+
+.pg-bas{
+  flex-shrink:0;
+  display:grid;grid-template-columns:1.35fr 1fr;gap:12px;
+  margin-top:12px;
+  max-height:32vh;
+}
+.pg-bloc{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r-lg, 15px);box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;min-height:0;overflow:hidden;
+}
+.pg-bloc-t{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-bottom:1px solid var(--line-soft);
+  font-size:11.5px;font-weight:800;flex-shrink:0;
+}
+.pg-bloc-t .btn{margin-left:auto;padding:2px 9px;font-size:10.5px}
+.pg-bloc-c{flex:1;min-height:0;overflow-y:auto;padding:6px 14px 10px}
+.pg-bloc-c .news-alert{padding-top:7px;padding-bottom:7px}
+
+/* le mode Page laisse la sauvegarde aux réglages pour rester sur un écran */
+.home.page .data-bar{display:none}
+
+/* ============ CHOIX DES MODULES ============ */
+.mod-item{
+  display:flex;align-items:center;gap:10px;
+  border:1.5px solid var(--line);border-radius:10px;
+  padding:9px 12px;margin-bottom:7px;cursor:pointer;
+  background:var(--panel-2);transition:border-color .14s ease, background .14s ease;
+}
+.mod-item.on{border-color:color-mix(in srgb, var(--primary) 40%, var(--line));background:var(--panel)}
+.mod-item input{accent-color:var(--primary);width:15px;height:15px;flex-shrink:0}
+.mod-ic{
+  width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.mod-n{font-size:12.5px;font-weight:700;flex:1;min-width:0}
+.mod-n i{display:block;font-style:normal;font-size:10.5px;color:var(--muted-2);font-weight:600;margin-top:1px}
+.mod-r{
+  font-family:var(--mono);font-size:10px;font-weight:800;color:var(--muted-2);
+  background:var(--bg-2);border-radius:999px;padding:2px 8px;flex-shrink:0;
+}
+.mod-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:15px;height:15px;padding:0 4px;margin-left:3px;
+  border-radius:999px;background:var(--muted-2);color:var(--panel);
+  font-size:9px;font-weight:800;
+}
+
+/* ============ ADAPTATION AUX PETITS ÉCRANS ============ */
+@media (max-width:1500px){
+  .pg-item{grid-template-columns:8px 1fr auto}
+  .pg-item{grid-template-areas:'pt nom pct' 'tr tr tr'}
+  .pg-late{grid-area:nom;justify-self:end;margin-left:auto}
+}
+@media (max-width:1150px){
+  .home.page{overflow-y:auto}
+  .pg-grid{grid-template-columns:repeat(2,minmax(0,1fr));flex:none}
+  .pg-col{max-height:42vh}
+  .pg-bas{grid-template-columns:1fr;max-height:none}
+}
+@media (max-width:700px){
+  .pg-grid{grid-template-columns:1fr}
+}
+
 /* ---------- 19. États vides ---------- */
 .empty-hint .eh-title, .pa-empty, .news-empty, .imp-vide{letter-spacing:-.005em}
 .empty-hint{gap:10px}
@@ -1797,6 +1974,458 @@ body.presentation .board-card:hover, body.presentation .tuile:hover{transform:no
   .toast{background:var(--navy)}
   ::-webkit-scrollbar-thumb{background:var(--muted-2);background-clip:content-box}
 }
+</style>
+<style id="skin-v15">
+/* ============================================================================
+   COUCHE ESTHÉTIQUE — v15 « Horizon »
+   Réinvention de la forme : fond profond en dégradé, espaces de travail
+   flottants, barre latérale d'icônes, colonnes d'accueil colorées.
+   Aucune logique métier ici. Pour revenir en arrière : supprimer ce bloc.
+   ============================================================================ */
+
+/* ---------- 1. Atmosphère : le fond ---------- */
+:root{
+  --ciel-a:#1a3ea8;
+  --ciel-b:#2657d9;
+  --ciel-c:#3f7bff;
+  --lueur:rgba(120,190,255,.45);
+  --verre:rgba(255,255,255,.13);
+  --verre-fort:rgba(255,255,255,.22);
+  --verre-bord:rgba(255,255,255,.22);
+  --sur-ciel:#ffffff;
+  --sur-ciel-2:rgba(255,255,255,.78);
+  --sur-ciel-3:rgba(255,255,255,.55);
+  --rail-w:66px;
+  --coin:18px;
+}
+body.theme-gris{
+  --ciel-a:#2b3548; --ciel-b:#3d4a63; --ciel-c:#556685; --lueur:rgba(190,205,230,.28);
+}
+body.theme-sombre{
+  --ciel-a:#070b16; --ciel-b:#0d1530; --ciel-c:#172654; --lueur:rgba(70,110,220,.32);
+  --verre:rgba(255,255,255,.07); --verre-fort:rgba(255,255,255,.13); --verre-bord:rgba(255,255,255,.12);
+}
+
+.app{
+  display:grid;
+  grid-template-columns:var(--rail-w) minmax(0,1fr);
+  grid-template-rows:var(--topbar-h) auto minmax(0,1fr);
+  height:100%;
+  background:
+    radial-gradient(900px 520px at 85% -10%, var(--lueur), transparent 62%),
+    radial-gradient(700px 420px at -5% 110%, rgba(255,255,255,.10), transparent 60%),
+    linear-gradient(135deg, var(--ciel-a) 0%, var(--ciel-b) 48%, var(--ciel-c) 100%);
+  background-attachment:fixed;
+}
+.app.hidden{display:none !important}
+.topbar{grid-column:1 / -1;grid-row:1}
+.ro-bar{grid-column:1 / -1;grid-row:2}
+.rail{grid-column:1;grid-row:3}
+.main{grid-column:2;grid-row:3;min-height:0;padding:0 14px 14px 0}
+
+/* ---------- 2. Barre supérieure sur le ciel ---------- */
+.topbar{
+  background:transparent;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  box-shadow:none;
+  color:var(--sur-ciel);
+  padding:0 18px 0 16px;
+}
+.topbar .logo-l1{color:#fff}
+.topbar .logo-l2{color:var(--sur-ciel-2)}
+.topbar .logo-mark{
+  background:#fff;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.topbar .logo-mark svg{stroke:var(--ciel-b)}
+.topbar .btn{
+  background:var(--verre);
+  border:1px solid var(--verre-bord);
+  color:#fff;
+  box-shadow:none;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.topbar .btn:hover{background:var(--verre-fort);border-color:rgba(255,255,255,.35)}
+.topbar .btn svg{stroke:#fff}
+.topbar #btn-presentation.on{background:#fff;color:var(--ciel-b);border-color:#fff}
+.topbar #btn-presentation.on svg{stroke:var(--ciel-b)}
+.topbar .search-box{
+  background:var(--verre);
+  border:1px solid var(--verre-bord);
+  color:#fff;
+}
+.topbar .search-box input{color:#fff}
+.topbar .search-box input::placeholder{color:var(--sur-ciel-3)}
+.topbar .search-box svg{stroke:#fff;opacity:.8}
+.topbar .search-box:focus-within{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.5);box-shadow:0 0 0 3px rgba(255,255,255,.14)}
+.topbar .conn-badge{background:var(--verre);border-color:var(--verre-bord);color:#fff}
+.topbar .conn-badge.live .dot{background:#5ef0b0;box-shadow:0 0 8px #5ef0b0}
+.topbar .conn-badge.local .dot{background:#ffc45c;box-shadow:0 0 8px #ffc45c}
+.topbar .crumb .b-name{color:#fff}
+.topbar .crumb .sep{color:var(--sur-ciel-3)}
+.topbar .crumb .b-type{background:var(--verre-fort);color:#fff;border:1px solid var(--verre-bord)}
+.topbar .btn-home{color:var(--sur-ciel-2)}
+.topbar .btn-home:hover{background:var(--verre);color:#fff}
+.topbar .presence-avatar{border-color:rgba(255,255,255,.6);background:#fff;color:var(--ciel-b)}
+.topbar .presence-avatar.me{background:var(--ciel-c);color:#fff}
+.ro-bar{background:rgba(0,0,0,.28);backdrop-filter:blur(8px)}
+
+/* ---------- 3. Barre latérale ---------- */
+.rail{
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 0 12px;gap:2px;
+  min-height:0;overflow:hidden;
+}
+.rl-grp{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%}
+.rl-mods{overflow-y:auto;min-height:0;flex-shrink:1;padding:2px 0;scrollbar-width:none}
+.rl-mods::-webkit-scrollbar{display:none}
+.rl-sep{width:26px;height:1px;background:rgba(255,255,255,.22);margin:7px 0}
+.rl-spacer{flex:1}
+.rl{
+  position:relative;
+  width:52px;height:50px;border-radius:13px;
+  background:transparent;border:none;color:var(--sur-ciel-2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;
+  transition:background .14s ease, color .14s ease, transform .12s ease;
+}
+.rl:hover{background:var(--verre);color:#fff}
+.rl.on{background:#fff;color:var(--ciel-b);box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.rl.on[style*="--tt"]{color:var(--tt)}
+.rl:active{transform:scale(.96)}
+.rl-i{width:19px;height:19px;display:flex}
+.rl-i svg{width:19px;height:19px}
+.rl-t{font-size:8.5px;font-weight:700;letter-spacing:.02em;line-height:1;max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rl-b{
+  position:absolute;top:5px;right:5px;
+  min-width:16px;height:16px;padding:0 4px;border-radius:999px;
+  background:#ff5a4e;color:#fff;font-size:9px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 2px var(--ciel-b);
+}
+.rl.on .rl-b{box-shadow:0 0 0 2px #fff}
+.rl-me{
+  width:34px;height:34px;border-radius:50%;margin-top:6px;
+  background:#fff;color:var(--ciel-b);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;letter-spacing:.02em;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
+body.presentation .rail, body.impression .rail{display:none}
+body.presentation .app, body.impression .app{grid-template-columns:0 minmax(0,1fr)}
+body.presentation .main{padding:0 14px 14px 14px}
+
+/* ---------- 4. L'espace de travail flottant ---------- */
+.main > *:first-child{
+  background:var(--panel);
+  border-radius:var(--coin);
+  box-shadow:0 18px 50px rgba(0,0,0,.22), 0 2px 6px rgba(0,0,0,.10);
+  overflow:hidden;
+  height:100%;
+  border:1px solid rgba(255,255,255,.35);
+}
+body.theme-sombre .main > *:first-child{border-color:rgba(255,255,255,.08)}
+.main > .journal{max-width:none}
+.main > .kview, .main > .news-wrap, .main > .journal{background:var(--bg)}
+.board-toolbar{background:var(--panel);border-bottom:1px solid var(--line)}
+
+/* ---------- 5. L'accueil vit directement sur le ciel ---------- */
+.main > .home{
+  background:transparent;
+  box-shadow:none;
+  border:none;
+  border-radius:0;
+  overflow:hidden;
+}
+.home:not(.page){overflow-y:auto}
+.home .home-bar h1{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.18);font-size:26px}
+.home .home-sub{color:var(--sur-ciel-2)}
+.home .section-label, .home .dense-t, .home .hgroup-t{color:var(--sur-ciel-2)}
+.home .hgroup-t span{color:var(--sur-ciel-3)}
+.home .home-tools .seg{background:var(--verre);border-color:var(--verre-bord)}
+.home .home-tools .seg button{color:var(--sur-ciel-2)}
+.home .home-tools .seg button.active{background:#fff;color:var(--ciel-b)}
+.home .home-tools .btn{background:var(--verre);border-color:var(--verre-bord);color:#fff;box-shadow:none}
+.home .home-tools .btn:hover{background:var(--verre-fort)}
+.home .home-tools .btn.primary{background:#fff;color:var(--ciel-b);border-color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.16)}
+.home .home-tools .btn.primary:hover{background:#f2f6ff}
+.home .mod-badge{background:#fff;color:var(--ciel-b)}
+.home .news-empty{color:var(--muted-2)}
+
+/* indicateurs de tête : verre dépoli */
+.home .home-kpi{
+  background:var(--verre);
+  border:1px solid var(--verre-bord);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 8px 24px rgba(0,0,0,.10);
+  color:#fff;
+}
+.home .home-kpi::after{opacity:.9;height:3px}
+.home .home-kpi .num{color:#fff}
+.home .home-kpi.late .num{color:#ffb4ad}
+.home .home-kpi.done .num{color:#8cf0c4}
+.home .home-kpi .lbl{color:var(--sur-ciel-2)}
+.home .home-kpi:hover{transform:translateY(-2px);background:var(--verre-fort)}
+
+/* colonnes : en-têtes pleins, corps blancs */
+.pg-col{
+  background:var(--panel);
+  border:none;
+  border-radius:var(--coin);
+  box-shadow:0 14px 40px rgba(0,0,0,.20), 0 2px 5px rgba(0,0,0,.10);
+}
+.pg-col::before{display:none}
+.pg-head{
+  background:linear-gradient(135deg, var(--tt), color-mix(in srgb, var(--tt) 78%, #000));
+  color:#fff;
+  padding:12px 13px 11px;
+  border-bottom:none;
+}
+.pg-rang{background:rgba(255,255,255,.9);color:var(--tt)}
+.pg-ic{opacity:1;display:flex}
+.pg-ic svg{width:15px;height:15px;stroke:#fff}
+.pg-titre{color:#fff;font-size:13px;letter-spacing:-.01em}
+.pg-n{background:rgba(255,255,255,.22);color:#fff}
+.pg-liste{background:var(--bg);padding:9px}
+.pg-item{
+  background:var(--panel);
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(16,24,40,.05);
+  border-radius:11px;
+}
+.pg-item:hover{
+  border-color:var(--tt);
+  box-shadow:0 8px 20px rgba(16,24,40,.12);
+  transform:translateY(-1px);
+}
+.pg-vide{border-color:var(--line);color:var(--muted-2);background:var(--panel)}
+.pg-add{
+  background:var(--panel);
+  color:var(--muted);
+  border-top:1px solid var(--line);
+}
+.pg-add:hover{color:var(--tt)}
+
+/* bandeau bas */
+.pg-bloc{
+  background:var(--panel);
+  border:none;
+  border-radius:var(--coin);
+  box-shadow:0 14px 40px rgba(0,0,0,.18);
+}
+.pg-bloc-t{background:var(--panel-2)}
+
+/* autres modes d'accueil : cartes blanches sur le ciel */
+.home .board-card, .home .tuile, .home .hrow, .home .dense-box{
+  border:none;
+  box-shadow:0 10px 28px rgba(0,0,0,.16), 0 1px 3px rgba(0,0,0,.08);
+}
+.home .board-card.new, .home .kpix-card.new-kpi{
+  border:1.5px dashed rgba(255,255,255,.55);
+  background:var(--verre);
+  color:#fff;
+  box-shadow:none;
+}
+.home .board-card.new:hover{background:var(--verre-fort);border-color:#fff;color:#fff}
+.home .data-bar{border-top-color:rgba(255,255,255,.18)}
+.home .data-bar .btn{background:var(--verre);border-color:var(--verre-bord);color:#fff}
+
+/* icônes vectorielles dans les pastilles */
+.tu-ic svg, .hr-ic svg, .mod-ic svg{width:14px;height:14px}
+.tu-ic, .hr-ic, .mod-ic{display:inline-flex;align-items:center;justify-content:center}
+.dense-t svg{width:13px;height:13px;vertical-align:-2px;margin-right:2px}
+.type-opt .to-icon{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--primary-soft);color:var(--primary);
+  margin-bottom:9px;font-size:16px;
+}
+.type-opt .to-icon svg{width:17px;height:17px}
+.type-opt.sel .to-icon{background:var(--primary);color:#fff}
+.k-types .to-icon{width:28px;height:28px;font-size:14px;margin-bottom:6px}
+
+/* ---------- 6. Écran d'entrée ---------- */
+#gate{
+  background:
+    radial-gradient(900px 520px at 85% -10%, var(--lueur), transparent 62%),
+    radial-gradient(700px 420px at -5% 110%, rgba(255,255,255,.10), transparent 60%),
+    linear-gradient(135deg, var(--ciel-a) 0%, var(--ciel-b) 48%, var(--ciel-c) 100%);
+}
+#gate::before{display:none}
+#gate .box{
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 30px 80px rgba(0,0,0,.32), 0 4px 12px rgba(0,0,0,.12);
+  border-radius:22px;
+}
+#gate .logo-mark{background:linear-gradient(135deg, var(--ciel-b), var(--ciel-c))}
+
+/* ---------- 7. Détails d'ambiance dans les espaces ---------- */
+.kb-col{background:var(--bg-2);border-radius:14px}
+.kb-col-head{padding-top:12px}
+.kb-col-head .dot{width:10px;height:10px;box-shadow:0 0 0 3px color-mix(in srgb, currentColor 0%, var(--panel))}
+.pa-summary .pa-sum-item{border-radius:12px}
+.status-pill{box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.drawer{border-radius:var(--coin) 0 0 var(--coin);top:8px;bottom:8px;box-shadow:-30px 0 70px rgba(0,0,0,.28)}
+.drawer-head .tab{border-radius:4px}
+.modal{border-radius:20px}
+.toast{background:rgba(16,24,40,.92);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12)}
+
+/* ---------- 8. Repli sans color-mix ---------- */
+@supports not (color: color-mix(in srgb, red, blue)){
+  .pg-head{background:var(--tt)}
+}
+
+/* ---------- 9. Petits écrans ---------- */
+@media (max-width:1150px){
+  :root{--rail-w:56px}
+  .rl{width:46px;height:46px}
+  .rl-t{display:none}
+  .home:not(.page){overflow-y:auto}
+}
+@media (max-width:760px){
+  .app{grid-template-columns:0 minmax(0,1fr)}
+  .rail{display:none}
+  .main{padding:0 8px 8px 8px}
+}
+</style>
+<style id="skin-v16">
+/* ============================================================================
+   COUCHE v16 — personnalisation par utilisateur
+   Tout ce qui dépend d'un choix de l'utilisateur passe par des variables
+   posées sur <body> : ambiance, accent, densité, coins, effets.
+   ============================================================================ */
+
+/* ---------- 1. Le texte sur le ciel s'adapte à la clarté du fond ---------- */
+.topbar .btn{color:var(--sur-ciel)}
+.topbar .btn svg{stroke:var(--sur-ciel)}
+.topbar .logo-l1, .topbar .crumb .b-name{color:var(--sur-ciel)}
+.topbar .crumb .b-type{color:var(--sur-ciel)}
+.topbar .search-box, .topbar .search-box input, .topbar .conn-badge{color:var(--sur-ciel)}
+.topbar .search-box svg{stroke:var(--sur-ciel)}
+.topbar .btn-home:hover{color:var(--sur-ciel)}
+.topbar .logo-mark{background:var(--pastille)}
+.topbar .logo-mark svg{stroke:var(--pastille-txt)}
+.topbar #btn-presentation.on{background:var(--pastille);color:var(--pastille-txt);border-color:var(--pastille)}
+.topbar #btn-presentation.on svg{stroke:var(--pastille-txt)}
+.topbar .presence-avatar{background:var(--pastille);color:var(--pastille-txt)}
+.topbar .presence-avatar.me{background:var(--primary);color:#fff}
+.rl:hover{color:var(--sur-ciel)}
+.rl.on{background:var(--pastille);color:var(--pastille-txt)}
+.rl.on .rl-b{box-shadow:0 0 0 2px var(--pastille)}
+.rl-b{box-shadow:0 0 0 2px var(--ciel-b)}
+.rl-me{background:var(--pastille);color:var(--pastille-txt)}
+.rl-sep{background:var(--verre-bord)}
+.home .home-bar h1{color:var(--sur-ciel)}
+body.ciel-clair .home .home-bar h1{text-shadow:none}
+.home .home-kpi{color:var(--sur-ciel)}
+.home .home-kpi .num{color:var(--sur-ciel)}
+.home .home-kpi.late .num{color:var(--kpi-late)}
+.home .home-kpi.done .num{color:var(--kpi-done)}
+.home .home-tools .seg button.active{background:var(--pastille);color:var(--pastille-txt)}
+.home .home-tools .btn{color:var(--sur-ciel)}
+.home .home-tools .btn.primary{background:var(--pastille);color:var(--pastille-txt);border-color:var(--pastille)}
+.home .home-tools .btn.primary:hover{background:var(--pastille);filter:brightness(.94)}
+.home .mod-badge{background:var(--pastille);color:var(--pastille-txt)}
+.home .board-card.new, .home .kpix-card.new-kpi{color:var(--sur-ciel);border-color:var(--verre-bord)}
+.home .board-card.new:hover{color:var(--sur-ciel);border-color:var(--sur-ciel)}
+.home .data-bar .btn{color:var(--sur-ciel)}
+.ro-bar{color:var(--sur-ciel)}
+body.ciel-clair .topbar{border-bottom-color:rgba(16,24,40,.10)}
+body.ciel-clair .rl.on{box-shadow:0 6px 18px rgba(16,24,40,.22)}
+body.ciel-clair .home .home-kpi{box-shadow:0 8px 24px rgba(16,24,40,.08)}
+body.ciel-clair .pg-col, body.ciel-clair .pg-bloc{box-shadow:0 10px 30px rgba(16,24,40,.12), 0 1px 3px rgba(16,24,40,.06)}
+body.ciel-clair .main > *:first-child{box-shadow:0 14px 40px rgba(16,24,40,.14), 0 1px 4px rgba(16,24,40,.06);border-color:rgba(16,24,40,.08)}
+body.ciel-clair #gate .box{box-shadow:0 24px 60px rgba(16,24,40,.16)}
+body.ciel-clair .toast{background:rgba(16,24,40,.92)}
+
+/* ---------- 2. Image de fond personnelle ---------- */
+body.perso-image .app,
+body.perso-image #gate{
+  background-image:
+    linear-gradient(rgba(6,12,28,var(--voile,.45)), rgba(6,12,28,var(--voile,.45))),
+    var(--fond-image);
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+body.perso-image .app{background-color:var(--ciel-b)}
+
+/* ---------- 3. Options d'interface ---------- */
+body.perso-rail-cache .rail{display:none}
+body.perso-rail-cache .app{grid-template-columns:0 minmax(0,1fr)}
+body.perso-rail-cache .main{padding-left:14px}
+body.perso-rail-sans-labels .rl{height:44px;width:46px}
+body.perso-rail-sans-labels .rl-t{display:none}
+body.perso-sans-verre *{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+body.perso-sans-verre{--verre:rgba(255,255,255,.2);--verre-fort:rgba(255,255,255,.32)}
+body.perso-sans-verre.ciel-clair{--verre:rgba(255,255,255,.7);--verre-fort:rgba(255,255,255,.9)}
+body.perso-sans-anim *, body.perso-sans-anim *::before, body.perso-sans-anim *::after{
+  transition:none !important;animation:none !important;
+}
+body.perso-compacte .pg-item{padding:6px 9px;gap:5px 7px}
+body.perso-compacte .pa-table td{padding:7px 10px}
+body.perso-compacte .home.page{padding-top:14px}
+body.perso-confortable .pg-item{padding:10px 12px}
+body.perso-confortable .pa-table td{padding:12px 13px}
+.modal, .drawer{border-radius:var(--coin)}
+.drawer{border-radius:var(--coin) 0 0 var(--coin)}
+.modal-foot{border-radius:0 0 var(--coin) var(--coin)}
+
+/* ---------- 4. Le panneau d'apparence ---------- */
+.modal.modal-large, #modal-content.modal-large{width:min(760px, 94vw)}
+.ap-note{display:block;font-size:11px;font-weight:500;color:var(--muted-2);margin-top:3px;letter-spacing:0}
+.ap-sec{margin-bottom:18px}
+.ap-t{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.ap-t span{text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted-2);margin-left:6px}
+.ap-amb{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px}
+.amb{
+  position:relative;height:56px;border-radius:12px;border:2px solid transparent;cursor:pointer;
+  box-shadow:0 3px 10px rgba(16,24,40,.16);transition:transform .12s ease, box-shadow .12s ease;
+  overflow:hidden;padding:0;
+}
+.amb:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(16,24,40,.22)}
+.amb.on{border-color:var(--txt);box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--primary)}
+.amb i{
+  position:absolute;left:0;right:0;bottom:0;font-style:normal;font-size:9.5px;font-weight:800;
+  color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);padding:3px 5px;
+  background:linear-gradient(transparent, rgba(0,0,0,.35));text-align:center;
+}
+.ap-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px}
+.ap-row.ap-off{opacity:.55}
+.ap-col{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600}
+.ap-col input[type=color], .acc-perso input[type=color]{
+  width:34px;height:28px;border:1px solid var(--line);border-radius:7px;padding:2px;background:var(--panel);cursor:pointer;
+}
+.ap-hint{font-size:11px;color:var(--muted-2)}
+.ap-voile{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--muted)}
+.ap-voile input{accent-color:var(--primary);width:120px}
+.ap-acc{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.acc{
+  width:32px;height:32px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;
+  box-shadow:0 2px 6px rgba(16,24,40,.18);transition:transform .12s ease;position:relative;
+}
+.acc:hover{transform:scale(1.1)}
+.acc.on{box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--txt)}
+.acc.on::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.acc-perso{display:flex;align-items:center;justify-content:center;overflow:hidden}
+.acc-perso input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.acc-perso i{font-style:normal;color:#fff;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.5);pointer-events:none}
+.ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+.seg-w{display:flex;gap:4px;background:var(--bg-2);border-radius:999px;padding:3px;flex-wrap:wrap}
+.seg-b{
+  flex:1;min-width:0;border:none;background:transparent;color:var(--muted);border-radius:999px;
+  padding:7px 10px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+  transition:background .14s ease, color .14s ease;
+}
+.seg-b.on{background:var(--panel);color:var(--txt);box-shadow:0 1px 2px rgba(16,24,40,.12)}
+.ap-toggles{display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:var(--panel-2);border-radius:var(--r-md)}
+.ap-share{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line-soft);padding-top:14px;margin-bottom:0}
+@media (max-width:640px){ .ap-grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -1967,23 +2596,262 @@ const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 /* ---- Identité de l'espace, entièrement paramétrable ---- */
 function appNom(){ try{ return localStorage.getItem('pa_app_nom') || 'MON ESPACE'; }catch(e){ return 'MON ESPACE'; } }
 function appSous(){ try{ return localStorage.getItem('pa_app_sous') || 'Pilotage & performance'; }catch(e){ return 'Pilotage & performance'; } }
-const THEMES = [
-  {key:'clair',  nom:'Clair',  desc:'Fond blanc, lecture optimale en réunion', ap:'#f4f5f7', ap2:'#ffffff', ap3:'#172b4d'},
-  {key:'gris',   nom:'Gris',   desc:'Contraste doux, moins fatigant sur écran', ap:'#dfe3e8', ap2:'#eef1f5', ap3:'#16202e'},
-  {key:'sombre', nom:'Sombre', desc:'Fond noir, confortable en soirée', ap:'#11151b', ap2:'#1a2029', ap3:'#e6edf5'},
+/* ============================================================
+   PERSONNALISATION PAR UTILISATEUR
+   Tout est mémorisé sur l'appareil (localStorage), rien en base :
+   chaque personne façonne son interface sans toucher aux autres.
+   ============================================================ */
+const AMBIANCES = [
+  {key:'ocean',      nom:'Océan',      a:'#1a3ea8', b:'#2657d9', c:'#3f7bff'},
+  {key:'lagon',      nom:'Lagon',      a:'#0b5f7a', b:'#0f95a8', c:'#2fc6c0'},
+  {key:'foret',      nom:'Forêt',      a:'#0f3f30', b:'#1a6b4c', c:'#35a874'},
+  {key:'crepuscule', nom:'Crépuscule', a:'#3b1a6e', b:'#6f2fa8', c:'#c44f8a'},
+  {key:'aurore',     nom:'Aurore',     a:'#8f2a4d', b:'#d9563f', c:'#f2933a'},
+  {key:'sable',      nom:'Sable',      a:'#c9a86a', b:'#e2c894', c:'#f2e3bf'},
+  {key:'perle',      nom:'Perle',      a:'#cfd8e6', b:'#e3e9f2', c:'#f2f5fa'},
+  {key:'ardoise',    nom:'Ardoise',    a:'#2b3548', b:'#3d4a63', c:'#556685'},
+  {key:'graphite',   nom:'Graphite',   a:'#171b22', b:'#262c38', c:'#3a4356'},
+  {key:'nuit',       nom:'Nuit',       a:'#070b16', b:'#0d1530', c:'#172654'},
 ];
-function themeActuel(){ try{ return localStorage.getItem('pa_theme') || 'clair'; }catch(e){ return 'clair'; } }
-function appliquerTheme(t){
-  const k = t || themeActuel();
-  document.body.classList.remove('theme-clair','theme-gris','theme-sombre');
-  document.body.classList.add('theme-'+k);
-  try{ localStorage.setItem('pa_theme', k); }catch(e){}
+const ACCENTS = ['#2f6bf0','#0c66e4','#0f9d8a','#22a06b','#e77b1e','#d6377b','#6554c0','#e34935','#1f2937'];
+const SURFACES = [
+  {key:'clair',  nom:'Clair',  desc:'Panneaux blancs, lecture optimale', ap:'#ffffff', ap2:'#f4f5f7', ap3:'#172b4d'},
+  {key:'gris',   nom:'Gris',   desc:'Contraste adouci',                  ap:'#eef1f5', ap2:'#dfe3e8', ap3:'#16202e'},
+  {key:'sombre', nom:'Sombre', desc:'Panneaux sombres, confort du soir', ap:'#1a2029', ap2:'#11151b', ap3:'#e6edf5'},
+];
+function persoDefaut(){
+  return {ambiance:'ocean', custA:'#1a3ea8', custC:'#3f7bff', image:null, voile:45,
+          surface:'clair', accent:'#2f6bf0', densite:'normale', coins:'arrondis',
+          rail:'labels', verre:true, anim:true};
 }
-function choisirTheme(k){
-  appliquerTheme(k);
-  document.querySelectorAll('.theme-opt').forEach(el=>el.classList.toggle('sel', el.dataset.t===k));
-  showToast('Thème '+(THEMES.find(x=>x.key===k)||{}).nom.toLowerCase());
+function persoLire(){
+  try{
+    const v = localStorage.getItem('pa_perso');
+    if(v) return Object.assign(persoDefaut(), JSON.parse(v));
+    /* reprise de l'ancien réglage « thème » */
+    const t = localStorage.getItem('pa_theme');
+    const p = persoDefaut();
+    if(t==='gris'){ p.surface='gris'; p.ambiance='ardoise'; }
+    if(t==='sombre'){ p.surface='sombre'; p.ambiance='nuit'; }
+    return p;
+  }catch(e){ return persoDefaut(); }
 }
+function persoEcrire(p){ try{ localStorage.setItem('pa_perso', JSON.stringify(p)); }catch(e){} }
+function persoSet(k, v){
+  const p = persoLire(); p[k] = v; persoEcrire(p); appliquerPerso();
+  if(document.getElementById('perso-panel')) openApparence(true);
+}
+
+/* ---- outils couleur ---- */
+function hexRgb(h){ const m=String(h||'#000').replace('#',''); const n=parseInt(m.length===3?m.split('').map(c=>c+c).join(''):m,16); return [(n>>16)&255,(n>>8)&255,n&255]; }
+function rgbHex(r,g,b){ return '#'+[r,g,b].map(x=>Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join(''); }
+function melange(h1,h2,t){ const a=hexRgb(h1), b=hexRgb(h2); return rgbHex(a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t); }
+function luminance(h){ const [r,g,b]=hexRgb(h).map(v=>{ v/=255; return v<=.03928? v/12.92 : Math.pow((v+.055)/1.055,2.4); }); return .2126*r+.7152*g+.0722*b; }
+function assombrir(h,t){ return melange(h,'#000000',t); }
+function eclaircir(h,t){ return melange(h,'#ffffff',t); }
+
+function ambianceCourante(p){
+  if(p.ambiance==='perso') return {a:p.custA, b:melange(p.custA,p.custC,.5), c:p.custC};
+  return AMBIANCES.find(x=>x.key===p.ambiance) || AMBIANCES[0];
+}
+function appliquerPerso(){
+  const p = persoLire();
+  const b = document.body, st = b.style;
+  /* surface (panneaux) */
+  b.classList.remove('theme-clair','theme-gris','theme-sombre');
+  b.classList.add('theme-'+(SURFACES.some(s=>s.key===p.surface)?p.surface:'clair'));
+  /* ambiance (ciel) */
+  const amb = ambianceCourante(p);
+  st.setProperty('--ciel-a', amb.a); st.setProperty('--ciel-b', amb.b); st.setProperty('--ciel-c', amb.c);
+  const [lr,lg,lb] = hexRgb(eclaircir(amb.c,.35));
+  st.setProperty('--lueur', `rgba(${lr},${lg},${lb},.45)`);
+  const clair = luminance(amb.b) > .45;
+  b.classList.toggle('ciel-clair', clair);
+  if(clair){
+    st.setProperty('--sur-ciel','#101828'); st.setProperty('--sur-ciel-2','rgba(16,24,40,.72)'); st.setProperty('--sur-ciel-3','rgba(16,24,40,.5)');
+    st.setProperty('--verre','rgba(255,255,255,.55)'); st.setProperty('--verre-fort','rgba(255,255,255,.8)'); st.setProperty('--verre-bord','rgba(16,24,40,.12)');
+    st.setProperty('--pastille','#101828'); st.setProperty('--pastille-txt','#ffffff');
+    st.setProperty('--kpi-late','#c62828'); st.setProperty('--kpi-done','#1b7f4f');
+  } else {
+    st.setProperty('--sur-ciel','#ffffff'); st.setProperty('--sur-ciel-2','rgba(255,255,255,.78)'); st.setProperty('--sur-ciel-3','rgba(255,255,255,.55)');
+    st.setProperty('--verre','rgba(255,255,255,.13)'); st.setProperty('--verre-fort','rgba(255,255,255,.22)'); st.setProperty('--verre-bord','rgba(255,255,255,.22)');
+    st.setProperty('--pastille','#ffffff'); st.setProperty('--pastille-txt', amb.b);
+    st.setProperty('--kpi-late','#ffb4ad'); st.setProperty('--kpi-done','#8cf0c4');
+  }
+  /* image de fond */
+  if(p.image){ st.setProperty('--fond-image', `url("${p.image}")`); st.setProperty('--voile', String((p.voile||0)/100)); b.classList.add('perso-image'); }
+  else { st.removeProperty('--fond-image'); b.classList.remove('perso-image'); }
+  /* accent */
+  const acc = /^#[0-9a-f]{6}$/i.test(p.accent) ? p.accent : '#2f6bf0';
+  st.setProperty('--primary', acc);
+  st.setProperty('--primary-dark', assombrir(acc,.18));
+  st.setProperty('--primary-soft', p.surface==='sombre' ? melange(acc,'#161c25',.82) : melange(acc,'#ffffff',.88));
+  st.setProperty('--ring', `0 0 0 3px ${acc}33`);
+  /* densité */
+  st.fontSize = {compacte:'12.5px', normale:'13.5px', confortable:'14.5px'}[p.densite] || '13.5px';
+  b.classList.toggle('perso-compacte', p.densite==='compacte');
+  b.classList.toggle('perso-confortable', p.densite==='confortable');
+  /* coins */
+  const droits = p.coins==='droits';
+  st.setProperty('--coin', droits?'6px':'18px'); st.setProperty('--r-lg', droits?'6px':'15px');
+  st.setProperty('--r-md', droits?'5px':'11px'); st.setProperty('--r-sm', droits?'4px':'8px');
+  /* barre latérale, effets */
+  b.classList.toggle('perso-rail-cache', p.rail==='cache');
+  b.classList.toggle('perso-rail-sans-labels', p.rail==='icones');
+  b.classList.toggle('perso-sans-verre', !p.verre);
+  b.classList.toggle('perso-sans-anim', !p.anim);
+  try{ localStorage.setItem('pa_theme', p.surface); }catch(e){}
+}
+/* compatibilité : les anciens appels continuent de fonctionner */
+function themeActuel(){ return persoLire().surface; }
+function appliquerTheme(t){ if(t){ const p=persoLire(); p.surface=t; persoEcrire(p); } appliquerPerso(); }
+function choisirTheme(k){ persoSet('surface', k); showToast('Surface '+k); }
+
+/* ---- Image de fond ---- */
+function persoImage(ev){
+  const f = ev.target.files && ev.target.files[0];
+  if(!f) return;
+  if(f.size > 2.5*1024*1024){ showToast('Image trop lourde : 2,5 Mo maximum'); ev.target.value=''; return; }
+  const r = new FileReader();
+  r.onload = ()=>{
+    const img = new Image();
+    img.onload = ()=>{
+      /* recadrage et compression pour rester léger en mémoire */
+      const max = 1920; let w = img.width, h = img.height;
+      if(w>max || h>max){ const k = max/Math.max(w,h); w=Math.round(w*k); h=Math.round(h*k); }
+      const cv = document.createElement('canvas'); cv.width=w; cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      let out;
+      try{ out = cv.toDataURL('image/jpeg', .82); }catch(e){ out = r.result; }
+      if(out.length > 1.6*1024*1024){ showToast('Image encore trop lourde après compression, choisis-en une plus petite'); return; }
+      const p = persoLire(); p.image = out; persoEcrire(p); appliquerPerso();
+      openApparence(true);
+      showToast('Fond personnalisé appliqué');
+    };
+    img.onerror = ()=>showToast('Fichier image illisible');
+    img.src = r.result;
+  };
+  r.readAsDataURL(f);
+  ev.target.value='';
+}
+function persoSansImage(){ const p=persoLire(); p.image=null; persoEcrire(p); appliquerPerso(); openApparence(true); }
+
+/* ---- Partage entre appareils ---- */
+function persoCode(){
+  const p = persoLire(); const q = {...p}; delete q.image;
+  return btoa(unescape(encodeURIComponent(JSON.stringify(q))));
+}
+function persoCopier(){
+  const code = persoCode();
+  const done = ()=>showToast('Réglage copié — colle-le sur ton autre appareil');
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, ()=>window.prompt('Copie ce code :', code));
+  else window.prompt('Copie ce code :', code);
+}
+function persoColler(){
+  const code = window.prompt('Colle ici le code de réglage :', '');
+  if(!code) return;
+  try{
+    const q = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
+    const p = Object.assign(persoDefaut(), q, {image: persoLire().image});
+    persoEcrire(p); appliquerPerso(); openApparence(true);
+    showToast('Réglage appliqué');
+  }catch(e){ showToast('Code invalide'); }
+}
+function persoReinit(){
+  if(!confirm('Revenir à l\u2019apparence par défaut ?')) return;
+  try{ localStorage.removeItem('pa_perso'); }catch(e){}
+  appliquerPerso(); openApparence(true); showToast('Apparence réinitialisée');
+}
+
+/* ---- Le panneau ---- */
+function openApparence(rafraichir){
+  const p = persoLire();
+  const sw = (k,v,lab)=>`<button class="seg-b ${p[k]===v?'on':''}" onclick="persoSet('${k}','${v}')">${lab}</button>`;
+  const html = `
+    <div class="modal-head">Personnaliser mon interface
+      <span class="ap-note">Réglages propres à cet appareil — ils ne touchent pas tes collègues</span></div>
+    <div class="modal-body" id="perso-panel">
+
+      <div class="ap-sec">
+        <div class="ap-t">Ambiance <span>le fond de l'application</span></div>
+        <div class="ap-amb">
+          ${AMBIANCES.map(a=>`<button class="amb ${p.ambiance===a.key?'on':''}" title="${a.nom}" onclick="persoSet('ambiance','${a.key}')"
+            style="background:linear-gradient(135deg,${a.a},${a.b} 50%,${a.c})"><i>${a.nom}</i></button>`).join('')}
+          <button class="amb ${p.ambiance==='perso'?'on':''}" title="Personnalisée" onclick="persoSet('ambiance','perso')"
+            style="background:linear-gradient(135deg,${p.custA},${p.custC})"><i>Mienne</i></button>
+        </div>
+        <div class="ap-row ${p.ambiance==='perso'?'':'ap-off'}">
+          <label class="ap-col"><span>Couleur 1</span><input type="color" value="${p.custA}" onchange="persoSet('custA',this.value);persoSet('ambiance','perso')"></label>
+          <label class="ap-col"><span>Couleur 2</span><input type="color" value="${p.custC}" onchange="persoSet('custC',this.value);persoSet('ambiance','perso')"></label>
+          <span class="ap-hint">Le dégradé se construit entre les deux couleurs</span>
+        </div>
+        <div class="ap-row">
+          <label class="btn small" style="cursor:pointer">🖼 Image de fond<input type="file" accept="image/*" class="hidden" onchange="persoImage(event)"></label>
+          ${p.image?`<button class="btn small ghost" onclick="persoSansImage()">Retirer l'image</button>
+            <label class="ap-voile"><span>Voile ${p.voile}%</span><input type="range" min="0" max="80" value="${p.voile}" onchange="persoSet('voile',parseInt(this.value,10))"></label>`
+            :'<span class="ap-hint">Une photo à toi, assombrie pour rester lisible</span>'}
+        </div>
+      </div>
+
+      <div class="ap-sec">
+        <div class="ap-t">Surface <span>les panneaux de travail</span></div>
+        <div class="theme-row">
+          ${SURFACES.map(t=>`<div class="theme-opt ${p.surface===t.key?'sel':''}" onclick="persoSet('surface','${t.key}')">
+            <div class="th-vue" style="background:${t.ap2}"><span style="background:${t.ap}"></span><span style="background:${t.ap}"></span><i style="background:${t.ap3}"></i></div>
+            <div class="th-nom">${t.nom}</div><div class="th-desc">${t.desc}</div></div>`).join('')}
+        </div>
+      </div>
+
+      <div class="ap-sec">
+        <div class="ap-t">Couleur d'accent <span>boutons, liens, sélections</span></div>
+        <div class="ap-acc">
+          ${ACCENTS.map(c=>`<button class="acc ${p.accent.toLowerCase()===c?'on':''}" style="background:${c}" onclick="persoSet('accent','${c}')" title="${c}"></button>`).join('')}
+          <label class="acc acc-perso" title="Autre couleur" style="background:${p.accent}"><input type="color" value="${p.accent}" onchange="persoSet('accent',this.value)"><i>＋</i></label>
+        </div>
+      </div>
+
+      <div class="ap-grid">
+        <div class="ap-sec">
+          <div class="ap-t">Densité</div>
+          <div class="seg-w">${sw('densite','compacte','Compacte')}${sw('densite','normale','Normale')}${sw('densite','confortable','Confortable')}</div>
+        </div>
+        <div class="ap-sec">
+          <div class="ap-t">Coins</div>
+          <div class="seg-w">${sw('coins','arrondis','Arrondis')}${sw('coins','droits','Droits')}</div>
+        </div>
+        <div class="ap-sec">
+          <div class="ap-t">Barre latérale</div>
+          <div class="seg-w">${sw('rail','labels','Avec libellés')}${sw('rail','icones','Icônes seules')}${sw('rail','cache','Masquée')}</div>
+        </div>
+        <div class="ap-sec">
+          <div class="ap-t">Accueil par défaut</div>
+          <div class="seg-w">
+            ${['page','dense','liste','confort'].map(m=>`<button class="seg-b ${homeMode()===m?'on':''}" onclick="setHomeMode('${m}');openApparence(true)">${m.charAt(0).toUpperCase()+m.slice(1)}</button>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="ap-sec ap-toggles">
+        <label class="k-check"><input type="checkbox" ${p.verre?'checked':''} onchange="persoSet('verre',this.checked)"> Effets de verre dépoli <span class="lbl-soft">(désactive-les si ton poste rame)</span></label>
+        <label class="k-check"><input type="checkbox" ${p.anim?'checked':''} onchange="persoSet('anim',this.checked)"> Animations et transitions</label>
+      </div>
+
+      <div class="ap-sec ap-share">
+        <button class="btn small" onclick="persoCopier()">⧉ Copier mon réglage</button>
+        <button class="btn small" onclick="persoColler()">⤓ Coller un réglage</button>
+        <span class="ap-hint">Pour retrouver la même interface sur un autre appareil</span>
+        <button class="btn small ghost" style="margin-left:auto;color:var(--red)" onclick="persoReinit()">Réinitialiser</button>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn primary" onclick="closeModal()">Fermer</button></div>`;
+  const mc = document.getElementById('modal-content');
+  const scroll = rafraichir && mc.querySelector('.modal-body') ? mc.querySelector('.modal-body').scrollTop : 0;
+  mc.innerHTML = html;
+  mc.classList.add('modal-large');
+  if(scroll) mc.querySelector('.modal-body').scrollTop = scroll;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
 function appliquerIdentite(){
   document.querySelectorAll('.logo-l1').forEach(el=>{ el.textContent = appNom(); });
   document.querySelectorAll('.logo-l2').forEach(el=>{ el.textContent = appSous(); });
@@ -2315,7 +3183,53 @@ function openBoard(id){
 }
 function setSub(sub){ route.sub = sub; renderMain(); }
 
+
+/* ============ BARRE LATÉRALE ============ */
+const RAIL_ICO = {
+  home:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>',
+  news:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+  kpis:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  journal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5"/></svg>',
+  palette:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-1 2-2v-1a2 2 0 0 1 2-2h1a4 4 0 0 0 4-4 9 9 0 0 0-9-9z"/><circle cx="7.5" cy="11.5" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="7.5" r="1.2" fill="currentColor"/></svg>',
+  reglages:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+};
+function ouvrirModule(t){
+  const l = state.boards.filter(b=>b.type===t);
+  if(l.length===1){ openBoard(l[0].id); return; }
+  if(!l.length){ openBoardModal(t); return; }
+  goHome();
+}
+function renderRail(){
+  const app = document.getElementById('app'), main = document.getElementById('main');
+  if(!app || !main) return;
+  let rail = document.getElementById('rail');
+  if(!rail){ rail = document.createElement('nav'); rail.id='rail'; rail.className='rail'; rail.setAttribute('aria-label','Navigation'); app.insertBefore(rail, main); }
+  let nAl = 0;
+  try{ nAl = alertesActuelles().length; }catch(e){}
+  const cur = route.view;
+  const curType = (cur==='board' && currentBoard()) ? currentBoard().type : (cur==='a3' ? 'resolution' : null);
+  const item = (svg, label, on, active, badge, tint)=>`<button class="rl ${active?'on':''}" onclick="${on}" title="${label}" aria-label="${label}" ${tint?`style="--tt:${tint}"`:''}>
+      <span class="rl-i">${svg}</span>${badge?`<span class="rl-b">${badge>99?'99+':badge}</span>`:''}<span class="rl-t">${label}</span></button>`;
+  rail.innerHTML = `
+    <div class="rl-grp">
+      ${item(RAIL_ICO.home,'Accueil','goHome()',cur==='home')}
+      ${item(RAIL_ICO.news,'Actualité',"setRoute({view:'news'})",cur==='news',nAl)}
+      ${item(RAIL_ICO.kpis,'Indicateurs',"setRoute({view:'kpis'})",cur==='kpis')}
+      ${item(RAIL_ICO.journal,'Journal',"setRoute({view:'journal'})",cur==='journal')}
+    </div>
+    <div class="rl-sep"></div>
+    <div class="rl-grp rl-mods">
+      ${typesVisibles().map(t=>item(TYPE_ICONS[t], TYPE_COURTS[t], `ouvrirModule('${t}')`, curType===t, 0, TYPE_TEINTES[t])).join('')}
+    </div>
+    <div class="rl-spacer"></div>
+    <div class="rl-grp">
+      ${item(RAIL_ICO.palette,'Apparence','openApparence()',false)}
+      ${item(RAIL_ICO.reglages,'Réglages','openReglages()',false)}
+      <div class="rl-me" title="${escAttr(ui.userName||'')}">${initials(ui.userName||'?')}</div>
+    </div>`;
+}
 function renderCrumb(){
+  renderRail();
   const c = document.getElementById('crumb');
   if(route.view==='board' && currentBoard()){
     const b = currentBoard();
@@ -2408,7 +3322,7 @@ function boardStats(b){
   }
 }
 function homeMode(){
-  if(!ui.homeMode){ try{ ui.homeMode = localStorage.getItem('pa_home_mode') || 'dense'; }catch(e){ ui.homeMode='dense'; } }
+  if(!ui.homeMode){ try{ ui.homeMode = localStorage.getItem('pa_home_mode') || 'page'; }catch(e){ ui.homeMode='page'; } }
   return ui.homeMode;
 }
 function setHomeMode(m){
@@ -2417,8 +3331,53 @@ function setHomeMode(m){
   renderMain();
 }
 const TYPE_LABELS = {actions:'Plan d\u2019actions', projet:'Espace projet', resolution:'Résolution A3', otd:'Suivi d\u2019indicateurs', sqcdp:'Rituel SQCDP', import:'Filtre d\u2019import'};
-const TYPE_ICONS  = {actions:'☑', projet:'📅', resolution:'🔍', otd:'📈', sqcdp:'✚', import:'⇪'};
-const TYPE_ORDRE  = ['actions','projet','sqcdp','otd','resolution','import'];
+const TYPE_COURTS = {actions:'Plans d\u2019actions', projet:'Projets', resolution:'Résolution A3', otd:'Indicateurs', sqcdp:'Rituel SQCDP', import:'Imports'};
+const TYPE_ICONS  = {otd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg>', actions:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>', projet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="10" height="4" rx="1"/><rect x="8" y="10" width="12" height="4" rx="1"/><rect x="5" y="16" width="9" height="4" rx="1"/></svg>', resolution:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v3l2 2"/></svg>', import:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>', sqcdp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'};
+const TYPE_TEINTES= {actions:'#22a06b', projet:'#6554c0', resolution:'#e77b1e', otd:'#0c66e4', sqcdp:'#00a3bf', import:'#d6377b'};
+/* Ordre d'affichage voulu, et modules masqués par défaut */
+const TYPE_ORDRE  = ['otd','actions','projet','resolution','import','sqcdp'];
+const TYPES_CACHES_DEFAUT = ['sqcdp'];
+
+function typesCaches(){
+  try{
+    const v = localStorage.getItem('pa_types_caches');
+    return v===null ? TYPES_CACHES_DEFAUT.slice() : JSON.parse(v);
+  }catch(e){ return TYPES_CACHES_DEFAUT.slice(); }
+}
+function typesVisibles(){
+  const c = typesCaches();
+  return TYPE_ORDRE.filter(t=>c.indexOf(t)<0);
+}
+function basculerType(t){
+  const c = typesCaches();
+  const i = c.indexOf(t);
+  if(i>=0) c.splice(i,1); else c.push(t);
+  try{ localStorage.setItem('pa_types_caches', JSON.stringify(c)); }catch(e){}
+  renderMain();
+  if(document.getElementById('modal-overlay').classList.contains('show')) openModulesConfig();
+}
+function openModulesConfig(){
+  const caches = typesCaches();
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Modules affichés sur l'accueil</div>
+    <div class="modal-body">
+      <div style="font-size:11.5px;color:var(--muted);line-height:1.6;margin-bottom:12px">
+        Décoche un module pour le retirer de l'accueil. Ses espaces et leurs données restent intacts : il suffit de le recocher pour les retrouver.
+      </div>
+      ${TYPE_ORDRE.map((t,i)=>{
+        const n = state.boards.filter(b=>b.type===t).length;
+        const on = caches.indexOf(t)<0;
+        return `<label class="mod-item ${on?'on':''}">
+          <input type="checkbox" ${on?'checked':''} onchange="basculerType('${t}')">
+          <span class="mod-ic" style="background:${TYPE_TEINTES[t]}1f;color:${TYPE_TEINTES[t]}">${TYPE_ICONS[t]}</span>
+          <span class="mod-n">${TYPE_LABELS[t]}<i>${n} espace${n>1?'s':''}</i></span>
+          <span class="mod-r">${i+1}</span>
+        </label>`;
+      }).join('')}
+    </div>
+    <div class="modal-foot"><button class="btn primary" onclick="closeModal()">Fermer</button></div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
 
 function renderHome(main){
   const totalActions = state.actions.length, lateActions = state.actions.filter(actionLate).length;
@@ -2426,6 +3385,8 @@ function renderHome(main){
   const doneActions = state.actions.filter(a=>a.statut==='Fait').length;
   const dstr = new Date().toLocaleDateString('fr-FR',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
   const mode = homeMode();
+  const visibles = typesVisibles();
+  const nCaches = typesCaches().length;
 
   const kpis = `<div class="home-kpis ${mode==='confort'?'':'mini'}">
       <div class="home-kpi"><div class="num">${totalActions}</div><div class="lbl">Actions suivies</div></div>
@@ -2442,11 +3403,13 @@ function renderHome(main){
       </div>
       <div class="home-tools">
         <div class="seg">
-          <button class="${mode==='dense'?'active':''}" onclick="setHomeMode('dense')" title="Tout sur un écran">▦ Dense</button>
+          <button class="${mode==='page'?'active':''}" onclick="setHomeMode('page')" title="Tout sur une seule page, sans défilement">⊞ Page</button>
+          <button class="${mode==='dense'?'active':''}" onclick="setHomeMode('dense')" title="Tuiles compactes">▦ Dense</button>
           <button class="${mode==='liste'?'active':''}" onclick="setHomeMode('liste')" title="Liste compacte">☰ Liste</button>
           <button class="${mode==='confort'?'active':''}" onclick="setHomeMode('confort')" title="Grandes cartes">◻ Confort</button>
         </div>
-        <button class="btn small primary" onclick="openBoardModal('actions')">＋ Nouvel espace</button>
+        <button class="btn small" onclick="openModulesConfig()" title="Choisir les modules affichés">⊟ Modules${nCaches?` <span class="mod-badge">${nCaches}</span>`:''}</button>
+        <button class="btn small primary" onclick="openBoardModal('${visibles[0]||'actions'}')">＋ Nouvel espace</button>
       </div>
     </div>`;
 
@@ -2493,27 +3456,83 @@ function renderHome(main){
       <button class="bc-del" onclick="deleteBoard(event,'${b.id}')">🗑</button>
     </div>`;
   };
+  /* ligne compacte du mode Page : une seule ligne par espace */
+  const item = (b)=>{
+    const s2 = boardStats(b);
+    return `<div class="pg-item" onclick="openBoard('${b.id}')" title="${escAttr(b.nom)}">
+      <span class="pg-pt" style="background:${b.couleur}"></span>
+      <span class="pg-nom">${escapeHtml(b.nom)}</span>
+      ${s2.late?`<span class="pg-late" title="${s2.late} en retard">${s2.late}</span>`:''}
+      <span class="pg-pct">${s2.pct}%</span>
+      <span class="pg-track"><i style="width:${s2.pct}%;background:${b.couleur}"></i></span>
+      <button class="bc-del" onclick="deleteBoard(event,'${b.id}')">🗑</button>
+    </div>`;
+  };
 
   let contenu = '';
-  if(mode==='confort'){
-    contenu = TYPE_ORDRE.map(t=>`
+
+  if(mode==='page'){
+    const alertes = alertesActuelles();
+    const colonnes = visibles.map((t,i)=>{
+      const list = state.boards.filter(b=>b.type===t);
+      const teinte = TYPE_TEINTES[t];
+      return `<section class="pg-col" style="--tt:${teinte}">
+        <header class="pg-head">
+          <span class="pg-rang">${i+1}</span>
+          <span class="pg-ic">${TYPE_ICONS[t]}</span>
+          <span class="pg-titre">${TYPE_COURTS[t]}</span>
+          <span class="pg-n">${list.length}</span>
+        </header>
+        <div class="pg-liste">
+          ${list.map(item).join('') || '<div class="pg-vide">Aucun espace</div>'}
+        </div>
+        <button class="pg-add" onclick="openBoardModal('${t}')">＋ Nouveau</button>
+      </section>`;
+    }).join('');
+
+    contenu = `<div class="pg-grid" style="--cols:${Math.max(1,visibles.length)}">${colonnes}</div>
+      <div class="pg-bas">
+        <div class="pg-bloc">
+          <div class="pg-bloc-t">⚠ Ce qui demande ton attention
+            <button class="btn small ghost" onclick="setRoute({view:'news'})">Tout voir →</button></div>
+          <div class="pg-bloc-c">
+            ${alertes.slice(0,5).map(a=>`<div class="news-alert ${a.sev}" onclick="${a.go}">
+              <span class="na-dot"></span><span class="na-txt">${a.txt}<span class="na-sub">${a.sous}</span></span></div>`).join('')
+              || '<div class="news-empty">Rien ne dérive ✓</div>'}
+          </div>
+        </div>
+        <div class="pg-bloc">
+          <div class="pg-bloc-t">Indicateurs clés
+            <button class="btn small ghost" onclick="setRoute({view:'kpis'})">Studio →</button></div>
+          <div class="pg-bloc-c">
+            ${state.kpis.length ? `<div class="kmini-list">${state.kpis.slice(0,5).map(k=>{
+              const v = evalKpi(k), t2 = kpiTargetState(k,v);
+              return `<div class="kmini"><span class="km-n">${escapeHtml(truncate(k.nom,30))}</span>
+                <span class="km-v" style="color:${t2===false?'var(--red)':(t2===true?'var(--green)':'var(--txt)')}">${v==null?'—':v}${kpiUnitOf(k)}</span></div>`;
+            }).join('')}</div>` : '<div class="news-empty">Aucun indicateur. Crée-en un depuis le studio.</div>'}
+          </div>
+        </div>
+      </div>`;
+
+  } else if(mode==='confort'){
+    contenu = visibles.map(t=>`
       <div class="section-label">${TYPE_LABELS[t]}</div>
       <div class="boards-grid">
         ${state.boards.filter(b=>b.type===t).map(cardHtml).join('')}
         <div class="board-card new" onclick="openBoardModal('${t}')">＋ Nouveau</div>
       </div>`).join('');
   } else if(mode==='liste'){
-    contenu = `<div class="hlist">${TYPE_ORDRE.map(t=>{
+    contenu = `<div class="hlist">${visibles.map(t=>{
       const list = state.boards.filter(b=>b.type===t);
       if(!list.length) return '';
       return `<div class="hgroup"><div class="hgroup-t">${TYPE_LABELS[t]} <span>${list.length}</span></div>${list.map(ligne).join('')}</div>`;
     }).join('')}</div>
-    <button class="btn small" style="margin-top:12px" onclick="openBoardModal('actions')">＋ Nouvel espace</button>`;
+    <button class="btn small" style="margin-top:12px" onclick="openBoardModal('${visibles[0]||'actions'}')">＋ Nouvel espace</button>`;
   } else {
     const alertes = alertesActuelles().slice(0,6);
     contenu = `<div class="dense-grid">
       <div class="dense-main">
-        ${TYPE_ORDRE.map(t=>{
+        ${visibles.map(t=>{
           const list = state.boards.filter(b=>b.type===t);
           if(!list.length) return '';
           return `<div class="dense-sec"><div class="dense-t">${TYPE_ICONS[t]} ${TYPE_LABELS[t]}</div>
@@ -2536,16 +3555,18 @@ function renderHome(main){
     </div>`;
   }
 
-  main.innerHTML = `<div class="home ${mode}">
-    ${barre}
-    ${kpis}
-    ${contenu}
-    <div class="data-bar">
+  const barreDonnees = `<div class="data-bar">
       <span class="section-label" style="margin:0">Données</span>
       <button class="btn small" onclick="exportBackup()">⬇ Sauvegarde complète (JSON)</button>
       <button class="btn small" onclick="importBackupPrompt()">⬆ Restaurer une sauvegarde</button>
       <input type="file" id="backup-file" accept="application/json,.json" class="hidden" onchange="importBackupFile(event)">
-    </div>
+    </div>`;
+
+  main.innerHTML = `<div class="home ${mode}">
+    ${barre}
+    ${kpis}
+    ${contenu}
+    ${mode==='page' ? '' : barreDonnees}
   </div>`;
 }
 
@@ -2783,7 +3804,7 @@ function renderProjectBoard(main, b){
   const resps = [...new Set(all.map(p=>p.responsable).filter(Boolean))].sort();
   const toolbar = `<div class="board-toolbar">
     <div class="seg">
-      <button class="${route.sub==='gantt'?'active':''}" onclick="setSub('gantt')">📅 Gantt</button>
+      <button class="${route.sub==='gantt'?'active':''}" onclick="setSub('gantt')"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="vertical-align:-2px;margin-right:2px"><rect x="3" y="4" width="10" height="4" rx="1"/><rect x="8" y="10" width="12" height="4" rx="1"/><rect x="5" y="16" width="9" height="4" rx="1"/></svg> Gantt</button>
       <button class="${route.sub==='liste'?'active':''}" onclick="setSub('liste')">☰ Liste</button>
       <button class="${route.sub==='kanban'?'active':''}" onclick="setSub('kanban')">▤ Kanban</button>
       <button class="${route.sub==='dash'?'active':''}" onclick="setSub('dash')">◔ Dashboard</button>
@@ -4753,24 +5774,22 @@ function openReglages(){
     <div class="modal-body">
       <div class="field"><label>Nom affiché</label><input type="text" id="r-nom" value="${escAttr(appNom())}" placeholder="ex : SITE DE ROUEN"></div>
       <div class="field"><label>Sous-titre</label><input type="text" id="r-sous" value="${escAttr(appSous())}" placeholder="ex : Pilotage & performance"></div>
-      <div class="field"><label>Thème d'affichage</label>
-        <div class="theme-row">
-          ${THEMES.map(t=>`<div class="theme-opt ${themeActuel()===t.key?'sel':''}" data-t="${t.key}" onclick="choisirTheme('${t.key}')">
-            <div class="th-vue" style="background:${t.ap}">
-              <span style="background:${t.ap2}"></span><span style="background:${t.ap2}"></span>
-              <i style="background:${t.ap3}"></i>
-            </div>
-            <div class="th-nom">${t.nom}</div>
-            <div class="th-desc">${t.desc}</div>
-          </div>`).join('')}
-        </div>
-        <div style="font-size:10.5px;color:var(--muted-2);margin-top:6px">Le choix s'applique immédiatement et reste mémorisé sur cet appareil.</div>
+      <div class="field"><label>Apparence</label>
+        <button class="btn" style="width:100%;justify-content:center" onclick="openApparence()">🎨 Personnaliser mon interface</button>
+        <div style="font-size:10.5px;color:var(--muted-2);margin-top:6px">Ambiance, surface, couleur d'accent, densité, barre latérale — propres à cet appareil.</div>
       </div>
       <div class="section-div"><h4>Connexion partagée</h4>
         <div class="field"><label>Supabase — Project URL</label><input type="text" id="r-url" value="${escAttr((function(){try{return localStorage.getItem('pa_sb_url')||''}catch(e){return ''}})())}" placeholder="https://xxxxx.supabase.co"></div>
         <div class="field"><label>Supabase — clé anon / publishable</label><input type="text" id="r-key" value="${escAttr((function(){try{return localStorage.getItem('pa_sb_key')||''}catch(e){return ''}})())}"></div>
         <div style="font-size:11px;color:var(--muted-2);line-height:1.55">Après modification de la connexion, recharge la page. Le bouton <b>Partager</b> génère un lien qui configure automatiquement les collègues.</div>
       </div>
+      <div class="section-div"><h4>Données</h4></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn small" onclick="exportBackup()">⬇ Sauvegarde complète (JSON)</button>
+        <button class="btn small" onclick="importBackupPrompt()">⬆ Restaurer une sauvegarde</button>
+        <input type="file" id="backup-file" accept="application/json,.json" class="hidden" onchange="importBackupFile(event)">
+      </div>
+      <div style="font-size:11px;color:var(--muted-2);line-height:1.55;margin-top:7px">Une copie hors ligne de tout le contenu. Tes données vivent dans la base partagée ; ceci est un filet de sécurité.</div>
     </div>
     <div class="modal-foot">
       <button class="btn ghost" onclick="closeModal()">Annuler</button>
@@ -4793,7 +5812,7 @@ function saveReglages(){
 }
 
 /* ============ MODALS ============ */
-function closeModal(){ document.getElementById('modal-overlay').classList.remove('show'); }
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('show'); const mc=document.getElementById('modal-content'); if(mc) mc.classList.remove('modal-large'); }
 document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') closeModal(); });
 
 let modalBoardType = 'actions';
@@ -4804,27 +5823,27 @@ function openBoardModal(type){
     <div class="modal-body">
       <div class="type-choice" style="grid-template-columns:1fr 1fr 1fr">
         <div class="type-opt ${modalBoardType==='actions'?'sel':''}" onclick="pickBoardType('actions',this)">
-          <div class="to-icon">☑</div><div class="to-name">Plan d'actions</div>
+          <div class="to-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div><div class="to-name">Plan d'actions</div>
           <div class="to-desc">Actions, responsables, échéances, retards et reports automatiques. Colonnes personnalisables.</div>
         </div>
         <div class="type-opt ${modalBoardType==='projet'?'sel':''}" onclick="pickBoardType('projet',this)">
-          <div class="to-icon">📅</div><div class="to-name">Espace projet</div>
+          <div class="to-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="10" height="4" rx="1"/><rect x="8" y="10" width="12" height="4" rx="1"/><rect x="5" y="16" width="9" height="4" rx="1"/></svg></div><div class="to-name">Espace projet</div>
           <div class="to-desc">Gantt vivant avec engagement client et dérive automatique, kanban, dashboard.</div>
         </div>
         <div class="type-opt ${modalBoardType==='resolution'?'sel':''}" onclick="pickBoardType('resolution',this)">
-          <div class="to-icon">🔍</div><div class="to-name">Résolution de problème</div>
+          <div class="to-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M11 8v3l2 2"/></svg></div><div class="to-name">Résolution de problème</div>
           <div class="to-desc">Fiches A3 : QQOQCCP, Ishikawa 6M, 5 Pourquoi, plan d'actions, synthèse et RETEX.</div>
         </div>
         <div class="type-opt ${modalBoardType==='otd'?'sel':''}" onclick="pickBoardType('otd',this)">
-          <div class="to-icon">📈</div><div class="to-name">Suivi d'indicateurs</div>
+          <div class="to-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg></div><div class="to-name">Suivi d'indicateurs</div>
           <div class="to-desc">Relevé quotidien par activité et priorité, moyennes pondérées, grille mensuelle et synthèse hebdo.</div>
         </div>
         <div class="type-opt ${modalBoardType==='sqcdp'?'sel':''}" onclick="pickBoardType('sqcdp',this)">
-          <div class="to-icon">✚</div><div class="to-name">Rituel SQCDP</div>
+          <div class="to-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div><div class="to-name">Rituel SQCDP</div>
           <div class="to-desc">Management visuel quotidien : croix du mois, statuts au clic, commentaires, taux de conformité.</div>
         </div>
         <div class="type-opt ${modalBoardType==='import'?'sel':''}" onclick="pickBoardType('import',this)">
-          <div class="to-icon">⇪</div><div class="to-name">Filtre d'import</div>
+          <div class="to-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg></div><div class="to-name">Filtre d'import</div>
           <div class="to-desc">Colle un lot d'identifiants, écarte ceux déjà importés, génère le CSV et tient l'historique des passages.</div>
         </div>
       </div>
@@ -7701,10 +8720,10 @@ function tryUnlock(){
       init();
     }
   }catch(e){ /* stockage bloqué : saisie manuelle */ }
-  appliquerTheme();
+  appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v13.0'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v16.0'; st.classList.add('ready'); }
 })();
 </script>
 </body>
