@@ -2632,6 +2632,49 @@ svg.g2-tmp path{fill:none;stroke:#fff;stroke-width:2;stroke-dasharray:5 4;opacit
 .g2-sync.ko{background:#fff4e5;color:#b65c02}
 .g2-sync.local{display:none}
 
+/* ---------- bandeau de direction ---------- */
+.g2-synth{padding:10px 10px 0}
+.g2:not(.direction) .g2-synth{padding:7px 10px 0}
+.g2:not(.direction) .g2-tuile{padding:5px 10px;flex-direction:row;align-items:baseline;gap:7px}
+.g2:not(.direction) .g2-tv{font-size:15px}
+.g2:not(.direction) .g2-td{display:none}
+.g2-synth:empty{display:none}
+.g2-synthese{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.g2-tuile{display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left;background:var(--g-fond2);border:1px solid var(--g-bord);border-radius:12px;padding:9px 12px;cursor:pointer;color:var(--g-texte);min-width:0;font:inherit}
+.g2-tuile[disabled]{cursor:default}
+.g2-tuile:not([disabled]):hover{border-color:var(--g-mois);background:var(--g-champ)}
+.g2-tv{font-size:21px;font-weight:800;line-height:1.15;letter-spacing:-.02em;white-space:nowrap}
+.g2-tv i{font-style:normal;font-size:12.5px;font-weight:700;color:var(--g-texte3)}
+.g2-tl{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--g-texte3)}
+.g2-td{font-size:11px;color:var(--g-texte2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.g2-tuile.ok .g2-tv{color:var(--g-vert)}
+.g2-tuile.ko{border-color:rgba(255,95,95,.5)}
+.g2-tuile.ko .g2-tv{color:var(--g-rouge)}
+.g2-tuile.attention{border-color:rgba(255,196,92,.55)}
+.g2-tuile.attention .g2-tv{color:#ffc45c}
+.g2.clair .g2-tuile.attention .g2-tv{color:#b65c02}
+.g2.direction .g2-titre::after{content:'\00a0· vue de direction';color:var(--g-texte3);font-weight:700}
+.g2-jl{position:absolute;font-size:11.5px;font-weight:700;color:var(--g-texte2);white-space:nowrap;pointer-events:none}
+
+/* ---------- revue ---------- */
+.g2-revue{position:absolute;top:0;right:0;bottom:0;width:330px;max-width:94%;background:var(--g-panneau);border-left:1px solid var(--g-mois);box-shadow:var(--g-ombre);z-index:19;display:none;flex-direction:column}
+.g2.revue-on .g2-revue{display:flex}
+.g2.revue-on.fiche-on .g2-revue{display:none}
+.g2r-corps{flex:1;min-height:0;overflow-y:auto;padding:10px 12px}
+.g2r-item{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:'cat nom' 'txt txt' 'sous sous';gap:2px 8px;padding:9px 10px;border-radius:10px;background:var(--g-champ);margin-bottom:6px;cursor:pointer;border-left:3px solid var(--g-bord)}
+.g2r-item:hover{background:var(--g-mois)}
+.g2r-item.haut{border-left-color:var(--g-rouge)}
+.g2r-item.moyen{border-left-color:#ffc45c}
+.g2r-item.bas{border-left-color:var(--g-texte3)}
+.g2r-cat{grid-area:cat;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--g-texte3);align-self:center}
+.g2r-item b{grid-area:nom;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g2r-t{grid-area:txt;font-size:12px;color:var(--g-texte)}
+.g2r-item small{grid-area:sous;font-size:10.5px;color:var(--g-texte3)}
+.g2r-vide{font-size:12px;color:var(--g-texte3);line-height:1.6;padding:10px}
+.g2r-sec{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--g-texte3);margin:14px 0 6px;padding-top:10px;border-top:1px solid var(--g-ligne)}
+@media (max-width:1250px){ .g2-synthese{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:760px){ .g2-synthese{grid-template-columns:repeat(2,minmax(0,1fr))} .g2-revue{width:100%} }
+
 /* ---------- impression ---------- */
 body.impression .g2{height:auto !important;overflow:visible !important;border-radius:0;margin:0}
 body.impression .g2-corps{align-items:flex-start}
@@ -4202,7 +4245,7 @@ const GT = {
   pile:[], redo:[], op:null, sel:null, fiche:null, lienSel:null, drag:null, rendDiff:false,
   attente:{}, local:{}, absentes:{}, recents:{}, pompe:false, relance:false, minuterie:null,
   vu:{}, scroll:{}, geo:{}, infos:{}, liens:[], hier:[], min:null, boardAffiche:null,
-  survol:null, replies:{}, impression:false, pxImpression:0, cacheCouleur:{}, clicBloque:false,
+  survol:null, replies:{}, revue:false, impression:false, pxImpression:0, cacheCouleur:{}, clicBloque:false,
 };
 
 /* ---------------- Petits utilitaires ---------------- */
@@ -4268,6 +4311,7 @@ function ganttVisibleRows(b){
   const rows = [];
   const filtered = getFilteredProjects(b);
   const filtreActif = ui.filterStatuts.size || ui.filterResp.size || ui.onlyLate || searchQ();
+  if(gMode()==='direction' && !filtreActif) return gLignesDirection(b);
   const pousserTaches = (p, depth)=>{
     if(!ui.expandedProjects.has(p.id)) return;
     gTachesDe(p.id).forEach(t=>rows.push({kind:'task', item:t, parent:p, depth:depth+1}));
@@ -4941,19 +4985,25 @@ function scrollToToday(){ gAllerAujourdhui(); }
 function gSquelette(){
   return '<div class="g2 nuit" id="g2">' +
     '<div class="g2-alerte vide" id="g2-alerte"></div>' +
+    '<div class="g2-synth" id="g2-synth"></div>' +
     '<div class="g2-corps">' +
       '<div class="g2-gauche" id="g2-gauche"><div class="g2-gtete" id="g2-gtete"></div><div class="g2-gliste" id="g2-gliste"></div></div>' +
       '<div class="g2-sep" id="g2-sep" title="Glisser pour élargir la colonne"></div>' +
       '<div class="g2-droite" id="gantt-scroll"><div class="g2-toile" id="g2-toile"></div></div>' +
       '<aside class="g2-fiche" id="g2-fiche"></aside>' +
+      '<aside class="g2-revue" id="g2-revue"></aside>' +
     '</div>' +
     '<div class="g2-bulle" id="g2-bulle"></div>' +
     '<div class="g2-toast" id="g2-toast"></div>' +
   '</div>';
 }
 function gBarreOutils(b){
-  const pr = gPrefs(), bl = baselineActive(b);
-  return '<div class="seg">' + Object.keys(GT_ZOOMS).map(k=>
+  const pr = gPrefs(), bl = baselineActive(b), dir = gMode()==='direction';
+  let nRevue = 0; try{ nRevue = gRevue(b).filter(x=>x.grav>=2).length; }catch(e){}
+  return '<div class="seg g2-modes">' +
+      '<button class="'+(dir?'active':'')+'" onclick="gAppliquerMode(\'direction\')" title="Vue de direction : l\u2019essentiel en un écran">◎ Direction</button>' +
+      '<button class="'+(dir?'':'active')+'" onclick="gAppliquerMode(\'planification\')" title="Vue du planificateur : table complète, liens, charge">✎ Planification</button></div>' +
+    '<div class="seg">' + Object.keys(GT_ZOOMS).map(k=>
       '<button class="'+(pr.zoom===k?'active':'')+'" onclick="gZoom(\''+k+'\')">'+GT_ZOOMS[k].n+'</button>').join('') + '</div>' +
     '<button class="btn small ghost '+(pr.zoom==='ajuste'?'primary':'')+'" onclick="gAjuster()" title="Tout voir sur la largeur de l\u2019écran">⤢ Ajuster</button>' +
     '<button class="btn small ghost" onclick="gAllerAujourdhui()" title="Revenir sur la semaine en cours">↦ Aujourd\u2019hui</button>' +
@@ -4962,6 +5012,8 @@ function gBarreOutils(b){
     '<button class="btn small '+(ui.critique?'primary':'')+'" onclick="ui.critique=!ui.critique;gRendre()" title="Mettre en évidence les tâches sans marge">⚡ Chemin critique</button>' +
     '<button class="btn small '+(ui.charge?'primary':'')+'" onclick="ui.charge=!ui.charge;gRendre()" title="Charge par personne">👥 Charge</button>' +
     '<button class="btn small" onclick="openBaselines()" title="Figer et comparer un planning de référence">🎯 Référence'+(bl?' · '+escapeHtml(truncate(bl.nom,12)):'')+'</button>' +
+    '<button class="btn small '+(GT.revue?'primary':'')+'" onclick="gBasculerRevue()" title="Ce qui doit remonter : dérives, jalons, surcharges, trous du planning">⚑ Revue'+(nRevue?' · '+nRevue:'')+'</button>' +
+    (dir ? '' : '<button class="btn small" onclick="gReplanifier()" title="Recaler sur aujourd\u2019hui ce qui est en retard">↻ Recaler</button>') +
     '<button class="btn small" onclick="gMenuAffichage(event)" title="Thème, couleurs, colonnes, calendrier, versions">◐ Affichage ▾</button>' +
     '<button class="btn small" onclick="imprimerGantt()" title="Impression / PDF">🖨</button>';
 }
@@ -5005,6 +5057,13 @@ function renderProjectBoard(main, b){
 function gColonnes(b){
   const pr = gPrefs();
   const etroit = (window.innerWidth || 1200) < 760;
+  if(gMode()==='direction'){
+    /* la direction lit un nom, une échéance, un avancement — rien d'autre */
+    const c = [{key:'num', label:'N°', w:42}, {key:'nom', label:'Projet', w: etroit ? 150 : Math.max(230, pr.largeurNom)},
+               {key:'fin', label:'Échéance', w:96}, {key:'av', label:'%', w:48}];
+    if(baselineActive(b)) c.push({key:'ecart', label:'Écart réf.', w:72});
+    return c;
+  }
   return ganttCols(b)
     .filter(c=>!etroit || c.key==='num' || c.key==='nom')
     .map(c=>Object.assign({}, c, {w: c.key==='nom' ? (etroit ? 150 : pr.largeurNom) : c.w}));
@@ -5066,8 +5125,17 @@ function gEntete(b, min, max, px){
       premier = false; c = suiv;
     }
   }
-  /* ligne du bas */
-  if(px >= 26){
+  /* ligne du bas : toujours d'un cran plus fine que la ligne du haut */
+  if(px < 5){
+    let c = new Date(min.getFullYear(), min.getMonth(), 1);
+    while(c < max){
+      const suiv = new Date(c.getFullYear(), c.getMonth()+1, 1);
+      const deb = c < min ? min : c, fin = suiv < max ? suiv : max;
+      const large = dayIndex(fin, deb)*px;
+      l2 += cel('g2-h2', dayIndex(deb,min)*px, large, large > 26 ? GT_MOIS_C[c.getMonth()] : GT_MOIS[c.getMonth()][0], GT_MOIS[c.getMonth()]+' '+c.getFullYear());
+      c = suiv;
+    }
+  } else if(px >= 26){
     for(let i=0;i<jours;i++){
       const d = addDays(min, i), we = !estOuvre(b, d);
       l2 += cel('g2-h2'+(we?' we':'')+(fmtDate(d)===auj?' auj':''), i*px, px, GT_JOURS[d.getDay()]+' '+d.getDate());
@@ -5077,26 +5145,17 @@ function gEntete(b, min, max, px){
       const d = addDays(min, i);
       if(d.getDay()!==1) continue;
       const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-      const j = t.getUTCDay() || 7;
-      t.setUTCDate(t.getUTCDate() + 4 - j);
-      const a = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
-      const iso = Math.ceil((((t - a)/86400000) + 1)/7);
+      const j2 = t.getUTCDay() || 7;
+      t.setUTCDate(t.getUTCDate() + 4 - j2);
+      const a2 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+      const iso = Math.ceil((((t - a2)/86400000) + 1)/7);
       l2 += cel('g2-h2', i*px, 7*px, 'S'+String(iso).padStart(2,'0'), 'Semaine du '+fmtFR(fmtDate(d)));
     }
-  } else if(px >= 4.2){
+  } else {
     for(let i=0;i<jours;i++){
       const d = addDays(min, i);
       if(d.getDay()!==1) continue;
       l2 += cel('g2-h2', i*px, 7*px, 'S'+(Math.floor((d.getDate()-1)/7)+1), 'Semaine du '+fmtFR(fmtDate(d)));
-    }
-  } else {
-    let c = new Date(min.getFullYear(), min.getMonth(), 1);
-    while(c < max){
-      const suiv = new Date(c.getFullYear(), c.getMonth()+1, 1);
-      const deb = c < min ? min : c, fin = suiv < max ? suiv : max;
-      const large = dayIndex(fin,deb)*px;
-      l2 += cel('g2-h2', dayIndex(deb,min)*px, large, large > 22 ? GT_MOIS_C[c.getMonth()] : GT_MOIS[c.getMonth()][0]);
-      c = suiv;
     }
   }
   return {l1, l2};
@@ -5210,7 +5269,8 @@ function gBarre(L, ctx){
     const mx = dayIndex(bornes.d, ctx.min)*px + (px>=10 ? px/2 : px/2);
     GT.geo[it.id] = {x1:mx-8, x2:mx+8, yc:L.y+L.h/2, e:16, c:cx, cBase:base, table, jalon:true};
     return '<div class="g2-barre jalon '+(sel?'sel':'')+' '+(crit?'crit':'')+' '+(fini?'fini':'')+'" data-id="'+it.id+'" data-t="'+table+'" style="left:'+(mx-8)+'px;top:'+(L.y+L.h/2-8)+'px;--c:'+cx+'">' +
-      '<i class="g2-losange"></i>' + (ro ? '' : '<i class="g2-point g" data-cote="g"></i><i class="g2-point d" data-cote="d"></i>') + '</div>';
+      '<i class="g2-losange"></i>' + (ro ? '' : '<i class="g2-point g" data-cote="g"></i><i class="g2-point d" data-cote="d"></i>') + '</div>' +
+      (gMode()==='direction' ? '<span class="g2-jl" style="left:'+(mx+13)+'px;top:'+(L.y+L.h/2-9)+'px">'+escapeHtml(truncate(it.nom, 30))+' · '+fmtFR(fmtDate(bornes.d))+'</span>' : '');
   }
   GT.geo[it.id] = {x1, x2:x1+w, yc, e, c:cx, cBase:base, table, resume};
   let ref = '';
@@ -5322,7 +5382,7 @@ function gDessinerLiens(){
   const marq = {};
   const mk = c=>{ const k = 'g2m'+String(c).replace(/[^a-z0-9]/gi,''); if(!marq[k]) marq[k] = '<marker id="'+k+'" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0.8 L7,4 L0,7.2 z" fill="'+c+'"/></marker>'; return k; };
   let p = '';
-  if(pr.liens){
+  if(pr.liens && gMode()!=='direction'){
     (GT.hier||[]).forEach(h=>{
       const a = GT.geo[h.parent], z = GT.geo[h.enfant];
       if(!a || !z) return;
@@ -5369,6 +5429,8 @@ function renderGantt(b){
   racine.classList.toggle('clair', clair);
   racine.classList.toggle('nuit', !clair);
   racine.classList.toggle('ro', gLectureSeule());
+  racine.classList.toggle('direction', gMode()==='direction');
+  racine.classList.toggle('revue-on', !!GT.revue);
   /* tout est déplié par défaut ; seul ce que l'utilisateur a replié lui-même reste fermé */
   state.projects.filter(p=>p.board_id===b.id).forEach(p=>{ if(!GT.replies[p.id]) ui.expandedProjects.add(p.id); });
   const focus = gCapturerFocus();
@@ -5399,7 +5461,7 @@ function renderGantt(b){
 
   gauche.style.width = wG + 'px';
   gtete.innerHTML = '<div class="g2-titre"><span>'+escapeHtml(b.nom || 'Planning')+'</span></div>' +
-    '<div class="g2-cols">' + cols.map(c=>'<span class="g2-c c-'+c.key+'" style="width:'+c.w+'px">'+escapeHtml(c.key==='nom' ? 'Tâche' : c.label)+'</span>').join('') + '</div>';
+    '<div class="g2-cols">' + cols.map(c=>'<span class="g2-c c-'+c.key+'" style="width:'+c.w+'px">'+escapeHtml(c.label || 'Tâche')+'</span>').join('') + '</div>';
   const ajout = gLectureSeule() ? '' :
     '<div class="g2-ajout-l"><button onclick="openProjectModal()">＋ Nouveau projet</button></div>';
   liste.innerHTML = '<div class="g2-glignes" style="height:'+HZ+'px">' +
@@ -5435,6 +5497,9 @@ function renderGantt(b){
   if(!GT.vu[b.id]){ GT.vu[b.id] = true; gInstantane('Ouverture'); }
   liste.scrollTop = droite.scrollTop;
   gEgaliser(HZ);
+  const synth = document.getElementById('g2-synth');
+  if(synth) synth.innerHTML = gBandeau(b, gSynthese(b));
+  gRendreRevue(b);
   gRestaurerFocus(focus);
   gMajOutils(); gMajStatut(); gMajAlerte(); gMajFiche();
 }
@@ -5868,7 +5933,7 @@ function gAide(){
 /* ---------------- Fiche latérale ---------------- */
 function gOuvrirFiche(table, id){
   if(!state[table] || !state[table].some(x=>x.id===id)) return;
-  GT.fiche = {table, id};
+  GT.fiche = {table, id}; GT.revue = false;
   const r = document.getElementById('g2');
   if(r) r.classList.add('fiche-on');
   gSelectionner(table, id, true);
@@ -5991,6 +6056,216 @@ function gChoisirCouleur(id, c){
   if(c) extra.gcouleur = c; else delete extra.gcouleur;
   gOp('Couleur du groupe', ()=>gMaj('projects', id, {extra}));
   gRendre(); gRendreFiche();
+}
+
+/* ============================================================
+   GANTT v17 — partie C
+   Deux lectures du même planning :
+   · « Direction » répond à trois questions en dix secondes — où en
+     est-on, qu'est-ce qui dérape, qu'est-ce qui arrive ;
+   · « Planification » donne au planificateur sa table complète, ses
+     liens, sa charge et ses outils de recalage.
+   ============================================================ */
+function gMode(){ return gPrefs().mode==='direction' ? 'direction' : 'planification'; }
+function gAppliquerMode(m){
+  if(gMode()===m) return;
+  gSetPref('mode', m);
+  if(m==='direction'){ GT.revue = true; gFermerFiche(); }
+  else { GT.revue = false; gSetPref('zoom', 'semaine'); }
+  renderMain();
+  if(m==='direction') setTimeout(gAjuster, 30);
+}
+/* Lignes du mode Direction : les groupes, et les jalons de tout le projet. */
+function gLignesDirection(b){
+  const rows = [];
+  const ids = new Set(state.projects.filter(p=>p.board_id===b.id).map(p=>p.id));
+  state.projects.filter(p=>p.board_id===b.id && (!p.parent_id || !ids.has(p.parent_id)))
+    .sort((a,c)=>(a.ordre||0)-(c.ordre||0) || String(a.created_at||'').localeCompare(String(c.created_at||'')))
+    .forEach(p=>{
+      rows.push({kind:'project', item:p, depth:0});
+      const jal = [];
+      projSubtree(p).forEach(x=>gTachesDe(x.id).forEach(t=>{ if(t.jalon && t.date_debut) jal.push(t); }));
+      jal.sort((a,c)=>String(a.date_debut).localeCompare(String(c.date_debut)))
+         .forEach(t=>rows.push({kind:'task', item:t, parent: state.projects.find(x=>x.id===t.project_id), depth:1}));
+    });
+  return rows;
+}
+
+/* ---------------- Synthèse pour la direction ---------------- */
+function gFeuilles(b){
+  const projs = state.projects.filter(p=>p.board_id===b.id);
+  const ids = new Set(projs.map(p=>p.id));
+  return projs.filter(p=>!projHasChildren(p)).map(p=>({t:'projects', it:p}))
+    .concat(state.tasks.filter(t=>ids.has(t.project_id)).map(t=>({t:'tasks', it:t})));
+}
+function gEstFini(f){ return f.t==='projects' ? !!f.it.date_fin : (f.it.avancement||0) >= 100; }
+function gSynthese(b){
+  const auj = todayMid();
+  const projs = state.projects.filter(p=>p.board_id===b.id);
+  const ids = new Set(projs.map(p=>p.id));
+  const feuilles = gFeuilles(b);
+  let poids = 0, somme = 0, retardMax = 0, enDerive = 0, finMax = null, engMax = null;
+  feuilles.forEach(f=>{
+    const bs = gBornesItem(f.t, f.it);
+    const av = f.t==='projects' ? projAvancement(f.it) : (f.it.avancement||0);
+    if(bs){
+      const d = Math.max(1, dureeOuvree(b, bs.d, bs.f));
+      poids += d; somme += d*av;
+      if(!finMax || bs.f > finMax) finMax = bs.f;
+      if(!gEstFini(f) && bs.f < auj){ enDerive++; retardMax = Math.max(retardMax, dayIndex(auj, bs.f)); }
+    } else { poids += 1; somme += av; }
+  });
+  projs.filter(p=>!p.parent_id || !ids.has(p.parent_id)).forEach(p=>{
+    const c = projCible(p);
+    if(c){ const d = dateFromStr(c); if(!engMax || d > engMax) engMax = d; }
+  });
+  const jalons = state.tasks.filter(t=>ids.has(t.project_id) && t.jalon && t.date_debut);
+  const proches = jalons.filter(t=>{ const d = dateFromStr(t.date_debut); return d >= auj && dayIndex(d, auj) <= 30 && (t.avancement||0) < 100; })
+                        .sort((a,c)=>String(a.date_debut).localeCompare(String(c.date_debut)));
+  const jalonsRetard = jalons.filter(t=>dateFromStr(t.date_debut) < auj && (t.avancement||0) < 100);
+  /* la charge n'a de sens que si quelqu'un l'a renseignée : sinon on se tait */
+  const chargeSaisie = feuilles.some(f=>Number(f.it.charge) > 0);
+  const par = chargeSaisie ? chargeParPersonne(b, auj, addDays(auj, 30)) : {};
+  const cap = (b.config && b.config.capacite) || 1;
+  let surcharge = 0; const gens = new Set();
+  Object.keys(par).forEach(q=>Object.keys(par[q]).forEach(j=>{ if(par[q][j] > cap + 0.001){ surcharge++; gens.add(q); } }));
+  return {
+    av: poids ? Math.round(somme/poids) : 0,
+    enDerive, retardMax, finMax, engMax,
+    derive: (finMax && engMax) ? dayIndex(finMax, engMax) : null,
+    proches, jalonsRetard, surcharge, gens: gens.size, chargeSaisie,
+    liensKo: (GT.liens||[]).filter(l=>l.viole).length,
+    sansResp: feuilles.filter(f=>!String(f.it.responsable||'').trim() && !gEstFini(f)).length,
+    sansDates: feuilles.filter(f=>!gBornesItem(f.t, f.it)).length,
+    total: feuilles.length,
+  };
+}
+function gBandeau(b, s){
+  const tuile = (cls, valeur, libelle, detail, action)=>
+    '<button class="g2-tuile '+cls+'"'+(action?' onclick="'+action+'"':' disabled')+'>' +
+      '<span class="g2-tv">'+valeur+'</span><span class="g2-tl">'+libelle+'</span>' +
+      (detail ? '<span class="g2-td">'+detail+'</span>' : '') + '</button>';
+  const fin = s.finMax ? fmtFR(fmtDate(s.finMax)) : '—';
+  const derive = s.derive==null ? 'aucun engagement posé'
+    : (s.derive > 0 ? 'engagement dépassé de '+s.derive+' j' : (s.derive < 0 ? (-s.derive)+' j d\u2019avance' : 'pile sur l\u2019engagement'));
+  const prochain = s.proches.length ? escapeHtml(truncate(s.proches[0].nom, 26))+' · '+fmtFR(s.proches[0].date_debut) : 'aucun dans 30 jours';
+  const aCompleter = s.sansResp + s.sansDates + s.liensKo;
+  return '<div class="g2-synthese">' +
+    tuile('', s.av+' <i>%</i>', 'avancement', s.total+' lignes suivies', '') +
+    tuile(s.derive>0?'ko':'ok', fin, 'fin projetée', derive, 'gOuvrirRevue()') +
+    tuile(s.enDerive?'ko':'ok', s.enDerive, 'en retard', s.enDerive ? 'jusqu\u2019à '+s.retardMax+' j' : 'rien en retard', 'gFiltrerRetards()') +
+    tuile(s.jalonsRetard.length?'ko':'', s.proches.length + (s.jalonsRetard.length ? ' <i>+'+s.jalonsRetard.length+' en retard</i>' : ''), 'jalons à 30 jours', prochain, 'gOuvrirRevue()') +
+    tuile(s.surcharge?'attention':'', s.chargeSaisie ? s.surcharge : '—', 'jours surchargés',
+      s.chargeSaisie ? (s.surcharge ? s.gens+' personne(s) sur 30 j' : 'charge tenable') : 'charge non renseignée', 'ui.charge=true;gRendre()') +
+    tuile(aCompleter?'attention':'ok', aCompleter, 'à compléter', aCompleter ? 'responsables, dates, liens' : 'planning complet', 'gOuvrirRevue()') +
+  '</div>';
+}
+function gFiltrerRetards(){ ui.onlyLate = !ui.onlyLate; renderMain(); gToast(ui.onlyLate ? 'Filtre : seulement ce qui est en retard' : 'Filtre retiré'); }
+
+/* ---------------- Revue : ce qui doit remonter ---------------- */
+function gRevue(b){
+  const auj = todayMid(), out = [];
+  const ids = new Set(state.projects.filter(p=>p.board_id===b.id).map(p=>p.id));
+  const num = wbsNumeros(b);
+  const ajoute = (grav, cat, table, it, txt, sous)=>out.push({grav, cat, table, id:it.id, num:num.map[it.id]||'', nom:it.nom, txt, sous});
+  state.projects.filter(p=>ids.has(p.id) && (!p.parent_id || !ids.has(p.parent_id))).forEach(p=>{
+    const d = projDepassementJours(p);
+    if((projHasChildren(p) ? projLateRollup(p) : projLate(p)) && d > 0)
+      ajoute(3, 'derive', 'projects', p, 'dépasse son engagement de '+d+' j', (p.responsable||'sans responsable')+' · engagement '+(projCible(p)?fmtFR(projCible(p)):'—'));
+  });
+  state.tasks.filter(t=>ids.has(t.project_id) && t.jalon && t.date_debut).forEach(t=>{
+    const d = dateFromStr(t.date_debut), av = t.avancement||0;
+    if(d < auj && av < 100) ajoute(3, 'jalon', 'tasks', t, 'jalon dépassé de '+dayIndex(auj, d)+' j', fmtFR(t.date_debut));
+    else if(d >= auj && dayIndex(d, auj) <= 14 && av < 100) ajoute(2, 'jalon', 'tasks', t, 'jalon dans '+dayIndex(d, auj)+' j', fmtFR(t.date_debut));
+  });
+  gFeuilles(b).forEach(f=>{
+    const bs = gBornesItem(f.t, f.it), av = f.t==='projects' ? projAvancement(f.it) : (f.it.avancement||0);
+    if(bs && !gEstFini(f) && bs.f < auj && !f.it.jalon)
+      ajoute(2, 'retard', f.t, f.it, 'terminée le '+fmtFR(fmtDate(bs.f))+', encore à '+av+' %', (f.it.responsable||'sans responsable'));
+    if(!bs) ajoute(1, 'dates', f.t, f.it, 'aucune date posée', 'à planifier');
+    else if(!String(f.it.responsable||'').trim() && !gEstFini(f)) ajoute(1, 'resp', f.t, f.it, 'sans responsable', fmtFR(fmtDate(bs.d))+' → '+fmtFR(fmtDate(bs.f)));
+  });
+  (GT.liens||[]).filter(l=>l.viole).forEach(l=>{
+    const it = itemParId(l.to), src = itemParId(l.from);
+    if(it && src) ajoute(2, 'lien', gTableDe(l.to), it, 'commence avant la fin de « '+truncate(src.nom, 24)+' »', 'lien '+(GT_TYPES_LIEN[l.type]||''));
+  });
+  const par = gFeuilles(b).some(f=>Number(f.it.charge) > 0) ? chargeParPersonne(b, auj, addDays(auj, 30)) : {};
+  const cap = (b.config && b.config.capacite) || 1;
+  Object.keys(par).forEach(q=>{
+    const j = Object.keys(par[q]).filter(x=>par[q][x] > cap + 0.001).length;
+    if(j) out.push({grav:2, cat:'charge', table:null, id:null, num:'', nom:q, txt:j+' jour(s) au-delà de sa capacité', sous:'30 jours à venir'});
+  });
+  if(!baselineActive(b)) out.push({grav:1, cat:'ref', table:null, id:null, num:'', nom:'Aucune référence figée', txt:'impossible de mesurer la dérive dans le temps', sous:'bouton Référence'});
+  const rang = {derive:0, jalon:1, retard:2, lien:3, charge:4, resp:5, dates:5, ref:6};
+  return out.sort((a,c)=>c.grav - a.grav || (rang[a.cat]||9) - (rang[c.cat]||9) || String(a.nom).localeCompare(String(c.nom)));
+}
+function gOuvrirRevue(){ GT.revue = true; gFermerFiche(); gRendre(); }
+function gBasculerRevue(){ GT.revue = !GT.revue; if(GT.revue) gFermerFiche(); gRendre(); }
+function gRendreRevue(b){
+  const z = document.getElementById('g2-revue');
+  if(!z) return;
+  if(!GT.revue){ z.innerHTML = ''; return; }
+  const l = gRevue(b);
+  const gr = {3:'haut', 2:'moyen', 1:'bas'};
+  const lib = {derive:'Dérive', jalon:'Jalon', retard:'Retard', lien:'Lien', charge:'Charge', resp:'À compléter', dates:'À compléter', ref:'Référence'};
+  const item = x=>
+    '<div class="g2r-item '+gr[x.grav]+'"'+(x.id?' onclick="gAllerVers(\''+x.table+'\',\''+x.id+'\')"':'')+'>' +
+      '<span class="g2r-cat">'+lib[x.cat]+'</span>' +
+      '<b>'+(x.num?x.num+' · ':'')+escapeHtml(truncate(x.nom, 34))+'</b>' +
+      '<span class="g2r-t">'+escapeHtml(x.txt)+'</span>' +
+      '<small>'+escapeHtml(x.sous||'')+'</small></div>';
+  const arbitrer = l.filter(x=>x.grav>=2), completer = l.filter(x=>x.grav<2);
+  z.innerHTML =
+    '<div class="g2f-tete"><span class="g2f-type">Revue · '+arbitrer.length+' à arbitrer</span>' +
+      '<button class="g2f-x" onclick="gBasculerRevue()" aria-label="Fermer la revue">✕</button></div>' +
+    '<div class="g2r-corps">' +
+      (arbitrer.length ? arbitrer.map(item).join('')
+        : '<div class="g2r-vide">Rien à arbitrer : pas de dérive, pas de jalon dépassé, pas de surcharge.</div>') +
+      (completer.length ? '<div class="g2r-sec">À compléter par le planificateur · '+completer.length+'</div>' + completer.map(item).join('') : '') +
+    '</div>' +
+    '<div class="g2f-pied"><button class="btn small" onclick="gReplanifier()" title="Décale ce qui est en retard à partir d\u2019aujourd\u2019hui">↻ Replanifier le retard</button>' +
+      '<button class="btn small" onclick="openBaselines()">🎯 Figer une référence</button></div>';
+}
+function gAllerVers(table, id){
+  if(!table || !id) return;
+  let it = state[table] && state[table].find(x=>x.id===id);
+  if(!it) return;
+  let pid = table==='tasks' ? it.project_id : it.parent_id;
+  let g = 0;
+  while(pid && g++ < 24){ ui.expandedProjects.add(pid); delete GT.replies[pid]; const p = state.projects.find(x=>x.id===pid); pid = p ? p.parent_id : null; }
+  gRendre();
+  gSelectionner(table, id, true);
+  const ligne = document.querySelector('#g2-gliste .g2-ligne[data-rid="'+gSel(id)+'"]');
+  if(ligne && ligne.scrollIntoView) try{ ligne.scrollIntoView({block:'center'}); }catch(e){}
+}
+
+/* ---------------- Outil du planificateur : recaler le retard ---------------- */
+function gReplanifier(){
+  const b = currentBoard();
+  if(!b || gLectureSeule()) return;
+  const auj = todayMid(), ajd = fmtDate(auj);
+  const aDecaler = [], aProlonger = [];
+  gFeuilles(b).forEach(f=>{
+    if(f.it.verrou || gEstFini(f)) return;
+    const bs = gBornesItem(f.t, f.it); if(!bs) return;
+    const av = f.t==='projects' ? projAvancement(f.it) : (f.it.avancement||0);
+    if(av === 0 && bs.d < auj) aDecaler.push(f);
+    else if(av > 0 && bs.f < auj) aProlonger.push(f);
+  });
+  const n = aDecaler.length + aProlonger.length;
+  if(!n){ gToast('Rien à recaler : aucune ligne non terminée n\u2019est en retard'); return; }
+  if(!confirm('Recaler le planning sur aujourd\u2019hui ?\n\n' +
+    '· ' + aDecaler.length + ' ligne(s) pas encore commencée(s) démarreront aujourd\u2019hui, à durée inchangée\n' +
+    '· ' + aProlonger.length + ' ligne(s) en cours verront leur fin repoussée à aujourd\u2019hui\n' +
+    '· les lignes verrouillées ne bougent pas, les suivantes se recalent par les liens\n\nCtrl+Z annule l\u2019ensemble.')) return;
+  gOp('Recalage sur aujourd\u2019hui', ()=>{
+    aDecaler.forEach(f=>{ const bs = gBornesItem(f.t, f.it); gDecaler(f.t, f.it, dayIndex(auj, bs.d)); });
+    aProlonger.forEach(f=>{ const bs = gBornesItem(f.t, f.it); gPoserDates(f.t, f.it, fmtDate(bs.d), ajd); });
+    gPropager(b, aDecaler.concat(aProlonger).map(f=>f.it.id));
+  });
+  logActivity('a recalé le planning', 'sur aujourd\u2019hui', n+' ligne(s)');
+  gRendre();
+  gToast(n+' ligne(s) recalée(s) · Ctrl+Z pour tout annuler', true);
 }
 
 /* ---------------- Branchements globaux ---------------- */
