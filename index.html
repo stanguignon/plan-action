@@ -2427,6 +2427,226 @@ body.perso-confortable .pa-table td{padding:12px 13px}
 .ap-share{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line-soft);padding-top:14px;margin-bottom:0}
 @media (max-width:640px){ .ap-grid{grid-template-columns:1fr} }
 </style>
+<style>
+/* ===================== GANTT v17 — « Horizon » ===================== */
+.g2{
+  --g-fond:#14304d; --g-fond2:#183858; --g-tete:#102a45; --g-ligne:rgba(255,255,255,.07);
+  --g-mois:rgba(96,165,250,.34); --g-sem:rgba(255,255,255,.05); --g-texte:#eef4ff;
+  --g-texte2:rgba(238,244,255,.74); --g-texte3:rgba(238,244,255,.46); --g-we:rgba(0,0,0,.16);
+  --g-ferie:rgba(0,0,0,.3); --g-survol:rgba(255,255,255,.05); --g-selc:rgba(96,165,250,.16);
+  --g-rouge:#ff5f5f; --g-vert:#3ddc97; --g-ref:rgba(255,255,255,.3); --g-champ:rgba(255,255,255,.09);
+  --g-bord:rgba(255,255,255,.16); --g-panneau:#102842; --g-ombre:0 18px 50px rgba(0,0,0,.45);
+  position:relative; flex:1; min-height:0; display:flex; flex-direction:column;
+  background:var(--g-fond); color:var(--g-texte); border-radius:14px; overflow:hidden; margin:0 2px 2px;
+  font-variant-numeric:tabular-nums;
+}
+.g2.clair{
+  --g-fond:#ffffff; --g-fond2:#f7f9fc; --g-tete:#f3f6fa; --g-ligne:#eef1f5; --g-mois:#c6d4e8;
+  --g-sem:#f1f4f8; --g-texte:#172b4d; --g-texte2:#44546f; --g-texte3:#8590a2; --g-we:#f5f7fa;
+  --g-ferie:#e7ebf1; --g-survol:#f6f9ff; --g-selc:#e8f0ff; --g-rouge:#e34935; --g-vert:#22a06b;
+  --g-ref:#b9c3d1; --g-champ:#f4f6f9; --g-bord:#dfe3e8; --g-panneau:#ffffff; --g-ombre:0 18px 50px rgba(9,30,66,.18);
+}
+.g2 .g2-alerte{display:flex;flex-direction:column;gap:6px;padding:8px 10px 0}
+.g2 .g2-alerte.vide{display:none}
+.g2-al{padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.5;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.g2-al.warn{background:rgba(255,196,92,.16);border:1px solid rgba(255,196,92,.45)}
+.g2-al.err{background:rgba(255,95,95,.14);border:1px solid rgba(255,95,95,.45)}
+.g2-al button{border:1px solid var(--g-bord);background:var(--g-champ);color:var(--g-texte);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer}
+.g2-al button:hover{background:var(--g-mois)}
+.g2-corps{flex:1;min-height:0;display:flex;position:relative}
+
+/* ---------- colonne de gauche ---------- */
+.g2-gauche{flex-shrink:0;display:flex;flex-direction:column;min-height:0;background:var(--g-fond);border-right:1px solid var(--g-mois);position:relative;z-index:3}
+.g2-gtete{height:62px;flex-shrink:0;background:var(--g-tete);border-bottom:1px solid var(--g-mois);overflow:hidden}
+.g2-titre{height:34px;display:flex;align-items:center;padding:0 14px;font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g2-cols{height:28px;display:flex;align-items:center}
+.g2-cols .g2-c{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--g-texte3)}
+.g2-gliste{flex:1;min-height:0;overflow:hidden;position:relative}
+.g2-glignes{position:relative}
+.g2-ligne{display:flex;align-items:center;position:relative;box-sizing:border-box}
+.g2-ligne.survol,.g2-piste.survol{background:var(--g-survol)}
+.g2-ligne.sel,.g2-piste.sel{background:var(--g-selc)}
+.g2-l-groupe{border-top:1px solid var(--g-mois)}
+.g2-glignes > .g2-l-groupe:first-child{border-top:none}
+.g2-c{display:flex;align-items:center;gap:4px;padding:0 5px;min-width:0;flex-shrink:0;height:100%;font-size:12px;color:var(--g-texte2);overflow:hidden}
+.c-nom{gap:6px}
+.g2-num{font-size:10.5px;font-weight:700;color:var(--g-texte3);white-space:nowrap}
+.g2-tw{border:none;background:none;width:17px;height:17px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--g-texte3);cursor:pointer;flex-shrink:0;border-radius:5px}
+.g2-tw svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.g2-tw.ouvert svg{transform:rotate(90deg)}
+.g2-tw:hover{background:var(--g-champ);color:var(--g-texte)}
+.g2-pastille{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+.g2-ico-jalon{width:9px;height:9px;transform:rotate(45deg);border-radius:1.5px;flex-shrink:0}
+.g2-in{flex:1;min-width:0;width:100%;background:transparent;border:1px solid transparent;border-radius:6px;padding:3px 6px;color:inherit;font:inherit;font-size:inherit;outline:none}
+.g2-in:hover{border-color:var(--g-bord)}
+.g2-in:focus{background:var(--g-champ);border-color:var(--g-mois);box-shadow:0 0 0 2px rgba(96,165,250,.2)}
+.g2-ro{padding:0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g2-ro.crit,.g2-ro.retard{color:var(--g-rouge);font-weight:700}
+.g2-ro.avance{color:var(--g-vert);font-weight:700}
+.g2-l-groupe .c-nom .g2-in{font-size:15px;font-weight:800;color:var(--g-texte)}
+.g2-l-sous .c-nom .g2-in{font-size:13px;font-weight:700;color:var(--g-texte)}
+.g2-l-feuille .c-nom .g2-in,.g2-l-jalon .c-nom .g2-in{font-size:12.5px;color:var(--g-texte2)}
+.g2-l-titre{border-top:1px solid var(--g-mois);margin-top:6px}
+.g2-l-titre .g2-c{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--g-texte3);padding-left:14px}
+.g2-l-charge .g2-c{gap:8px;padding-left:12px;font-size:12px;color:var(--g-texte)}
+.g2-l-charge small{color:var(--g-texte3);font-size:10.5px}
+.g2-av-rond{width:24px;height:24px;border-radius:50%;background:var(--g-champ);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--g-texte2);font-style:normal;flex-shrink:0}
+.g2-cad{font-size:10px;opacity:.85}
+.g2-act{display:none;gap:2px;flex-shrink:0;margin-left:auto}
+.g2-ligne:hover .g2-act,.g2-ligne.sel .g2-act{display:flex}
+.g2-act button{border:none;background:var(--g-champ);color:var(--g-texte2);width:21px;height:21px;border-radius:6px;cursor:pointer;font-size:12px;line-height:1;padding:0}
+.g2-act button:hover{background:var(--g-mois);color:var(--g-texte)}
+.g2-vide-l{padding:16px 14px;font-size:12px;color:var(--g-texte3)}
+.g2-ajout-l{padding:10px 12px}
+.g2-ajout-l button{border:1px dashed var(--g-bord);background:transparent;color:var(--g-texte2);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.g2-ajout-l button:hover{border-color:var(--g-mois);color:var(--g-texte)}
+.g2-sep{width:7px;margin-left:-3px;cursor:col-resize;flex-shrink:0;position:relative;z-index:4}
+.g2-sep:hover,.g2-sep.actif{background:var(--g-mois)}
+
+/* ---------- zone de droite ---------- */
+.g2-droite{flex:1;min-width:0;overflow:auto;position:relative}
+.g2-toile{position:relative;min-height:100%}
+.g2-tete{position:sticky;top:0;z-index:6;height:62px;background:var(--g-tete);border-bottom:1px solid var(--g-mois)}
+.g2-t1{position:relative;height:34px}
+.g2-t2{position:relative;height:28px}
+.g2-h1{position:absolute;top:0;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--g-texte);border-left:1px solid var(--g-mois);white-space:nowrap;overflow:hidden;box-sizing:border-box}
+.g2-h2{position:absolute;top:0;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g-texte2);white-space:nowrap;overflow:hidden;box-sizing:border-box}
+.g2-h2.we{color:var(--g-texte3)}
+.g2-h2.auj{color:var(--g-rouge)}
+.g2-auj-lbl{position:absolute;bottom:3px;transform:translateX(-50%);background:var(--g-rouge);color:#fff;font-size:9px;font-weight:800;border-radius:999px;padding:2px 7px;white-space:nowrap;z-index:2}
+.g2-zone{position:relative}
+.g2-fond,.g2-pistes,.g2-barres{position:absolute;inset:0}
+.g2-fond,.g2-barres{pointer-events:none}
+.g2-fond i{position:absolute;top:0;bottom:0}
+.g2-vm{width:1px;background:var(--g-mois)}
+.g2-vs{width:1px;background:var(--g-sem)}
+.g2-we{background:var(--g-we)}
+.g2-fe{background:repeating-linear-gradient(135deg,var(--g-ferie) 0 4px,transparent 4px 9px)}
+.g2-hg{position:absolute;left:0;right:0;height:1px;background:var(--g-mois);bottom:auto}
+.g2-piste{position:absolute;left:0;right:0}
+svg.g2-liens,svg.g2-tmp{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+svg.g2-liens path{fill:none;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}
+svg.g2-liens .g2-h{opacity:.8}
+svg.g2-liens .g2-dep.viole{stroke-dasharray:5 3}
+svg.g2-liens .g2-dep.sel{stroke-width:3.2}
+svg.g2-liens .g2-dep-hit{stroke:transparent;stroke-width:12;pointer-events:stroke;cursor:pointer}
+svg.g2-tmp path{fill:none;stroke:#fff;stroke-width:2;stroke-dasharray:5 4;opacity:.9}
+.g2.clair svg.g2-tmp path{stroke:#0c66e4}
+.g2-barres > *{pointer-events:none}
+.g2-barre{position:absolute;border-radius:999px;background:var(--cs);cursor:grab;touch-action:none;pointer-events:auto;transition:box-shadow .14s,filter .14s}
+.g2-barre:hover{filter:brightness(1.1)}
+.g2-barre .g2-av{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--cp,var(--c));pointer-events:none}
+.g2-barre.sel{box-shadow:0 0 0 2px var(--g-fond),0 0 0 4px #60a5fa}
+.g2-barre.crit{box-shadow:0 0 0 2px var(--g-rouge)}
+.g2-barre.cible{box-shadow:0 0 0 3px #fff,0 0 16px rgba(255,255,255,.45)}
+.g2-barre.fini{opacity:.82}
+.g2-barre.jalon{background:none;width:16px;height:16px;border-radius:0}
+.g2-losange{position:absolute;inset:1px;background:var(--c);transform:rotate(45deg);border-radius:2px}
+.g2-barre.jalon.sel{box-shadow:none;outline:2px solid #60a5fa;outline-offset:2px}
+.g2-poignee{position:absolute;top:-4px;bottom:-4px;width:9px;cursor:ew-resize;pointer-events:auto}
+.g2-poignee.g{left:-5px}
+.g2-poignee.d{right:-5px}
+.g2-point{position:absolute;top:50%;width:11px;height:11px;margin-top:-5.5px;border-radius:50%;background:var(--g-fond);border:2.5px solid var(--c);opacity:0;cursor:crosshair;pointer-events:auto;transition:opacity .12s,transform .12s}
+.g2-point.g{left:-18px}
+.g2-point.d{right:-18px}
+.g2-barre:hover .g2-point,.g2-barre.sel .g2-point{opacity:1}
+.g2-point:hover{transform:scale(1.3)}
+.g2.en-lien .g2-barre{cursor:crosshair}
+.g2-proprio{position:absolute;font-size:12.5px;font-weight:600;color:var(--g-texte);white-space:nowrap;pointer-events:none}
+.g2-fin{position:absolute;font-size:10.5px;font-weight:800;color:var(--g-texte3);white-space:nowrap;pointer-events:none}
+.g2-fin.retard{color:#fff;background:var(--g-rouge);border-radius:999px;padding:1px 7px}
+.g2-fin.ok{color:var(--g-vert);font-size:13px}
+.g2-ref{position:absolute;height:3px;border-radius:2px;background:var(--g-ref);pointer-events:none}
+.g2-eng{position:absolute;width:2px;background:#f7a23b;border-radius:1px;pointer-events:none}
+.g2-derive{position:absolute;border-radius:0 999px 999px 0;background:repeating-linear-gradient(135deg,rgba(255,95,95,.55) 0 4px,transparent 4px 8px);pointer-events:none}
+.g2-ch{position:absolute;border-radius:2px 2px 0 0;background:#60a5fa;opacity:.9;pointer-events:none}
+.g2-ch.sur{background:var(--g-rouge)}
+.g2-auj{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--g-rouge);pointer-events:none;z-index:5}
+.g2-vide-d{position:absolute;left:24px;top:40px;font-size:12.5px;color:var(--g-texte3)}
+
+/* ---------- fiche latérale ---------- */
+.g2-fiche{position:absolute;top:0;right:0;bottom:0;width:340px;max-width:94%;background:var(--g-panneau);border-left:1px solid var(--g-mois);box-shadow:var(--g-ombre);z-index:20;display:none;flex-direction:column}
+.g2.fiche-on .g2-fiche{display:flex}
+.g2f-tete{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--g-ligne);flex-shrink:0}
+.g2f-pastille{width:12px;height:12px;border-radius:4px;flex-shrink:0}
+.g2f-type{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--g-texte3);flex:1}
+.g2f-x{border:none;background:none;color:var(--g-texte3);font-size:15px;cursor:pointer;width:26px;height:26px;border-radius:7px}
+.g2f-x:hover{background:var(--g-champ);color:var(--g-texte)}
+.g2f-corps{flex:1;min-height:0;overflow-y:auto;padding:12px 14px 16px}
+.g2f-l{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--g-texte3);margin:10px 0 4px}
+.g2f-in{width:100%;background:var(--g-champ);border:1px solid var(--g-bord);border-radius:8px;padding:7px 9px;color:var(--g-texte);font:inherit;font-size:12.5px;outline:none;box-sizing:border-box}
+.g2f-in:focus{border-color:var(--g-mois);box-shadow:0 0 0 2px rgba(96,165,250,.2)}
+.g2f-grille{display:grid;grid-template-columns:1fr 1fr 74px;gap:7px}
+.g2f-range{width:100%;accent-color:#60a5fa}
+.g2f-info{background:var(--g-champ);border-radius:9px;padding:9px 11px;font-size:12px;color:var(--g-texte2);line-height:1.5;margin-top:8px}
+.g2f-info small{color:var(--g-texte3)}
+.g2f-cases{display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:12px;color:var(--g-texte2)}
+.g2f-cases label{display:flex;align-items:center;gap:7px;cursor:pointer}
+.g2f-sec{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--g-texte3);margin:14px 0 6px;padding-top:10px;border-top:1px solid var(--g-ligne)}
+.g2f-liens{display:flex;flex-direction:column;gap:4px}
+.g2f-lien{display:flex;align-items:center;gap:7px;background:var(--g-champ);border-radius:8px;padding:5px 7px;font-size:11.5px}
+.g2f-lien.clic{cursor:pointer}
+.g2f-lien.clic:hover{background:var(--g-mois)}
+.g2f-lien .n{font-weight:800;color:var(--g-texte3);font-size:10.5px}
+.g2f-lien .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g2f-lien .k{font-size:10px;color:var(--g-texte3);white-space:nowrap}
+.g2f-lien button{border:none;background:none;color:var(--g-texte3);cursor:pointer;font-size:11px;padding:2px 4px;border-radius:5px}
+.g2f-lien button:hover{background:rgba(255,95,95,.2);color:var(--g-rouge)}
+.g2f-vide{font-size:11.5px;color:var(--g-texte3);line-height:1.5}
+.g2f-ajout{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:8px}
+.g2f-ajout select,.g2f-ajout input{background:var(--g-champ);border:1px solid var(--g-bord);border-radius:7px;padding:5px 7px;color:var(--g-texte);font-size:11.5px;min-width:0}
+.g2f-ajout #g2f-pred{grid-column:1/-1}
+.g2f-ajout input{width:64px}
+.g2f-couleurs{display:flex;gap:6px;flex-wrap:wrap}
+.g2f-couleurs button{width:24px;height:24px;border-radius:7px;border:2px solid transparent;cursor:pointer;padding:0}
+.g2f-couleurs button.on{border-color:var(--g-texte)}
+.g2f-couleurs button.auto{background:var(--g-champ);color:var(--g-texte3);font-size:9px;font-weight:800;width:auto;padding:0 8px}
+.g2f-pied{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-top:1px solid var(--g-ligne);flex-shrink:0}
+.g2-suppr{color:var(--g-rouge) !important;border-color:rgba(255,95,95,.4) !important}
+
+/* ---------- bulle, popover, message ---------- */
+.g2-bulle{position:fixed;z-index:3000;pointer-events:none;background:var(--g-panneau);color:var(--g-texte);border:1px solid var(--g-bord);border-radius:10px;padding:9px 11px;font-size:11.5px;line-height:1.55;box-shadow:var(--g-ombre);display:none;max-width:320px}
+.g2-bulle.show{display:block}
+.g2-bulle b{display:block;font-size:12.5px;margin-bottom:3px}
+.g2-bulle span{display:block;color:var(--g-texte2)}
+.g2-bulle .r{color:var(--g-rouge);font-weight:700}
+.g2-bulle .g{color:var(--g-texte3);margin-top:4px;font-size:10.5px}
+.g2-pop{position:fixed;z-index:3100;display:none;flex-direction:column;gap:6px;min-width:210px;background:var(--panel,#fff);color:var(--txt,#172b4d);border:1px solid var(--line,#dfe3e8);border-radius:12px;padding:9px;box-shadow:0 18px 50px rgba(9,30,66,.28)}
+.g2-pop.show{display:flex}
+.g2p-t{font-size:11.5px;font-weight:800;padding:2px 4px 6px;border-bottom:1px solid var(--line,#dfe3e8)}
+.g2p-t span{color:var(--muted-2,#8590a2)}
+.g2p-l{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted,#44546f)}
+.g2p-l select,.g2p-l input{flex:1;min-width:0;background:var(--panel-2,#f4f6f9);border:1px solid var(--line,#dfe3e8);border-radius:7px;padding:5px 7px;font-size:11.5px}
+.g2p-b{display:flex;gap:6px;flex-wrap:wrap}
+.g2p-item{border:none;background:none;text-align:left;padding:7px 8px;border-radius:8px;font-size:12px;font-weight:600;color:var(--txt,#172b4d);cursor:pointer}
+.g2p-item:hover{background:var(--panel-2,#f4f6f9)}
+.g2p-seg{display:flex;gap:4px}
+.g2p-seg button{flex:1;border:1px solid var(--line,#dfe3e8);background:var(--panel-2,#f4f6f9);border-radius:8px;padding:6px 8px;font-size:11px;font-weight:700;cursor:pointer;color:var(--txt,#172b4d)}
+.g2p-seg button.on{background:var(--primary,#0c66e4);border-color:var(--primary,#0c66e4);color:#fff}
+.g2-toast{position:absolute;left:50%;bottom:18px;transform:translate(-50%,16px);z-index:2500;display:flex;align-items:center;gap:10px;background:var(--g-panneau);color:var(--g-texte);border:1px solid var(--g-bord);border-radius:10px;padding:9px 14px;font-size:12px;box-shadow:var(--g-ombre);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.g2-toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.g2-toast button{border:1px solid var(--g-bord);background:var(--g-champ);color:var(--g-texte);border-radius:7px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.g2-sync{font-size:11px;font-weight:800;border-radius:999px;padding:4px 10px;white-space:nowrap;cursor:pointer}
+.g2-sync.ok{background:#e3fcef;color:#1f845a}
+.g2-sync.envoi{background:#e9f2ff;color:#0c66e4}
+.g2-sync.ko{background:#fff4e5;color:#b65c02}
+.g2-sync.local{display:none}
+
+/* ---------- impression ---------- */
+body.impression .g2{height:auto !important;overflow:visible !important;border-radius:0;margin:0}
+body.impression .g2-corps{align-items:flex-start}
+body.impression .g2-droite,body.impression .g2-gliste{overflow:visible !important;height:auto !important}
+body.impression .g2-fiche,body.impression .g2-toast,body.impression .g2-alerte,body.impression .g2-sep{display:none !important}
+body.impression .g2-tete{position:relative}
+@media print{ .g2,.g2 *{-webkit-print-color-adjust:exact;print-color-adjust:exact} @page{size:landscape} }
+
+/* ---------- petits écrans ---------- */
+@media (max-width:760px){
+  .g2-fiche{width:100%;max-width:100%}
+  .g2-proprio{font-size:11px}
+}
+</style>
+
 </head>
 <body>
 
@@ -3006,7 +3226,9 @@ async function loadAll(){
       sbClient.from('baselines').select('*').order('ts'),
       sbClient.from('imp_historique').select('*').order('ts'),
     ]);
-    TABLES.forEach((t,i)=>{ state[t] = res[i].data || []; });
+    /* une table en erreur (réseau coupé, table absente) garde son contenu :
+       un rechargement raté ne doit jamais effacer ce qui est à l'écran */
+    TABLES.forEach((t,i)=>{ if(res[i] && !res[i].error && Array.isArray(res[i].data)) state[t] = res[i].data; });
   } else {
     try{ TABLES.forEach(t=>{ state[t] = JSON.parse(localStorage.getItem('pa_'+t) || '[]'); }); }
     catch(e){ TABLES.forEach(t=>{ state[t]=state[t]||[]; }); }
@@ -3799,56 +4021,6 @@ function getFilteredProjects(b){
   });
 }
 
-function renderProjectBoard(main, b){
-  const all = state.projects.filter(p=>p.board_id===b.id);
-  const resps = [...new Set(all.map(p=>p.responsable).filter(Boolean))].sort();
-  const toolbar = `<div class="board-toolbar">
-    <div class="seg">
-      <button class="${route.sub==='gantt'?'active':''}" onclick="setSub('gantt')"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="vertical-align:-2px;margin-right:2px"><rect x="3" y="4" width="10" height="4" rx="1"/><rect x="8" y="10" width="12" height="4" rx="1"/><rect x="5" y="16" width="9" height="4" rx="1"/></svg> Gantt</button>
-      <button class="${route.sub==='liste'?'active':''}" onclick="setSub('liste')">☰ Liste</button>
-      <button class="${route.sub==='kanban'?'active':''}" onclick="setSub('kanban')">▤ Kanban</button>
-      <button class="${route.sub==='dash'?'active':''}" onclick="setSub('dash')">◔ Dashboard</button>
-    </div>
-    ${route.sub==='liste'?'':''}${route.sub==='gantt'?`<div class="seg">
-      <button class="${ui.pxPerDay>=30?'active':''}" onclick="ui.pxPerDay=34;renderMain()">Semaine</button>
-      <button class="${ui.pxPerDay<30&&ui.pxPerDay>=10?'active':''}" onclick="ui.pxPerDay=14;renderMain()">Mois</button>
-      <button class="${ui.pxPerDay<10&&ui.pxPerDay>3?'active':''}" onclick="ui.pxPerDay=5.5;renderMain()">Trimestre</button>
-      <button class="${ui.pxPerDay<=3?'active':''}" onclick="ui.pxPerDay=2.4;renderMain()">Année</button>
-    </div>
-    <button class="btn small ghost" onclick="ui.horizonPlus=(ui.horizonPlus||0)+365;renderMain();showToast('Horizon étendu d\u2019un an')" title="Ajouter un an de planification à droite">+1 an ▸</button>
-    <button class="btn small ghost" onclick="scrollToToday()">↦ Aujourd'hui</button>
-    <button class="btn small ghost" onclick="undoLast()" title="Ctrl+Z">↩</button>
-    <button class="btn small ${ui.critique?'primary':''}" onclick="ui.critique=!ui.critique;renderMain()" title="Mettre en évidence les tâches sans marge">⚡ Chemin critique</button>
-    <button class="btn small ${ui.charge?'primary':''}" onclick="ui.charge=!ui.charge;renderMain()" title="Histogramme de charge par personne">👥 Charge</button>
-    <button class="btn small" onclick="openBaselines()" title="Figer et comparer un planning de référence">🎯 Référence${(function(){const bl=baselineActive(b);return bl?' · '+escapeHtml(truncate(bl.nom,14)):'';})()}</button>
-    <button class="btn small" onclick="openGanttCols()" title="Colonnes de la table de planification">▤ Colonnes</button>
-    <button class="btn small" onclick="openCalendrier()" title="Jours ouvrés et jours chômés">📆 Calendrier</button>
-    <button class="btn small" onclick="imprimerGantt()" title="Impression / PDF">🖨</button>`:''}
-    ${filterChipsHtml(projStatutsNoms(b), null, resps)}
-    <div class="toolbar-spacer"></div>
-    ${route.sub==='gantt'?`<div class="gantt-legend">
-      <span><i style="background:#0c66e4"></i>En cours</span><span><i style="background:#e34935"></i>Retard</span>
-      <span><i style="background:#22a06b"></i>Terminé</span><span><i class="diam" style="background:#e77b1e"></i>Jalon</span>
-      <span><i style="background:transparent;border-top:2px solid #e77b1e;height:0;width:10px"></i>Engagement</span>
-    </div>`:''}
-    <button class="btn small" onclick="openProjConfig()">⚙ Paramétrer</button>
-    <button class="btn primary small" id="btn-new-item" onclick="openProjectModal()">＋ Projet</button>
-  </div>`;
-
-  let content;
-  if(route.sub==='liste') content = renderProjListe(b);
-  else if(route.sub==='kanban') content = renderProjKanban(b);
-  else if(route.sub==='dash') content = renderProjDash(b);
-  else content = `<div class="gantt-scroll" id="gantt-scroll"><div class="gantt-inner" id="gantt-inner">
-      <div class="gantt-canvas-bg" id="gantt-bg"></div>
-      <div class="gantt-header" id="gantt-header"></div>
-      <div class="rows-area" id="rows-area"></div>
-      <div class="charge-zone" id="charge-zone"></div>
-    </div></div>`;
-
-  main.innerHTML = `<div style="display:flex;flex-direction:column;height:100%">${toolbar}${content}</div>`;
-  if(route.sub==='gantt'){ renderGantt(b); setTimeout(scrollToToday, 80); }
-}
 
 /* ---- GANTT ---- */
 function computeTimelineRange(projs){
@@ -3956,32 +4128,7 @@ async function propagateFrom(id, visited, compteur){
   return compteur;
 }
 
-/* ============ RENDU DU GANTT ============ */
-function ganttVisibleRows(b){
-  const rows = [];
-  const filtered = getFilteredProjects(b);
-  const filtreActif = ui.filterStatuts.size || ui.filterResp.size || ui.onlyLate || searchQ();
-  const pushTasks = (p, depth)=>{
-    if(!ui.expandedProjects.has(p.id)) return;
-    state.tasks.filter(t=>t.project_id===p.id).forEach(t=>rows.push({kind:'task', item:t, parent:p, depth:depth+1}));
-  };
-  if(filtreActif){
-    filtered.forEach(p=>{ rows.push({kind:'project', item:p, depth:0, plat:true}); pushTasks(p,0); });
-    return rows;
-  }
-  const walk = (p, depth)=>{
-    rows.push({kind:'project', item:p, depth});
-    if(!ui.expandedProjects.has(p.id)) return;
-    projChildren(p.id).forEach(k=>walk(k, depth+1));
-    state.tasks.filter(t=>t.project_id===p.id).forEach(t=>rows.push({kind:'task', item:t, parent:p, depth:depth+1}));
-  };
-  const idsDuBoard = new Set(state.projects.filter(p=>p.board_id===b.id).map(p=>p.id));
-  state.projects.filter(p=>p.board_id===b.id && (!p.parent_id || !idsDuBoard.has(p.parent_id)))
-    .sort((a,c)=>(a.ordre||0)-(c.ordre||0) || String(a.created_at||'').localeCompare(String(c.created_at||'')))
-    .forEach(p=>walk(p,0));
-  return rows;
-}
-/* ============ TABLE DE PLANIFICATION ============ */
+/* ============ TABLE DE PLANIFICATION : COLONNES ============ */
 const GANTT_COLS = [
   {key:'num',   label:'N°',            w:52,  sys:true},
   {key:'nom',   label:'Tâche',         w:210, sys:true},
@@ -3999,404 +4146,1916 @@ function ganttCols(b){
   const cfg = (b && b.config && b.config.colsGantt) || ['num','nom','duree','debut','fin','preds','resp','av'];
   return GANTT_COLS.filter(c=>c.sys || cfg.indexOf(c.key)>=0);
 }
-function wbsLargeur(b){ return ganttCols(b).reduce((n,c)=>n+c.w, 0) + 26; }
 
-function celluleWbs(b, r, ctx){
-  const est = r.kind==='project';
-  const it = r.item;
-  const parent = est && projHasChildren(it);
-  const num = ctx.num.map[it.id] || '';
-  const marge = ctx.cpm.marges[it.id];
-  const ec = ctx.bl ? ecartBaseline(ctx.bl, it, est) : null;
-  const debut = it.date_debut || '';
-  const fin = est ? (it.date_fin || projCible(it) || fmtDate(projEndDate(it))) : (it.date_fin || it.date_debut || '');
-  const duree = (debut && fin) ? dureeOuvree(b, dateFromStr(debut), dateFromStr(fin)) : '';
-  const av = est ? projAvancement(it) : (it.avancement||0);
-  const ro = ui.lecture || document.body.classList.contains('presentation');
-  const inp = (cls, val, handler, type)=> ro
-    ? `<span class="wc-ro">${escapeHtml(val==null?'':String(val))}</span>`
-    : `<input class="wc-in ${cls}" type="${type||'text'}" value="${escAttr(val==null?'':String(val))}" onchange="${handler}" onclick="event.stopPropagation()">`;
+/* ============================================================
+   GANTT v17 — « Horizon »
+   Réécrit après une perte de saisie signalée sur le terrain.
+   Trois règles tenues par ce module :
+   1. Aucune saisie ne se perd. Chaque écriture passe par une file
+      d'attente gardée sur l'appareil, rejouée après chaque
+      rechargement et renvoyée tant que la base ne l'a pas acceptée.
+      Une colonne absente de la base ne fait plus échouer toute la
+      ligne : elle est mise de côté, le reste part quand même.
+   2. Un rafraîchissement ne détruit rien. La cellule en cours de
+      frappe, la position de défilement et un glisser en cours sont
+      préservés.
+   3. Tout geste s'annule (Ctrl+Z) et se refait (Ctrl+Y), et le
+      planning est photographié régulièrement sur l'appareil.
+   ============================================================ */
 
-  return ganttCols(b).map(c=>{
-    let inner = '';
-    switch(c.key){
-      case 'num': inner = `<span class="wc-num">${num}</span>`; break;
-      case 'nom':
-        inner = `<button class="wbs-tw ${ui.expandedProjects.has(it.id)?'open':''}" ${(est && (projChildren(it.id).length + state.tasks.filter(t=>t.project_id===it.id).length))?'':'style="visibility:hidden"'}
-                   onclick="event.stopPropagation();toggleExpand('${it.id}')" title="Replier / déplier">
-                   <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4"><path d="m9 6 6 6-6 6"/></svg></button>
-          <span class="wc-nom ${parent?'gras':''}" title="${escAttr(it.nom)}">${escapeHtml(it.nom)}</span>
-          ${it.verrou?'<span class="wbs-lock" title="Dates verrouillées">🔒</span>':''}
-          ${est?`<button class="wbs-add" title="Ajouter un sous-projet" onclick="event.stopPropagation();openProjectModal('${it.id}')">＋</button>`:''}`;
-        break;
-      case 'duree': inner = parent ? `<span class="wc-ro">${duree}</span>`
-        : inp('c-num', duree, `majDuree(event,'${it.id}','${r.kind}',this.value)`); break;
-      case 'debut': inner = parent ? `<span class="wc-ro">${debut?fmtFR(debut):''}</span>`
-        : inp('c-date', debut, `majDate(event,'${it.id}','${r.kind}','debut',this.value)`, 'date'); break;
-      case 'fin': inner = parent ? `<span class="wc-ro">${fin?fmtFR(fin):''}</span>`
-        : inp('c-date', fin, `majDate(event,'${it.id}','${r.kind}','fin',this.value)`, 'date'); break;
-      case 'preds': inner = parent ? '<span class="wc-ro"></span>'
-        : inp('c-preds', predsVersTexte(it, ctx.num), `majPreds(event,'${it.id}','${r.kind}',this.value)`); break;
-      case 'resp': inner = inp('c-txt', est?(it.responsable||''):(it.responsable||''), `majResp(event,'${it.id}','${r.kind}',this.value)`); break;
-      case 'charge': inner = parent ? '<span class="wc-ro"></span>'
-        : inp('c-num', it.charge==null?'':it.charge, `majCharge(event,'${it.id}','${r.kind}',this.value)`); break;
-      case 'av': inner = parent ? `<span class="wc-ro">${av}%</span>`
-        : inp('c-num', av, `majAvancement(event,'${it.id}','${r.kind}',this.value)`); break;
-      case 'marge': inner = `<span class="wc-ro ${marge!=null&&marge<=0?'crit':''}">${marge==null?'—':(marge<=0?'critique':marge+' j')}</span>`; break;
-      case 'ecart': inner = `<span class="wc-ro ${ec>0?'retard':(ec<0?'avance':'')}">${ec==null?'—':(ec>0?'+'+ec+' j':(ec<0?ec+' j':'0'))}</span>`; break;
-    }
-    return `<span class="wc" style="width:${c.w}px" data-c="${c.key}">${inner}</span>`;
-  }).join('');
-}
+const GT_ZOOMS = {
+  jour:      {px:38,   n:'Jour'},
+  semaine:   {px:17,   n:'Semaine'},
+  mois:      {px:7,    n:'Mois'},
+  trimestre: {px:3.2,  n:'Trimestre'},
+  annee:     {px:1.35, n:'Année'},
+};
+const GT_PALETTE = ['#f4b942','#b7c43f','#f28b5b','#3db4dc','#f06470','#8f7cf2','#2fbf9c','#5b8def','#e36bb3','#94a3b8'];
+const GT_TYPES_LIEN = {FD:'Fin → Début', DD:'Début → Début', FF:'Fin → Fin', DF:'Début → Fin'};
+const GT_LIGNE = {groupe:{h:54,e:16}, sous:{h:38,e:11}, feuille:{h:30,e:9}, jalon:{h:30,e:14}, charge:{h:40,e:0}, titre:{h:28,e:0}};
+const GT_MOIS   = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const GT_MOIS_C = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const GT_JOURS  = ['D','L','M','M','J','V','S'];
 
-/* ---- Édition inline ---- */
-function tableDe(kind){ return kind==='project' ? 'projects' : 'tasks'; }
-async function majDate(ev, id, kind, quoi, val){
-  const table = tableDe(kind);
-  const it = state[table].find(x=>x.id===id);
-  if(!it) return;
-  const champ = (quoi==='debut') ? 'date_debut' : (kind==='project' ? (it.date_fin?'date_fin':'engagement_date') : 'date_fin');
-  const ancienne = it[champ];
-  if(!val && !confirmerEffacement(ancienne, quoi==='debut'?'Début':'Fin')){ renderMain(); return; }
-  pushUndo(table, id, {[champ]:ancienne});
-  await dbUpdate(table, id, {[champ]: val || null});
-  const c = await propagateFrom(id);
-  await logActivity('a modifié une date de', '« '+it.nom+' »', quoi+' → '+(val?fmtFR(val):'(vidée)'));
-  renderMain();
-  showToast(val ? ('Date mise à jour'+(c&&c.n?' · '+c.n+' élément(s) décalé(s)':'')) : 'Date effacée');
+const GT_SQL = `-- Plan d'action : colonnes utilisees par le Gantt.
+-- Sans risque, relancable : rien n'est supprime.
+alter table tasks    add column if not exists responsable   text default '';
+alter table tasks    add column if not exists predecesseurs jsonb default '[]'::jsonb;
+alter table tasks    add column if not exists charge        numeric;
+alter table tasks    add column if not exists verrou        boolean default false;
+alter table tasks    add column if not exists ordre         int default 0;
+alter table tasks    add column if not exists depends_on    text;
+alter table tasks    add column if not exists jalon         boolean default false;
+alter table tasks    add column if not exists avancement    int default 0;
+alter table projects add column if not exists predecesseurs jsonb default '[]'::jsonb;
+alter table projects add column if not exists charge        numeric;
+alter table projects add column if not exists verrou        boolean default false;
+alter table projects add column if not exists ordre         int default 0;
+alter table projects add column if not exists depends_on    text;
+alter table projects add column if not exists parent_id     text;
+alter table projects add column if not exists code          text default '';
+alter table projects add column if not exists sante         text default 'vert';
+alter table projects add column if not exists extra         jsonb default '{}'::jsonb;
+notify pgrst, 'reload schema';`;
+
+const GT = {
+  pile:[], redo:[], op:null, sel:null, fiche:null, lienSel:null, drag:null, rendDiff:false,
+  attente:{}, local:{}, absentes:{}, recents:{}, pompe:false, relance:false, minuterie:null,
+  vu:{}, scroll:{}, geo:{}, infos:{}, liens:[], hier:[], min:null, boardAffiche:null,
+  survol:null, replies:{}, impression:false, pxImpression:0, cacheCouleur:{}, clicBloque:false,
+};
+
+/* ---------------- Petits utilitaires ---------------- */
+function gLs(k, d){ try{ const v = localStorage.getItem(k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } }
+function gLsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+function gClone(v){ return v==null ? v : JSON.parse(JSON.stringify(v)); }
+function gCle(t, id){ return t+'|'+id; }
+function gSel(s){ try{ return (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s).replace(/["\\]/g,'\\$&'); }catch(e){ return String(s); } }
+function gMemeValeur(a, b){
+  const n = v => (v===undefined || v===null || v==='') ? null : (typeof v==='object' ? JSON.stringify(v) : String(v));
+  return n(a)===n(b);
 }
-async function majDuree(ev, id, kind, val){
-  const b = currentBoard();
-  const table = tableDe(kind);
-  const it = state[table].find(x=>x.id===id);
-  const n = parseInt(val,10);
-  if(!it || isNaN(n) || n<1){ renderMain(); return; }
-  const deb = dateFromStr(it.date_debut || fmtDate(todayMid()));
-  const nf = fmtDate(finDepuisDuree(b, deb, n));
-  const champ = (kind==='project') ? (it.date_fin?'date_fin':'engagement_date') : 'date_fin';
-  pushUndo(table, id, {[champ]: it[champ]});
-  await dbUpdate(table, id, {[champ]: nf});
-  const c = await propagateFrom(id);
-  renderMain();
-  showToast(n+' jours ouvrés → fin le '+fmtFR(nf)+(c&&c.n?' · '+c.n+' décalé(s)':''));
-}
-async function majPreds(ev, id, kind, val){
-  const b = currentBoard();
-  const num = wbsNumeros(b);
-  const preds = texteVersPreds(val, num);
-  if(preds.some(p=>p.id===id)){ showToast('Une ligne ne peut pas dépendre d\u2019elle-même'); renderMain(); return; }
-  const table = tableDe(kind);
-  await dbUpdate(table, id, {predecesseurs: preds, depends_on: preds.length?preds[0].id:null});
-  const it = state[table].find(x=>x.id===id);
-  /* recale la ligne derrière ses prédécesseurs */
-  for(const p of preds){ await propagateFrom(p.id); }
-  await logActivity('a modifié les liens de', '« '+(it?it.nom:'') +' »', val||'(aucun)');
-  renderMain();
-  showToast(preds.length ? preds.length+' lien(s) enregistré(s)' : 'Liens supprimés');
-}
-async function majResp(ev, id, kind, val){
-  await dbUpdate(tableDe(kind), id, {responsable: val.trim()});
-  renderMain();
-}
-async function majCharge(ev, id, kind, val){
-  const n = val===''? null : parseFloat(val.replace(',','.'));
-  await dbUpdate(tableDe(kind), id, {charge: (n==null||isNaN(n))?null:n});
-  renderMain();
-}
-async function majAvancement(ev, id, kind, val){
-  let n = parseInt(val,10); if(isNaN(n)) n = 0;
-  n = Math.max(0, Math.min(100, n));
-  await dbUpdate(tableDe(kind), id, {avancement:n});
-  renderMain();
+function gHex(h){ return /^#[0-9a-f]{6}$/i.test(String(h||'')) ? String(h) : null; }
+function gRgb(h){ const n = parseInt((gHex(h)||'#888888').slice(1), 16); return [(n>>16)&255, (n>>8)&255, n&255]; }
+function gMix(h1, h2, t){ const a = gRgb(h1), b = gRgb(h2); return '#'+[0,1,2].map(i=>Math.round(a[i]+(b[i]-a[i])*t).toString(16).padStart(2,'0')).join(''); }
+function gRgba(h, a){ const c = gRgb(h); return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')'; }
+function gPrefs(){ return Object.assign({zoom:'mois', theme:'nuit', couleurs:'groupe', liens:true, largeurNom:240, pxAjuste:0}, gLs('pa_g_prefs', {})); }
+function gSetPref(k, v){ const p = gPrefs(); p[k] = v; gLsSet('pa_g_prefs', p); }
+function gPx(){ const p = gPrefs(); if(GT.impression && GT.pxImpression) return GT.pxImpression; if(p.zoom==='ajuste' && p.pxAjuste) return p.pxAjuste; return (GT_ZOOMS[p.zoom] || GT_ZOOMS.mois).px; }
+function gLectureSeule(){ return !!(ui.lecture || document.body.classList.contains('presentation')); }
+function gActif(){ return route.view==='board' && route.sub==='gantt' && !!document.getElementById('g2'); }
+function gToast(msg, annulable){
+  const z = document.getElementById('g2-toast');
+  if(!z){ showToast(msg); return; }
+  z.innerHTML = '<span>'+escapeHtml(msg)+'</span>' + (annulable ? '<button onclick="gAnnuler()">Annuler</button>' : '');
+  z.classList.add('show');
+  clearTimeout(z._h); z._h = setTimeout(()=>z.classList.remove('show'), annulable ? 7000 : 2600);
 }
 
-/* ============ RENDU DU GANTT ============ */
-function renderGantt(b){
-  const rows = ganttVisibleRows(b);
-  const {min,max} = computeTimelineRange(state.projects.filter(p=>p.board_id===b.id));
-  const totalDays = dayIndex(max,min);
-  const px = ui.pxPerDay;
-  const LEFT_PAD = wbsLargeur(b);
-  const totalWidth = totalDays*px + 40 + LEFT_PAD;
-  const today = todayMid();
-  const ctx = {num: wbsNumeros(b), cpm: analyseCritique(b), bl: baselineActive(b)};
-
-  /* entête */
-  const header = document.getElementById('gantt-header');
-  header.style.width = totalWidth+'px';
-  let monthsHtml='', cursor = new Date(min);
-  while(cursor < max){
-    const nextMonth = new Date(cursor.getFullYear(), cursor.getMonth()+1, 1);
-    const end = nextMonth<max?nextMonth:max;
-    monthsHtml += `<div class="gh-month" style="left:${dayIndex(cursor,min)*px+LEFT_PAD}px;width:${dayIndex(end,cursor)*px}px">${cursor.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})}</div>`;
-    cursor = nextMonth;
+/* ---------------- Couleurs ---------------- */
+function gRacine(p){ let c = p, g = 0; while(c && c.parent_id && g++ < 24){ const x = state.projects.find(y=>y.id===c.parent_id); if(!x) break; c = x; } return c; }
+function gCouleurRacine(b, p){
+  const r = gRacine(p); if(!r) return GT_PALETTE[0];
+  if(GT.cacheCouleur[r.id]) return GT.cacheCouleur[r.id];
+  const perso = gHex(r.extra && r.extra.gcouleur);
+  let c = perso;
+  if(!c){
+    const ids = new Set(state.projects.filter(x=>x.board_id===b.id).map(x=>x.id));
+    const racines = state.projects.filter(x=>x.board_id===b.id && (!x.parent_id || !ids.has(x.parent_id)))
+      .sort((a,z)=>(a.ordre||0)-(z.ordre||0) || String(a.created_at||'').localeCompare(String(z.created_at||'')));
+    const i = racines.findIndex(x=>x.id===r.id);
+    c = GT_PALETTE[(i<0?0:i) % GT_PALETTE.length];
   }
-  let daysHtml='';
-  if(px>=24){
-    for(let i=0;i<totalDays;i++){
-      const dt=addDays(min,i);
-      daysHtml += `<div class="gh-day ${fmtDate(dt)===fmtDate(today)?'today':''}" style="left:${i*px+LEFT_PAD}px;width:${px}px">${dt.getDate()}</div>`;
-    }
-  } else {
-    for(let i=0;i<totalDays;i++){
-      const dt=addDays(min,i);
-      if(dt.getDay()===1){
-        const oneJan=new Date(dt.getFullYear(),0,1);
-        const week=Math.ceil((((dt-oneJan)/86400000)+oneJan.getDay()+1)/7);
-        daysHtml += `<div class="gh-week" style="left:${i*px+LEFT_PAD}px;width:${px*7}px">S${String(week).padStart(2,'0')}</div>`;
+  GT.cacheCouleur[r.id] = c;
+  return c;
+}
+function gCouleur(b, r){
+  const p = r.kind==='task' ? (r.parent || state.projects.find(x=>x.id===r.item.project_id)) : r.item;
+  if(!p) return GT_PALETTE[0];
+  if(gPrefs().couleurs==='statut') return gHex(projCol(b, p.statut).main) || '#4c8dff';
+  return gCouleurRacine(b, p);
+}
+
+/* ---------------- Lignes affichées ---------------- */
+function gTachesDe(pid){
+  return state.tasks.filter(t=>t.project_id===pid).sort((a,c)=>
+    (Number(a.ordre)||0)-(Number(c.ordre)||0)
+    || String(a.date_debut||'9999').localeCompare(String(c.date_debut||'9999'))
+    || String(a.created_at||'').localeCompare(String(c.created_at||''))
+    || String(a.nom||'').localeCompare(String(c.nom||'')));
+}
+function ganttVisibleRows(b){
+  const rows = [];
+  const filtered = getFilteredProjects(b);
+  const filtreActif = ui.filterStatuts.size || ui.filterResp.size || ui.onlyLate || searchQ();
+  const pousserTaches = (p, depth)=>{
+    if(!ui.expandedProjects.has(p.id)) return;
+    gTachesDe(p.id).forEach(t=>rows.push({kind:'task', item:t, parent:p, depth:depth+1}));
+  };
+  if(filtreActif){
+    filtered.forEach(p=>{ rows.push({kind:'project', item:p, depth:0, plat:true}); pousserTaches(p, 0); });
+    return rows;
+  }
+  const walk = (p, depth)=>{
+    rows.push({kind:'project', item:p, depth});
+    if(!ui.expandedProjects.has(p.id)) return;
+    projChildren(p.id).forEach(k=>walk(k, depth+1));
+    pousserTaches(p, depth);
+  };
+  const ids = new Set(state.projects.filter(p=>p.board_id===b.id).map(p=>p.id));
+  state.projects.filter(p=>p.board_id===b.id && (!p.parent_id || !ids.has(p.parent_id)))
+    .sort((a,c)=>(a.ordre||0)-(c.ordre||0) || String(a.created_at||'').localeCompare(String(c.created_at||'')))
+    .forEach(p=>walk(p, 0));
+  return rows;
+}
+function gStyle(r){
+  if(r.kind==='task') return r.item.jalon ? 'jalon' : 'feuille';
+  if(r.depth===0) return 'groupe';
+  return (projHasChildren(r.item) || state.tasks.some(t=>t.project_id===r.item.id)) ? 'sous' : 'feuille';
+}
+function gEstResume(r){ return r.kind==='project' && projHasChildren(r.item); }
+function gTableDe(id){ return state.tasks.some(t=>t.id===id) ? 'tasks' : (state.projects.some(p=>p.id===id) ? 'projects' : null); }
+
+/* Bornes affichées d'une ligne (la barre) ; null si rien n'est planifié. */
+function gBornesLigne(r){
+  if(r.kind==='task'){
+    const t = r.item; if(!t.date_debut) return null;
+    const d = dateFromStr(t.date_debut), f = dateFromStr(t.date_fin || t.date_debut);
+    if(isNaN(+d)) return null;
+    return {d, f: (isNaN(+f) || f<d) ? d : f};
+  }
+  const p = r.item;
+  if(projHasChildren(p)){ const s = projSpan(p); return {d:s.d, f: s.f<s.d ? s.d : s.f}; }
+  const d = dateFromStr(p.date_debut || fmtDate(todayMid()));
+  const f = projEndDate(p);
+  return {d, f: f<d ? d : f};
+}
+/* Bornes utilisées pour l'ordonnancement (sans l'étirement « vivant » jusqu'à aujourd'hui). */
+function gBornesItem(table, it){
+  if(!it) return null;
+  if(table==='tasks'){
+    if(!it.date_debut) return null;
+    const d = dateFromStr(it.date_debut), f = dateFromStr(it.date_fin || it.date_debut);
+    if(isNaN(+d)) return null;
+    return {d, f: (isNaN(+f) || f<d) ? d : f};
+  }
+  if(projHasChildren(it)){ const s = projSpan(it); return {d:s.d, f: s.f<s.d ? s.d : s.f}; }
+  if(!it.date_debut) return null;
+  const d = dateFromStr(it.date_debut);
+  const f = dateFromStr(it.date_fin || it.engagement_date || it.date_debut);
+  if(isNaN(+d)) return null;
+  return {d, f: (isNaN(+f) || f<d) ? d : f};
+}
+function gPoserDates(table, it, nd, nf){
+  if(table==='tasks'){
+    const fin = it.jalon ? (nd || null) : (nf || nd || null);
+    gMaj('tasks', it.id, {date_debut: nd || null, date_fin: fin});
+    return;
+  }
+  const champFin = it.date_fin ? 'date_fin' : 'engagement_date';
+  const patch = {date_debut: nd || null};
+  patch[champFin] = nf || null;
+  gMaj('projects', it.id, patch);
+}
+function gDecaler(table, it, delta){
+  if(!delta || !it) return;
+  const patch = {};
+  if(it.date_debut) patch.date_debut = fmtDate(addDays(dateFromStr(it.date_debut), delta));
+  if(it.date_fin) patch.date_fin = fmtDate(addDays(dateFromStr(it.date_fin), delta));
+  if(table==='projects' && it.engagement_date) patch.engagement_date = fmtDate(addDays(dateFromStr(it.engagement_date), delta));
+  if(Object.keys(patch).length) gMaj(table, it.id, patch);
+  if(table==='projects'){
+    projChildren(it.id).forEach(k=>gDecaler('projects', k, delta));
+    gTachesDe(it.id).forEach(t=>gDecaler('tasks', t, delta));
+  }
+}
+
+/* ---------------- Liens et ordonnancement ---------------- */
+function gSuccesseurs(id){
+  const out = [];
+  state.tasks.forEach(t=>{ const x = predsDe(t).find(p=>p.id===id); if(x) out.push({table:'tasks', it:t, lien:x}); });
+  state.projects.forEach(p=>{ const x = predsDe(p).find(q=>q.id===id); if(x) out.push({table:'projects', it:p, lien:x}); });
+  return out;
+}
+function gCreeCycle(fromId, toId){
+  if(fromId===toId) return true;
+  const vus = new Set(); const pile = [fromId];
+  let g = 0;
+  while(pile.length && g++ < 900){
+    const x = pile.pop();
+    if(x===toId) return true;
+    if(vus.has(x)) continue;
+    vus.add(x);
+    const it = itemParId(x);
+    if(it) predsDe(it).forEach(p=>pile.push(p.id));
+  }
+  return false;
+}
+function gDebutMin(b, table, it){
+  const moi = gBornesItem(table, it); if(!moi) return null;
+  const duree = dayIndex(moi.f, moi.d);
+  let best = null;
+  predsDe(it).forEach(p=>{
+    const t = gTableDe(p.id); if(!t) return;
+    const src = state[t].find(x=>x.id===p.id);
+    const bs = gBornesItem(t, src); if(!bs) return;
+    const lag = Number(p.lag)||0;
+    let dm;
+    if(p.type==='DD') dm = addDays(bs.d, lag);
+    else if(p.type==='FF') dm = addDays(bs.f, lag - duree);
+    else if(p.type==='DF') dm = addDays(bs.d, lag - duree);
+    else dm = addDays(bs.f, 1 + lag);
+    if(!best || dm > best) best = dm;
+  });
+  if(best && b){ let g = 0; while(!estOuvre(b, best) && g++ < 14) best = addDays(best, 1); }
+  return best;
+}
+/* Décale vers l'avant tout ce qui dépend des éléments donnés. Ne tire jamais
+   une date vers le passé, et respecte les lignes verrouillées. */
+function gPropager(b, ids){
+  let n = 0, tours = 0;
+  const file = (ids||[]).slice(), comptes = {};
+  while(file.length && tours++ < 2500){
+    const id = file.shift();
+    gSuccesseurs(id).forEach(s=>{
+      if(s.it.verrou) return;
+      if((comptes[s.it.id]||0) > 20) return;
+      const bs = gBornesItem(s.table, s.it); if(!bs) return;
+      const min = gDebutMin(b, s.table, s.it); if(!min) return;
+      const delta = dayIndex(min, bs.d);
+      if(delta > 0){
+        comptes[s.it.id] = (comptes[s.it.id]||0) + 1;
+        gDecaler(s.table, s.it, delta);
+        n++; file.push(s.it.id);
       }
+    });
+    /* un décalage élargit le récapitulatif du parent : ses suivants sont revus */
+    const t = state.tasks.find(x=>x.id===id);
+    let pid = t ? t.project_id : ((state.projects.find(x=>x.id===id)||{}).parent_id);
+    let g = 0;
+    while(pid && g++ < 24){
+      if(gSuccesseurs(pid).length && file.indexOf(pid)<0) file.push(pid);
+      const pp = state.projects.find(x=>x.id===pid);
+      pid = pp ? pp.parent_id : null;
     }
   }
-  header.innerHTML = `<div class="gh-corner" style="width:${LEFT_PAD}px">
-      ${ganttCols(b).map(c=>`<span class="wc" style="width:${c.w}px">${escapeHtml(c.label)}</span>`).join('')}
-    </div>
-    <div class="gh-months">${monthsHtml}</div><div class="gh-days">${daysHtml}</div>`;
+  return n;
+}
 
-  /* fond : jours chômés du calendrier de l'espace */
-  const bg = document.getElementById('gantt-bg');
-  bg.style.width = totalWidth+'px';
-  let bands='';
-  for(let i=0;i<totalDays;i++){
-    const dt=addDays(min,i);
-    if(!estOuvre(b, dt)){
-      const ferie = calBoard(b).feries.indexOf(fmtDate(dt))>=0;
-      bands += `<div class="${ferie?'hol-band':'we-band'}" style="left:${i*px+LEFT_PAD}px;width:${px}px"></div>`;
-    }
+/* ---------------- Opérations annulables ---------------- */
+function gOp(label, fn){
+  if(GT.op){ fn(); return GT.op; }
+  const op = {label, avant:{}, crees:[], supprimes:[]};
+  GT.op = op;
+  try{ fn(); } finally { GT.op = null; }
+  if(Object.keys(op.avant).length || op.crees.length || op.supprimes.length){
+    GT.pile.push(op);
+    if(GT.pile.length > 80) GT.pile.shift();
+    GT.redo = [];
+    gInstantane();
   }
-  bg.innerHTML = bands;
+  return op;
+}
+function gMaj(table, id, patch){
+  const it = state[table] && state[table].find(x=>x.id===id);
+  if(!it) return false;
+  const reel = {};
+  Object.keys(patch).forEach(c=>{ if(!gMemeValeur(it[c], patch[c])) reel[c] = patch[c]; });
+  if(!Object.keys(reel).length) return false;
+  if(GT.op){
+    const k = gCle(table, id);
+    const av = GT.op.avant[k] || (GT.op.avant[k] = {table, id, champs:{}});
+    Object.keys(reel).forEach(c=>{ if(!(c in av.champs)) av.champs[c] = gClone(it[c]===undefined ? null : it[c]); });
+  }
+  Object.assign(it, reel);
+  it.updated_at = new Date().toISOString();
+  gFile('maj', table, id, Object.assign({}, reel, {updated_at: it.updated_at}));
+  return true;
+}
+function gInserer(table, row){
+  if(!state[table] || state[table].some(x=>x.id===row.id)) return false;
+  state[table].push(row);
+  if(GT.op) GT.op.crees.push({table, row: gClone(row)});
+  gFile('ins', table, row.id, row);
+  return true;
+}
+function gRetirer(table, id){
+  const it = state[table] && state[table].find(x=>x.id===id);
+  if(!it) return false;
+  if(GT.op) GT.op.supprimes.push({table, row: gClone(it)});
+  state[table] = state[table].filter(x=>x.id!==id);
+  gFile('sup', table, id, null);
+  return true;
+}
+function gRejouer(src, dst, mot){
+  const op = src.pop();
+  if(!op){ gToast(mot==='Annulé' ? 'Rien à annuler' : 'Rien à rétablir'); return false; }
+  const inv = {label:op.label, avant:{}, crees:[], supprimes:[]};
+  GT.op = inv;
+  try{
+    op.supprimes.slice().reverse().forEach(s=>gInserer(s.table, gClone(s.row)));
+    Object.keys(op.avant).forEach(k=>{ const a = op.avant[k]; gMaj(a.table, a.id, gClone(a.champs)); });
+    op.crees.slice().reverse().forEach(c=>gRetirer(c.table, c.row.id));
+  } finally { GT.op = null; }
+  dst.push(inv);
+  if(GT.fiche && !((state[GT.fiche.table]||[]).some(x=>x.id===GT.fiche.id))) gFermerFiche();
+  gRendre();
+  gToast(mot + ' : ' + String(op.label).toLowerCase());
+  return true;
+}
+function gAnnuler(){ return gRejouer(GT.pile, GT.redo, 'Annulé'); }
+function gRefaire(){ return gRejouer(GT.redo, GT.pile, 'Rétabli'); }
 
-  const rowsArea = document.getElementById('rows-area');
-  rowsArea.style.width = totalWidth+'px';
-  const todayLeft = dayIndex(today,min)*px + LEFT_PAD;
-  let html='';
-
-  rows.forEach(r=>{
-    const wbs = `<div class="wbs-cell ${r.kind==='task'?'task':''}" style="width:${LEFT_PAD}px;padding-left:${4+r.depth*11}px" onclick="${r.kind==='project'?`openProjectDrawer('${r.item.id}')`:`openProjectDrawer('${r.parent.id}')`}">${celluleWbs(b, r, ctx)}</div>`;
-
-    if(r.kind==='project'){
-      const p = r.item;
-      const parent = projHasChildren(p);
-      const col = projCol(b, p.statut);
-      const span = projSpan(p);
-      const sd = parent ? span.d : dateFromStr(p.date_debut||fmtDate(today));
-      const ed = parent ? span.f : projEndDate(p);
-      const left = dayIndex(sd,min)*px + LEFT_PAD;
-      const width = Math.max(px*0.8,(dayIndex(ed,sd)+1)*px);
-      const av = parent ? projAvancement(p) : (p.avancement||0);
-      const late = parent ? projLateRollup(p) : projLate(p);
-      const dep = projDepassementJours(p);
-      const crit = !parent && ui.critique && ctx.cpm.critiques.has(p.id);
-      const ref = ctx.bl ? baselineDe(ctx.bl, p.id) : null;
-      const refBar = (ref && ref.d && ref.f) ? `<div class="ref-bar" style="left:${dayIndex(dateFromStr(ref.d),min)*px+LEFT_PAD}px;width:${Math.max(3,(dayIndex(dateFromStr(ref.f),dateFromStr(ref.d))+1)*px)}px" title="Référence : ${fmtFR(ref.d)} → ${fmtFR(ref.f)}"></div>` : '';
-
-      if(parent){
-        html += `<div class="proj-row summary" data-id="${p.id}">${wbs}${refBar}
-          <div class="summary-bar" data-depid="${p.id}" style="left:${left}px;width:${width}px" onclick="openProjectDrawer('${p.id}')" title="${escAttr(p.nom)} — récapitulatif">
-            <div class="sb-body" style="background:${late?'#e34935':'#172b4d'}"></div>
-            <div class="sb-cap l" style="border-top-color:${late?'#e34935':'#172b4d'}"></div>
-            <div class="sb-cap r" style="border-top-color:${late?'#e34935':'#172b4d'}"></div>
-            <span class="sb-pct">${av}%</span>
-          </div></div>`;
-      } else {
-        const cible = projCible(p);
-        let engTick='', deriveZone='';
-        if(cible){
-          const engLeft = dayIndex(dateFromStr(cible),sd)*px;
-          if(engLeft>=0 && engLeft<=width){
-            engTick = `<div class="eng-tick" style="left:${engLeft}px" title="Engagement : ${fmtFR(cible)}"></div>`;
-            if(late && dep>0) deriveZone = `<div class="derive-zone" style="left:${engLeft}px;width:${Math.max(2,width-engLeft)}px" title="${dep} jour(s) au-dela de l engagement"></div>`;
-          }
+/* ---------------- File d'attente d'enregistrement ---------------- */
+function gChargerFile(){
+  GT.attente = gLs('pa_g_attente', {}) || {};
+  GT.local = gLs('pa_g_local', {}) || {};
+  GT.absentes = gLs('pa_g_absentes', {}) || {};
+}
+function gSauverFile(){
+  gLsSet('pa_g_attente', GT.attente);
+  gLsSet('pa_g_local', GT.local);
+  gLsSet('pa_g_absentes', GT.absentes);
+}
+function gFile(op, table, id, data){
+  if(!USE_SUPABASE){ persistLocal(); return; }
+  const k = gCle(table, id);
+  const e = GT.attente[k];
+  if(op==='sup' && e && e.op==='ins'){ delete GT.attente[k]; }
+  else if(e && (op==='maj') && (e.op==='ins' || e.op==='maj')){ Object.assign(e.data, data); e.v = (e.v||0)+1; e.essais = 0; e.prochain = 0; }
+  else { GT.attente[k] = {op, table, id, data: data ? Object.assign({}, data) : null, essais:0, prochain:0, v:1, t:Date.now()}; }
+  gSauverFile(); gMajStatut(); gPomper();
+}
+function gColonneAbsente(err){
+  const m = String((err && (err.message || err.details)) || '');
+  let r = m.match(/Could not find the '([^']+)' column/i);
+  if(r) return r[1];
+  r = m.match(/column "?([a-z_0-9]+)"? of relation/i);
+  if(r) return r[1];
+  r = m.match(/column ([a-z_0-9]+) does not exist/i);
+  return r ? r[1] : null;
+}
+function gGarderLocal(table, id, col, val){
+  const k = gCle(table, id);
+  (GT.local[k] = GT.local[k] || {})[col] = val;
+}
+async function gEnvoyerEntree(e){
+  if(e.op==='sup'){
+    const r = await sbClient.from(e.table).delete().eq('id', e.id);
+    return r.error ? {ok:false, message:r.error.message} : {ok:true};
+  }
+  const abs = GT.absentes[e.table] || [];
+  let data = Object.assign({}, e.data);
+  abs.forEach(c=>{ if(c in data){ gGarderLocal(e.table, e.id, c, data[c]); delete data[c]; } });
+  for(let tour=0; tour<8; tour++){
+    const utiles = Object.keys(data).filter(c=>c!=='updated_at' && c!=='id');
+    if(e.op==='maj' && !utiles.length) return {ok:true};
+    const r = e.op==='ins'
+      ? await sbClient.from(e.table).insert(data)
+      : await sbClient.from(e.table).update(data).eq('id', e.id);
+    if(!r.error) return {ok:true};
+    const col = gColonneAbsente(r.error);
+    if(col && (col in data)){
+      const l = GT.absentes[e.table] = GT.absentes[e.table] || [];
+      if(l.indexOf(col)<0) l.push(col);
+      gGarderLocal(e.table, e.id, col, data[col]);
+      delete data[col];
+      continue;
+    }
+    if(e.op==='ins' && /duplicate key|already exists/i.test(r.error.message||'')){
+      e.op = 'maj';
+      const p = Object.assign({}, data); delete p.id; delete p.created_at;
+      data = p; continue;
+    }
+    return {ok:false, message: r.error.message || 'erreur inconnue'};
+  }
+  return {ok:false, message:'trop de tentatives'};
+}
+async function gPomper(){
+  if(!USE_SUPABASE || !sbClient){ return; }
+  if(GT.pompe){ GT.relance = true; return; }
+  GT.pompe = true; gMajStatut();
+  try{
+    const cles = Object.keys(GT.attente).sort((a,z)=>(GT.attente[a].t||0)-(GT.attente[z].t||0));
+    for(const k of cles){
+      const e = GT.attente[k];
+      if(!e) continue;
+      if(e.prochain && e.prochain > Date.now()) continue;
+      const v = e.v || 1;
+      const r = await gEnvoyerEntree(e);
+      const courant = GT.attente[k];
+      if(r.ok){
+        if(courant && (courant.v||1)===v){
+          GT.recents[k] = {op:e.op, table:e.table, id:e.id, data:e.data, jusqu: Date.now()+4000};
+          delete GT.attente[k];
         }
-        html += `<div class="proj-row" data-id="${p.id}">${wbs}${refBar}
-          <div class="strip ${crit?'critique':''}" data-depid="${p.id}" style="left:${left}px;width:${width}px;background:${col.soft};border-color:${crit?'#e34935':col.main+'44'}"
-               data-id="${p.id}" data-kind="project" onmousedown="startDrag(event,'${p.id}','project')">
-            <div class="tab" style="background:${crit?'#e34935':col.main}"></div>
-            <div class="strip-body" style="--fill:${av}%">
-              <span class="scode">${escapeHtml(p.code||'')}</span>
-              <span class="sname" style="color:${col.main}">${escapeHtml(p.nom)}</span>
-              ${crit?'<span class="crit-flag">CRITIQUE</span>':''}
-              ${late?`<span class="late-flag">DÉRIVE +${dep}j</span>`:''}
-              ${p.date_fin?`<span class="done-flag">LIVRÉ ${fmtFR(p.date_fin)}</span>`:''}
-              <span class="spct" style="color:${col.main}">${av}%</span>
-            </div>
-            ${deriveZone}${engTick}
-            <div class="resize-handle left" onmousedown="startResize(event,'${p.id}','project','left')"></div>
-            <div class="resize-handle right" onmousedown="startResize(event,'${p.id}','project','right')"></div>
-          </div></div>`;
-      }
-    } else {
-      const t = r.item, p = r.parent;
-      const col = projCol(b, p.statut);
-      const crit = ui.critique && ctx.cpm.critiques.has(t.id);
-      const ref = ctx.bl ? baselineDe(ctx.bl, t.id) : null;
-      const refBar = (ref && ref.d && ref.f) ? `<div class="ref-bar task" style="left:${dayIndex(dateFromStr(ref.d),min)*px+LEFT_PAD}px;width:${Math.max(3,(dayIndex(dateFromStr(ref.f),dateFromStr(ref.d))+1)*px)}px" title="Référence : ${fmtFR(ref.d)} → ${fmtFR(ref.f)}"></div>` : '';
-      if(t.jalon){
-        const mleft = dayIndex(dateFromStr(t.date_debut),min)*px + LEFT_PAD;
-        html += `<div class="task-row">${wbs}${refBar}<div class="milestone ${t.avancement===100?'done':''}" data-tid="${t.id}" data-depid="${t.id}" style="left:${mleft}px;background:${crit?'#e34935':col.main}" title="${escAttr(t.nom)} — ${fmtFR(t.date_debut)}"></div></div>`;
       } else {
-        const tsd=dateFromStr(t.date_debut), ted=dateFromStr(t.date_fin||t.date_debut);
-        const tleft = dayIndex(tsd,min)*px + LEFT_PAD;
-        const twidth = Math.max(px*0.6,(dayIndex(ted,tsd)+1)*px);
-        html += `<div class="task-row">${wbs}${refBar}
-          <div class="task-strip ${crit?'critique':''}" data-tid="${t.id}" data-depid="${t.id}" style="left:${tleft}px;width:${twidth}px;background:${crit?'#ffedeb':col.soft};border-color:${crit?'#e34935':col.main+'33'};color:${crit?'#e34935':col.main}"
-               onmousedown="startDrag(event,'${t.id}','task')" title="${escAttr(t.nom)} — ${fmtFR(t.date_debut)} → ${fmtFR(t.date_fin)} — ${t.avancement||0}%">
-            <div class="t-fill" style="width:${t.avancement||0}%"></div>
-            <span>${escapeHtml(t.nom)}</span>
-            <div class="resize-handle left" onmousedown="startResize(event,'${t.id}','task','left')"></div>
-            <div class="resize-handle right" onmousedown="startResize(event,'${t.id}','task','right')"></div>
-          </div></div>`;
+        e.essais = (e.essais||0) + 1;
+        e.erreur = r.message;
+        e.prochain = Date.now() + Math.min(60000, 1500 * Math.pow(2, Math.min(5, e.essais-1)));
       }
     }
+  } catch(err){ console.warn('Gantt : envoi interrompu', err); }
+  finally {
+    GT.pompe = false; gSauverFile(); gMajStatut(); gMajAlerte();
+    const reste = Object.values(GT.attente);
+    clearTimeout(GT.minuterie);
+    if(GT.relance){ GT.relance = false; GT.minuterie = setTimeout(gPomper, 60); }
+    else if(reste.length){
+      const p = Math.min.apply(null, reste.map(e=>e.prochain || (Date.now()+1500)));
+      GT.minuterie = setTimeout(gPomper, Math.max(400, p - Date.now()));
+    }
+  }
+}
+/* Après chaque rechargement complet : ce qui n'est pas encore parti est
+   réappliqué par-dessus, et les valeurs mises de côté sont réaffichées. */
+function gReappliquer(){
+  try{
+    ['tasks','projects'].forEach(t=>{
+      const abs = GT.absentes[t];
+      if(!abs || !abs.length || !state[t] || !state[t].length) return;
+      const ex = state[t][0];
+      const revenues = abs.filter(c=>Object.prototype.hasOwnProperty.call(ex, c));
+      if(!revenues.length) return;
+      GT.absentes[t] = abs.filter(c=>revenues.indexOf(c)<0);
+      Object.keys(GT.local).forEach(k=>{
+        if(k.indexOf(t+'|')!==0) return;
+        const id = k.slice(t.length+1);
+        const vals = {};
+        revenues.forEach(c=>{ if(c in GT.local[k]){ vals[c] = GT.local[k][c]; delete GT.local[k][c]; } });
+        if(Object.keys(vals).length && state[t].some(x=>x.id===id)) gFile('maj', t, id, vals);
+        if(!Object.keys(GT.local[k]).length) delete GT.local[k];
+      });
+    });
+    const appliquer = (e)=>{
+      const liste = state[e.table]; if(!liste) return;
+      const it = liste.find(x=>x.id===e.id);
+      if(e.op==='maj' && it) Object.assign(it, e.data);
+      else if(e.op==='ins' && !it) liste.push(Object.assign({}, e.data));
+      else if(e.op==='sup' && it) state[e.table] = liste.filter(x=>x.id!==e.id);
+    };
+    Object.values(GT.attente).forEach(appliquer);
+    Object.keys(GT.recents).forEach(k=>{
+      const r = GT.recents[k];
+      if(r.jusqu < Date.now()){ delete GT.recents[k]; return; }
+      const it = (state[r.table]||[]).find(x=>x.id===r.id);
+      if(r.op==='maj' && it && String(it.updated_at||'') < String(r.data.updated_at||'')) Object.assign(it, r.data);
+      else if(r.op!=='maj') appliquer(r);
+    });
+    Object.keys(GT.local).forEach(k=>{
+      const i = k.indexOf('|'); const t = k.slice(0, i), id = k.slice(i+1);
+      const it = (state[t]||[]).find(x=>x.id===id);
+      if(it) Object.assign(it, GT.local[k]);
+    });
+    gSauverFile();
+  }catch(e){ console.warn('Gantt : réapplication', e); }
+}
+/* Écriture hors opération annulable (panneau latéral d'un projet). */
+function gMajHorsOp(table, id, patch){
+  const it = state[table] && state[table].find(x=>x.id===id);
+  if(!it) return;
+  normaliserDates(patch);
+  Object.assign(it, patch);
+  it.updated_at = new Date().toISOString();
+  gFile('maj', table, id, Object.assign({}, patch, {updated_at: it.updated_at}));
+}
+function gRelancerFile(){ Object.values(GT.attente).forEach(e=>{ e.prochain = 0; e.essais = 0; }); gPomper(); gToast('Nouvel essai en cours…'); }
+function gVerifierColonnes(){
+  const loc = GT.local;
+  GT.absentes = {};
+  Object.keys(loc).forEach(k=>{
+    const i = k.indexOf('|'); const t = k.slice(0, i), id = k.slice(i+1);
+    if((state[t]||[]).some(x=>x.id===id)) gFile('maj', t, id, Object.assign({}, loc[k]));
   });
+  GT.local = {};
+  gSauverFile(); gMajAlerte();
+  gToast('Envoi des valeurs gardées sur cet appareil…');
+}
+function gCopierSql(){
+  const done = ()=>gToast('Correctif SQL copié — colle-le dans Supabase → SQL Editor');
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(GT_SQL).then(done, ()=>window.prompt('Copie ce SQL :', GT_SQL));
+  else window.prompt('Copie ce SQL :', GT_SQL);
+}
 
-  if(rows.length===0) html = `<div class="empty-hint" style="height:260px"><div class="eh-title">Aucun projet à afficher</div><div style="font-size:12px">Crée un projet, puis ses sous-projets avec le ＋ de la colonne de gauche.</div></div>`;
-  rowsArea.innerHTML = html + `<svg id="dep-svg"></svg><div class="today-line" style="left:${todayLeft}px"></div>`;
-  rowsArea.querySelectorAll('.strip[data-kind="project"]').forEach(el=>{
-    el.addEventListener('click', ()=>{ if(!el.dataset.dragged) openProjectDrawer(el.dataset.id); el.dataset.dragged=''; });
-  });
-  rowsArea.querySelectorAll('.task-strip,.milestone').forEach(el=>{
-    el.addEventListener('click', ()=>{
-      if(el.dataset.dragged){ el.dataset.dragged=''; return; }
-      const t = state.tasks.find(x=>x.id===el.dataset.tid);
-      if(t) openProjectDrawer(t.project_id);
+/* ---------------- Versions de secours (sur l'appareil) ---------------- */
+const GT_CH_P = ['id','board_id','parent_id','nom','code','responsable','statut','date_debut','engagement_date','date_fin','avancement','depends_on','predecesseurs','verrou','ordre','charge','extra'];
+const GT_CH_T = ['id','project_id','nom','date_debut','date_fin','avancement','jalon','depends_on','predecesseurs','responsable','charge','verrou','ordre'];
+function gInstantane(motif){
+  const b = currentBoard(); if(!b) return;
+  const pick = (o, ks)=>{ const r = {}; ks.forEach(k=>{ if(o[k]!==undefined) r[k] = gClone(o[k]); }); return r; };
+  const projs = state.projects.filter(p=>p.board_id===b.id);
+  if(!projs.length) return;
+  const ids = new Set(projs.map(p=>p.id));
+  const snap = {t:Date.now(), motif: motif || 'Modification',
+    projects: projs.map(p=>pick(p, GT_CH_P)),
+    tasks: state.tasks.filter(t=>ids.has(t.project_id)).map(t=>pick(t, GT_CH_T))};
+  const cle = 'pa_g_versions_'+b.id;
+  const l = gLs(cle, []) || [];
+  if(motif!=='Ouverture' && l.length && l[0].motif!=='Ouverture' && (Date.now()-l[0].t) < 120000) l[0] = snap;
+  else l.unshift(snap);
+  while(l.length > 8) l.pop();
+  gLsSet(cle, l);
+}
+function gVersions(){
+  const b = currentBoard(); if(!b) return;
+  const l = gLs('pa_g_versions_'+b.id, []) || [];
+  document.getElementById('modal-content').innerHTML =
+    '<div class="modal-head">Versions du planning gardées sur cet appareil</div>' +
+    '<div class="modal-body">' +
+      '<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px">Le planning est photographié à l\u2019ouverture puis au fil des modifications. Restaurer recrée ce qui a été supprimé et remet les dates et les liens de cette version. Ce qui a été créé depuis est conservé, et l\u2019opération s\u2019annule avec Ctrl+Z.</div>' +
+      (l.length ? l.map((v,i)=>
+        '<div class="col-config-item"><span class="cc-label"><b>'+new Date(v.t).toLocaleString('fr-FR')+'</b> · '+escapeHtml(v.motif)+' · '+v.projects.length+' projet(s), '+v.tasks.length+' tâche(s)</span>' +
+        '<button class="btn small" onclick="gRestaurerVersion('+i+')">Restaurer</button></div>').join('')
+        : '<div style="font-size:12px;color:var(--muted-2)">Aucune version enregistrée pour l\u2019instant.</div>') +
+    '</div><div class="modal-foot"><button class="btn ghost" onclick="closeModal()">Fermer</button></div>';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+function gRestaurerVersion(i){
+  const b = currentBoard(); if(!b) return;
+  const l = gLs('pa_g_versions_'+b.id, []) || [];
+  const v = l[i]; if(!v) return;
+  if(!confirm('Restaurer le planning tel qu\u2019il était le ' + new Date(v.t).toLocaleString('fr-FR') + ' ?\n\nCe qui a été supprimé depuis est recréé, les dates et les liens reviennent à cet état. Ce qui a été créé depuis est conservé.\n\nCtrl+Z annule la restauration.')) return;
+  gOp('Restauration d\u2019une version', ()=>{
+    v.projects.forEach(p=>{
+      const cur = state.projects.find(x=>x.id===p.id);
+      if(cur){ const q = Object.assign({}, p); delete q.id; gMaj('projects', p.id, q); }
+      else gInserer('projects', Object.assign({created_at:new Date().toISOString()}, p));
+    });
+    v.tasks.forEach(t=>{
+      if(!state.projects.some(p=>p.id===t.project_id)) return;
+      const cur = state.tasks.find(x=>x.id===t.id);
+      if(cur){ const q = Object.assign({}, t); delete q.id; gMaj('tasks', t.id, q); }
+      else gInserer('tasks', Object.assign({created_at:new Date().toISOString()}, t));
     });
   });
-  if(ui.charge) renderCharge(b, min, max, px, LEFT_PAD, totalWidth);
-  else { const z = document.getElementById('charge-zone'); if(z) z.innerHTML=''; }
-  requestAnimationFrame(drawDependencies);
+  closeModal(); gRendre();
+  gToast('Version restaurée · Ctrl+Z pour revenir', true);
 }
 
-/* ---- Histogramme de charge ---- */
-function renderCharge(b, min, max, px, LEFT_PAD, totalWidth){
-  const z = document.getElementById('charge-zone');
-  if(!z) return;
+/* ---------------- Gestes sur les données ---------------- */
+function gLireDate(txt, ref){
+  const s = String(txt==null ? '' : txt).trim();
+  if(!s) return '';
+  const fab = (y, mo, d)=>{
+    if(y < 100) y += 2000;
+    const dt = new Date(y, mo-1, d);
+    if(dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return null;
+    return fmtDate(dt);
+  };
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if(m) return fab(+m[1], +m[2], +m[3]);
+  m = s.match(/^(\d{1,2})[\/.\-\s](\d{1,2})(?:[\/.\-\s](\d{2,4}))?$/);
+  if(m){
+    const an = m[3] ? +m[3] : (ref ? dateFromStr(ref).getFullYear() : todayMid().getFullYear());
+    return fab(an, +m[2], +m[1]);
+  }
+  m = s.match(/^(\d{2})(\d{2})(\d{2}|\d{4})$/);
+  if(m) return fab(+m[3], +m[2], +m[1]);
+  return null;
+}
+function gAppliquerDates(b, table, it, col, val){
+  const d0 = it.date_debut || null;
+  const f0 = table==='tasks' ? (it.date_fin || it.date_debut || null) : (it.date_fin || it.engagement_date || null);
+  let nd = d0, nf = f0;
+  if(col==='duree'){
+    const n = parseInt(val, 10);
+    if(!(n >= 1)){ gToast('Durée : un nombre de jours ouvrés, 1 au minimum'); return false; }
+    nd = d0 || fmtDate(todayMid());
+    nf = fmtDate(finDepuisDuree(b, dateFromStr(nd), n));
+  } else {
+    const iso = gLireDate(val, d0 || f0);
+    if(iso===null){ gToast('Date non reconnue — exemples : 12/03 · 12/03/27 · 2027-03-12'); return false; }
+    if(col==='debut'){
+      if(!iso){ if(d0 && !confirmerEffacement(d0, 'Début')) return false; nd = null; }
+      else {
+        const dur = (d0 && f0) ? Math.max(0, dayIndex(dateFromStr(f0), dateFromStr(d0))) : 0;
+        nd = iso;
+        if(!nf || dateFromStr(nf) < dateFromStr(nd)) nf = fmtDate(addDays(dateFromStr(nd), dur));
+      }
+    } else {
+      if(!iso){ if(f0 && !confirmerEffacement(f0, 'Fin')) return false; nf = null; }
+      else {
+        if(nd && dateFromStr(iso) < dateFromStr(nd)){ gToast('La fin ne peut pas précéder le début'); return false; }
+        nf = iso; if(!nd) nd = iso;
+      }
+    }
+  }
+  gOp(col==='duree' ? 'Durée' : 'Dates', ()=>{ gPoserDates(table, it, nd, nf); gPropager(b, [it.id]); });
+  return true;
+}
+function gAppliquerChamp(table, id, col, brut){
+  const b = currentBoard();
+  const it = state[table] && state[table].find(x=>x.id===id);
+  if(!b || !it) return false;
+  const val = typeof brut === 'boolean' ? brut : String(brut==null ? '' : brut).trim();
+  switch(col){
+    case 'nom': if(!val) return false; gOp('Renommage', ()=>gMaj(table, id, {nom: val})); return true;
+    case 'resp': gOp('Responsable', ()=>gMaj(table, id, {responsable: val})); return true;
+    case 'charge': {
+      const n = val==='' ? null : parseFloat(String(val).replace(',', '.'));
+      if(val!=='' && isNaN(n)){ gToast('Charge : un nombre de jours, par exemple 2,5'); return false; }
+      gOp('Charge', ()=>gMaj(table, id, {charge: n})); return true;
+    }
+    case 'av': {
+      let n = parseInt(val, 10); if(isNaN(n)) n = 0;
+      n = Math.max(0, Math.min(100, n));
+      gOp('Avancement', ()=>gMaj(table, id, {avancement: n})); return true;
+    }
+    case 'jalon': gOp('Jalon', ()=>{ const p = {jalon: !!brut}; if(brut && it.date_debut) p.date_fin = it.date_debut; gMaj(table, id, p); }); return true;
+    case 'verrou': gOp('Verrou', ()=>gMaj(table, id, {verrou: !!brut})); return true;
+    case 'debut': case 'fin': case 'duree': return gAppliquerDates(b, table, it, col, val);
+    case 'preds': {
+      const num = wbsNumeros(b);
+      const preds = texteVersPreds(val, num);
+      if(val && !preds.length){ gToast('Liens non reconnus — exemples : 3 · 3DD · 3FD+2 · 3;5'); return false; }
+      if(preds.some(p=>p.id===id)){ gToast('Une ligne ne peut pas dépendre d\u2019elle-même'); return false; }
+      if(preds.some(p=>gCreeCycle(p.id, id))){ gToast('Impossible : ces liens créeraient une boucle'); return false; }
+      gOp('Liens', ()=>{
+        gMaj(table, id, {predecesseurs: preds, depends_on: preds.length ? preds[0].id : null});
+        gPropager(b, preds.map(p=>p.id));
+      });
+      return true;
+    }
+  }
+  return false;
+}
+function gLier(fromId, toId, toTable, type, lag){
+  const b = currentBoard();
+  const to = state[toTable] && state[toTable].find(x=>x.id===toId);
+  const from = itemParId(fromId);
+  if(!b || !to || !from) return false;
+  if(gCreeCycle(fromId, toId)){ gToast('Impossible : ce lien créerait une boucle'); return false; }
+  const preds = predsDe(to).map(p=>Object.assign({}, p)).filter(p=>p.id!==fromId);
+  preds.push({id: fromId, type: type || 'FD', lag: Number(lag)||0});
+  gOp('Lien', ()=>{
+    gMaj(toTable, toId, {predecesseurs: preds, depends_on: preds[0].id});
+    gPropager(b, [fromId]);
+  });
+  logActivity('a relié', '« '+from.nom+' » → « '+to.nom+' »', GT_TYPES_LIEN[type||'FD']);
+  gRendre();
+  gToast('Lien créé : ' + (GT_TYPES_LIEN[type||'FD']) + ' · Ctrl+Z pour annuler');
+  return true;
+}
+function gSupprimerLien(fromId, toId){
+  const t = gTableDe(toId); if(!t) return;
+  const to = state[t].find(x=>x.id===toId); if(!to) return;
+  const preds = predsDe(to).filter(p=>p.id!==fromId);
+  gOp('Suppression d\u2019un lien', ()=>gMaj(t, toId, {predecesseurs: preds, depends_on: preds.length ? preds[0].id : null}));
+  GT.lienSel = null; gFermerPop(); gRendre();
+  gToast('Lien supprimé · Ctrl+Z pour annuler', true);
+}
+function gModifierLien(fromId, toId){
+  const t = gTableDe(toId); if(!t) return;
+  const to = state[t].find(x=>x.id===toId); if(!to) return;
+  const type = (document.getElementById('g2p-type')||{}).value || 'FD';
+  const lag = parseInt((document.getElementById('g2p-lag')||{}).value, 10) || 0;
+  const b = currentBoard();
+  const preds = predsDe(to).map(p=>p.id===fromId ? {id:fromId, type, lag} : Object.assign({}, p));
+  gOp('Lien', ()=>{ gMaj(t, toId, {predecesseurs: preds, depends_on: preds.length ? preds[0].id : null}); gPropager(b, [fromId]); });
+  gFermerPop(); gRendre();
+}
+function gCreerTache(pid){
+  const b = currentBoard();
+  const p = state.projects.find(x=>x.id===pid);
+  if(!b || !p || gLectureSeule()) return;
+  const taches = gTachesDe(pid).filter(t=>t.date_debut);
+  let deb;
+  if(taches.length){
+    const derniere = taches.slice().sort((a,c)=>String(a.date_fin||a.date_debut).localeCompare(String(c.date_fin||c.date_debut))).pop();
+    deb = addDays(dateFromStr(derniere.date_fin || derniere.date_debut), 1);
+  } else deb = dateFromStr(p.date_debut || fmtDate(todayMid()));
+  let g = 0; while(!estOuvre(b, deb) && g++ < 14) deb = addDays(deb, 1);
+  const fin = finDepuisDuree(b, deb, 5);
+  const now = new Date().toISOString();
+  const row = {id: uid(), project_id: pid, nom: 'Nouvelle tâche', date_debut: fmtDate(deb), date_fin: fmtDate(fin),
+               avancement: 0, jalon: false, depends_on: null, created_at: now, updated_at: now};
+  gOp('Nouvelle tâche', ()=>gInserer('tasks', row));
+  ui.expandedProjects.add(pid);
+  GT.sel = {table:'tasks', id: row.id};
+  logActivity('a ajouté une tâche à', '« '+p.nom+' »', '');
+  gRendre();
+  setTimeout(()=>{
+    const el = document.querySelector('#g2-gliste .g2-in[data-rid="'+gSel(row.id)+'"][data-c="nom"]');
+    if(el){ el.focus(); if(el.select) el.select(); }
+  }, 40);
+}
+function gSupprimer(table, id){
+  if(gLectureSeule()) return;
+  const it = state[table] && state[table].find(x=>x.id===id);
+  if(!it) return;
+  let rows = [];
+  if(table==='tasks') rows = [{table:'tasks', row: it}];
+  else {
+    const arbre = projSubtree(it);
+    const taches = [];
+    arbre.forEach(p=>gTachesDe(p.id).forEach(t=>taches.push(t)));
+    const n = (arbre.length - 1) + taches.length;
+    if(n > 0 && !confirm('Supprimer « ' + it.nom + ' » et ses ' + n + ' élément(s) ?\n\nCtrl+Z annule la suppression.')) return;
+    taches.forEach(t=>rows.push({table:'tasks', row:t}));
+    arbre.slice().reverse().forEach(p=>rows.push({table:'projects', row:p}));
+  }
+  const ids = new Set(rows.map(x=>x.row.id));
+  gOp('Suppression', ()=>{
+    state.tasks.concat(state.projects).forEach(x=>{
+      if(ids.has(x.id)) return;
+      const ps = predsDe(x);
+      if(ps.some(p=>ids.has(p.id))){
+        const n2 = ps.filter(p=>!ids.has(p.id));
+        gMaj(state.tasks.some(t=>t.id===x.id) ? 'tasks' : 'projects', x.id, {predecesseurs: n2, depends_on: n2.length ? n2[0].id : null});
+      }
+    });
+    rows.forEach(x=>gRetirer(x.table, x.row.id));
+  });
+  if(GT.fiche && ids.has(GT.fiche.id)) gFermerFiche();
+  GT.sel = null;
+  logActivity('a supprimé', (table==='tasks' ? 'la tâche « ' : 'le projet « ') + it.nom + ' »', '');
+  gRendre();
+  gToast('« ' + truncate(it.nom, 38) + ' » supprimé', true);
+}
+function gEnchainer(pid){
+  const b = currentBoard();
+  if(!b || gLectureSeule()) return;
+  const enfants = projChildren(pid).map(k=>({t:'projects', it:k}))
+    .concat(gTachesDe(pid).map(t=>({t:'tasks', it:t})))
+    .filter(x=>!(x.t==='projects' && projHasChildren(x.it)))
+    .sort((a,c)=>String((a.it.date_debut)||'9999').localeCompare(String((c.it.date_debut)||'9999')));
+  if(enfants.length < 2){ gToast('Il faut au moins deux éléments à enchaîner'); return; }
+  let n = 0;
+  gOp('Enchaînement', ()=>{
+    for(let i=1;i<enfants.length;i++){
+      const cur = enfants[i], prec = enfants[i-1];
+      if(predsDe(cur.it).length) continue;
+      if(gCreeCycle(prec.it.id, cur.it.id)) continue;
+      gMaj(cur.t, cur.it.id, {predecesseurs:[{id:prec.it.id, type:'FD', lag:0}], depends_on: prec.it.id});
+      n++;
+    }
+    gPropager(b, enfants.map(x=>x.it.id));
+  });
+  gRendre();
+  gToast(n ? (n + ' lien(s) créé(s) · Ctrl+Z pour annuler') : 'Ces éléments ont déjà des liens', !!n);
+}
+function gPousser(delta){
+  const b = currentBoard();
+  if(!b || !GT.sel || gLectureSeule()) return;
+  const {table, id} = GT.sel;
+  const it = state[table] && state[table].find(x=>x.id===id);
+  if(!it) return;
+  gOp('Déplacement', ()=>{ gDecaler(table, it, delta); gPropager(b, [id]); });
+  gRendre();
+}
+
+/* ============================================================
+   GANTT v17 — rendu et gestes
+   ============================================================ */
+function tableDe(kind){ return kind==='project' ? 'projects' : 'tasks'; }
+function toggleExpand(id){
+  if(ui.expandedProjects.has(id)){ ui.expandedProjects.delete(id); GT.replies[id] = true; }
+  else { ui.expandedProjects.add(id); delete GT.replies[id]; }
+  gRendre();
+}
+function gRendre(){ const b = currentBoard(); if(b && gActif()) renderGantt(b); }
+function drawDependencies(){ if(document.getElementById('g2-liens')) gDessinerLiens(); }
+function scrollToToday(){ gAllerAujourdhui(); }
+
+/* ---------------- Squelette et barre d'outils ---------------- */
+function gSquelette(){
+  return '<div class="g2 nuit" id="g2">' +
+    '<div class="g2-alerte vide" id="g2-alerte"></div>' +
+    '<div class="g2-corps">' +
+      '<div class="g2-gauche" id="g2-gauche"><div class="g2-gtete" id="g2-gtete"></div><div class="g2-gliste" id="g2-gliste"></div></div>' +
+      '<div class="g2-sep" id="g2-sep" title="Glisser pour élargir la colonne"></div>' +
+      '<div class="g2-droite" id="gantt-scroll"><div class="g2-toile" id="g2-toile"></div></div>' +
+      '<aside class="g2-fiche" id="g2-fiche"></aside>' +
+    '</div>' +
+    '<div class="g2-bulle" id="g2-bulle"></div>' +
+    '<div class="g2-toast" id="g2-toast"></div>' +
+  '</div>';
+}
+function gBarreOutils(b){
+  const pr = gPrefs(), bl = baselineActive(b);
+  return '<div class="seg">' + Object.keys(GT_ZOOMS).map(k=>
+      '<button class="'+(pr.zoom===k?'active':'')+'" onclick="gZoom(\''+k+'\')">'+GT_ZOOMS[k].n+'</button>').join('') + '</div>' +
+    '<button class="btn small ghost '+(pr.zoom==='ajuste'?'primary':'')+'" onclick="gAjuster()" title="Tout voir sur la largeur de l\u2019écran">⤢ Ajuster</button>' +
+    '<button class="btn small ghost" onclick="gAllerAujourdhui()" title="Revenir sur la semaine en cours">↦ Aujourd\u2019hui</button>' +
+    '<button class="btn small ghost" id="g2-annuler" onclick="gAnnuler()" title="Annuler (Ctrl+Z)">↩</button>' +
+    '<button class="btn small ghost" id="g2-refaire" onclick="gRefaire()" title="Rétablir (Ctrl+Y)">↪</button>' +
+    '<button class="btn small '+(ui.critique?'primary':'')+'" onclick="ui.critique=!ui.critique;gRendre()" title="Mettre en évidence les tâches sans marge">⚡ Chemin critique</button>' +
+    '<button class="btn small '+(ui.charge?'primary':'')+'" onclick="ui.charge=!ui.charge;gRendre()" title="Charge par personne">👥 Charge</button>' +
+    '<button class="btn small" onclick="openBaselines()" title="Figer et comparer un planning de référence">🎯 Référence'+(bl?' · '+escapeHtml(truncate(bl.nom,12)):'')+'</button>' +
+    '<button class="btn small" onclick="gMenuAffichage(event)" title="Thème, couleurs, colonnes, calendrier, versions">◐ Affichage ▾</button>' +
+    '<button class="btn small" onclick="imprimerGantt()" title="Impression / PDF">🖨</button>';
+}
+function renderProjectBoard(main, b){
+  const all = state.projects.filter(p=>p.board_id===b.id);
+  const resps = [...new Set(all.map(p=>p.responsable).filter(Boolean))].sort();
+  const gantt = route.sub==='gantt';
+  const toolbar = '<div class="board-toolbar" id="board-toolbar">' +
+    '<div class="seg">' +
+      '<button class="'+(route.sub==='gantt'?'active':'')+'" onclick="setSub(\'gantt\')"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" style="vertical-align:-2px;margin-right:2px"><rect x="3" y="4" width="10" height="4" rx="1"/><rect x="8" y="10" width="12" height="4" rx="1"/><rect x="5" y="16" width="9" height="4" rx="1"/></svg> Gantt</button>' +
+      '<button class="'+(route.sub==='liste'?'active':'')+'" onclick="setSub(\'liste\')">☰ Liste</button>' +
+      '<button class="'+(route.sub==='kanban'?'active':'')+'" onclick="setSub(\'kanban\')">▤ Kanban</button>' +
+      '<button class="'+(route.sub==='dash'?'active':'')+'" onclick="setSub(\'dash\')">◔ Dashboard</button>' +
+    '</div>' +
+    (gantt ? gBarreOutils(b) : '') +
+    filterChipsHtml(projStatutsNoms(b), null, resps) +
+    '<div class="toolbar-spacer"></div>' +
+    (gantt ? '<span class="g2-sync" id="g2-sync"></span><button class="btn small ghost" onclick="gAide()" title="Gestes du planning">?</button>' : '') +
+    '<button class="btn small" onclick="openProjConfig()">⚙ Paramétrer</button>' +
+    '<button class="btn primary small" id="btn-new-item" onclick="openProjectModal()">＋ Projet</button>' +
+  '</div>';
+
+  /* mise à jour douce : on ne détruit pas la zone de défilement ni la cellule en cours de saisie */
+  if(gantt && GT.boardAffiche===b.id && document.getElementById('g2') && main.contains(document.getElementById('g2'))){
+    const tb = document.getElementById('board-toolbar');
+    if(tb) tb.outerHTML = toolbar;
+    renderGantt(b);
+    return;
+  }
+  let content;
+  if(route.sub==='liste') content = renderProjListe(b);
+  else if(route.sub==='kanban') content = renderProjKanban(b);
+  else if(route.sub==='dash') content = renderProjDash(b);
+  else content = gSquelette();
+  main.innerHTML = '<div style="display:flex;flex-direction:column;height:100%">' + toolbar + content + '</div>';
+  if(gantt){ GT.boardAffiche = b.id; gBrancher(); renderGantt(b); }
+  else GT.boardAffiche = null;
+}
+
+/* ---------------- Rendu ---------------- */
+function gColonnes(b){
+  const pr = gPrefs();
+  const etroit = (window.innerWidth || 1200) < 760;
+  return ganttCols(b)
+    .filter(c=>!etroit || c.key==='num' || c.key==='nom')
+    .map(c=>Object.assign({}, c, {w: c.key==='nom' ? (etroit ? 150 : pr.largeurNom) : c.w}));
+}
+function gPlage(b){
+  const dates = [todayMid()];
+  const projs = state.projects.filter(p=>p.board_id===b.id);
+  projs.forEach(p=>{ if(p.date_debut) dates.push(dateFromStr(p.date_debut)); dates.push(projEndDate(p)); });
+  const ids = new Set(projs.map(p=>p.id));
+  state.tasks.filter(t=>ids.has(t.project_id)).forEach(t=>{
+    if(t.date_debut) dates.push(dateFromStr(t.date_debut));
+    if(t.date_fin) dates.push(dateFromStr(t.date_fin));
+  });
+  const ok = dates.filter(d=>d && !isNaN(+d));
+  let min = new Date(Math.min.apply(null, ok.map(x=>+x)));
+  let max = new Date(Math.max.apply(null, ok.map(x=>+x)));
+  min = addDays(min, -10); min = new Date(min.getFullYear(), min.getMonth(), 1);
+  const horizon = addDays(todayMid(), 200 + (ui.horizonPlus||0));
+  max = new Date(Math.max(+addDays(max, 30), +horizon));
+  max = new Date(max.getFullYear(), max.getMonth()+1, 1);
+  return {min, max};
+}
+function gXDate(d, min, px, milieu){
+  const i = dayIndex(d, min);
+  return i*px + (milieu && px >= 10 ? px/2 : 0);
+}
+function gEntete(b, min, max, px){
+  const jours = dayIndex(max, min);
+  const auj = fmtDate(todayMid());
+  let l1 = '', l2 = '';
+  const cel = (cls, x, w, txt, titre)=> '<span class="'+cls+'" style="left:'+Math.round(x)+'px;width:'+Math.max(0,Math.round(w))+'px"'+(titre?' title="'+escAttr(titre)+'"':'')+'>'+txt+'</span>';
+  /* ligne du haut */
+  if(px < 2.2){
+    let c = new Date(min.getFullYear(), 0, 1); if(c < min) c = new Date(min.getFullYear()+1, 0, 1);
+    let prec = min;
+    while(prec < max){
+      const fin = c < max ? c : max;
+      l1 += cel('g2-h1', dayIndex(prec,min)*px, dayIndex(fin,prec)*px, String(prec.getFullYear()));
+      prec = c; c = new Date(c.getFullYear()+1, 0, 1);
+    }
+  } else if(px < 5){
+    let c = new Date(min.getFullYear(), Math.floor(min.getMonth()/3)*3, 1);
+    while(c < max){
+      const suiv = new Date(c.getFullYear(), c.getMonth()+3, 1);
+      const deb = c < min ? min : c, fin = suiv < max ? suiv : max;
+      l1 += cel('g2-h1', dayIndex(deb,min)*px, dayIndex(fin,deb)*px, 'T'+(Math.floor(c.getMonth()/3)+1)+' '+c.getFullYear());
+      c = suiv;
+    }
+  } else {
+    let c = new Date(min.getFullYear(), min.getMonth(), 1);
+    let premier = true;
+    while(c < max){
+      const suiv = new Date(c.getFullYear(), c.getMonth()+1, 1);
+      const deb = c < min ? min : c, fin = suiv < max ? suiv : max;
+      const large = dayIndex(fin,deb)*px;
+      const nom = large > 88 ? (GT_MOIS[c.getMonth()] + ((c.getMonth()===0 || premier) ? ' ' + c.getFullYear() : ''))
+                             : (large > 34 ? GT_MOIS_C[c.getMonth()] : '');
+      l1 += cel('g2-h1', dayIndex(deb,min)*px, large, escapeHtml(nom), GT_MOIS[c.getMonth()]+' '+c.getFullYear());
+      premier = false; c = suiv;
+    }
+  }
+  /* ligne du bas */
+  if(px >= 26){
+    for(let i=0;i<jours;i++){
+      const d = addDays(min, i), we = !estOuvre(b, d);
+      l2 += cel('g2-h2'+(we?' we':'')+(fmtDate(d)===auj?' auj':''), i*px, px, GT_JOURS[d.getDay()]+' '+d.getDate());
+    }
+  } else if(px >= 12){
+    for(let i=0;i<jours;i++){
+      const d = addDays(min, i);
+      if(d.getDay()!==1) continue;
+      const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      const j = t.getUTCDay() || 7;
+      t.setUTCDate(t.getUTCDate() + 4 - j);
+      const a = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+      const iso = Math.ceil((((t - a)/86400000) + 1)/7);
+      l2 += cel('g2-h2', i*px, 7*px, 'S'+String(iso).padStart(2,'0'), 'Semaine du '+fmtFR(fmtDate(d)));
+    }
+  } else if(px >= 4.2){
+    for(let i=0;i<jours;i++){
+      const d = addDays(min, i);
+      if(d.getDay()!==1) continue;
+      l2 += cel('g2-h2', i*px, 7*px, 'S'+(Math.floor((d.getDate()-1)/7)+1), 'Semaine du '+fmtFR(fmtDate(d)));
+    }
+  } else {
+    let c = new Date(min.getFullYear(), min.getMonth(), 1);
+    while(c < max){
+      const suiv = new Date(c.getFullYear(), c.getMonth()+1, 1);
+      const deb = c < min ? min : c, fin = suiv < max ? suiv : max;
+      const large = dayIndex(fin,deb)*px;
+      l2 += cel('g2-h2', dayIndex(deb,min)*px, large, large > 22 ? GT_MOIS_C[c.getMonth()] : GT_MOIS[c.getMonth()][0]);
+      c = suiv;
+    }
+  }
+  return {l1, l2};
+}
+function gFond(b, min, max, px, lignes){
+  const jours = dayIndex(max, min);
+  let h = '';
+  if(px >= 10){
+    const feries = calBoard(b).feries || [];
+    for(let i=0;i<jours;i++){
+      const d = addDays(min, i);
+      if(!estOuvre(b, d)) h += '<i class="'+(feries.indexOf(fmtDate(d))>=0 ? 'g2-fe' : 'g2-we')+'" style="left:'+(i*px)+'px;width:'+px+'px"></i>';
+      if(d.getDay()===1) h += '<i class="g2-vs" style="left:'+(i*px)+'px"></i>';
+    }
+  }
+  let c = new Date(min.getFullYear(), min.getMonth(), 1);
+  if(c < min) c = new Date(min.getFullYear(), min.getMonth()+1, 1);
+  while(c < max){ h += '<i class="g2-vm" style="left:'+(dayIndex(c,min)*px)+'px"></i>'; c = new Date(c.getFullYear(), c.getMonth()+1, 1); }
+  lignes.forEach((L,i)=>{ if(i>0 && L.st==='groupe') h += '<b class="g2-hg" style="top:'+L.y+'px"></b>'; });
+  return h;
+}
+function gLigneGauche(L, cols, ctx){
+  const r = L.r, it = r.item, table = L.table, est = table==='projects';
+  const b = ctx.b, resume = gEstResume(r), ro = gLectureSeule();
+  const bornes = gBornesLigne(r);
+  const col = gCouleur(b, r);
+  const sel = GT.sel && GT.sel.id===it.id;
+  const crit = ui.critique && ctx.cpm.critiques.has(it.id);
+  const inp = (c, val, plus)=> ro
+    ? '<span class="g2-ro">'+escapeHtml(val==null?'':String(val))+'</span>'
+    : '<input class="g2-in" data-rid="'+it.id+'" data-t="'+table+'" data-c="'+c+'" data-v="'+escAttr(val==null?'':String(val))+'" value="'+escAttr(val==null?'':String(val))+'" '+(plus||'')+'>';
+  const cells = cols.map(c=>{
+    let h = '';
+    if(c.key==='num') h = '<span class="g2-num">'+(ctx.num.map[it.id]||'')+'</span>';
+    else if(c.key==='nom'){
+      const enfants = est && (projChildren(it.id).length || state.tasks.some(t=>t.project_id===it.id));
+      h = '<button class="g2-tw '+(ui.expandedProjects.has(it.id)?'ouvert':'')+'" '+(enfants?'':'style="visibility:hidden"')+' onclick="event.stopPropagation();toggleExpand(\''+it.id+'\')" title="Replier ou déplier" aria-label="Replier ou déplier"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>' +
+        (L.st==='jalon' ? '<i class="g2-ico-jalon" style="background:'+col+'"></i>' : '<i class="g2-pastille" style="background:'+col+'"></i>') +
+        inp('nom', it.nom, 'spellcheck="false"') +
+        (it.verrou ? '<span class="g2-cad" title="Dates verrouillées">🔒</span>' : '') +
+        (ro ? '' : '<span class="g2-act">' +
+          (est ? '<button onclick="event.stopPropagation();gMenuAjout(event,\''+it.id+'\')" title="Ajouter une tâche ou un sous-projet">＋</button>' : '') +
+          '<button onclick="event.stopPropagation();gOuvrirFiche(\''+table+'\',\''+it.id+'\')" title="Ouvrir la fiche">⋯</button></span>');
+      return '<span class="g2-c c-nom" style="width:'+c.w+'px;padding-left:'+(4 + r.depth*14)+'px">'+h+'</span>';
+    }
+    else if(c.key==='duree') h = (resume || L.st==='jalon' || !bornes)
+      ? '<span class="g2-ro">'+(L.st==='jalon' ? '◆' : (bornes ? dureeOuvree(b, bornes.d, bornes.f)+' j' : ''))+'</span>'
+      : inp('duree', dureeOuvree(b, bornes.d, bornes.f));
+    else if(c.key==='debut') h = resume
+      ? '<span class="g2-ro">'+(bornes ? fmtFR(fmtDate(bornes.d)) : '')+'</span>'
+      : inp('debut', it.date_debut ? fmtFR(it.date_debut) : '');
+    else if(c.key==='fin'){
+      const v = est ? (it.date_fin || projCible(it) || '') : (it.date_fin || it.date_debut || '');
+      h = (resume || L.st==='jalon')
+        ? '<span class="g2-ro">'+(bornes ? fmtFR(fmtDate(bornes.f)) : '')+'</span>'
+        : inp('fin', v ? fmtFR(v) : '');
+    }
+    else if(c.key==='preds') h = resume ? '<span class="g2-ro"></span>' : inp('preds', predsVersTexte(it, ctx.num));
+    else if(c.key==='resp') h = inp('resp', it.responsable||'');
+    else if(c.key==='charge') h = resume ? '<span class="g2-ro"></span>' : inp('charge', it.charge==null?'':it.charge);
+    else if(c.key==='av'){
+      const av = est ? projAvancement(it) : (it.avancement||0);
+      h = resume ? '<span class="g2-ro">'+av+'%</span>' : inp('av', av);
+    }
+    else if(c.key==='marge'){
+      const m = ctx.cpm.marges[it.id];
+      h = '<span class="g2-ro '+(m!=null && m<=0 ? 'crit':'')+'">'+(m==null ? '—' : (m<=0 ? 'critique' : m+' j'))+'</span>';
+    }
+    else if(c.key==='ecart'){
+      const ec = ctx.bl ? ecartBaseline(ctx.bl, it, est) : null;
+      h = '<span class="g2-ro '+(ec>0?'retard':(ec<0?'avance':''))+'">'+(ec==null ? '—' : (ec>0 ? '+'+ec+' j' : (ec<0 ? ec+' j' : '0')))+'</span>';
+    }
+    return '<span class="g2-c c-'+c.key+'" style="width:'+c.w+'px">'+h+'</span>';
+  }).join('');
+  return '<div class="g2-ligne g2-l-'+L.st+' '+(sel?'sel':'')+' '+(crit?'crit':'')+'" data-rid="'+it.id+'" data-t="'+table+'" style="height:'+L.h+'px">'+cells+'</div>';
+}
+function gBarre(L, ctx){
+  const r = L.r, it = r.item, b = ctx.b, px = ctx.px, table = L.table;
+  const bornes = gBornesLigne(r);
+  if(!bornes) return '';
+  const resume = gEstResume(r), ro = gLectureSeule();
+  const base = gCouleur(b, r);
+  const clair = gPrefs().theme==='clair' || GT.impression;
+  const cx = L.st==='groupe' ? base : gMix(base, '#ffffff', clair ? (L.st==='sous'?0.12:0.24) : (L.st==='sous'?0.18:0.38));
+  /* la barre porte la couleur du groupe ; la part réalisée est plus soutenue */
+  const cs = gMix(cx, clair ? '#ffffff' : '#14304d', clair ? 0.28 : 0.20);
+  const cp = gMix(cx, '#000000', clair ? 0.20 : 0.14);
+  const e = GT_LIGNE[L.st].e;
+  const x1 = dayIndex(bornes.d, ctx.min)*px;
+  const w = Math.max(px*0.8, (dayIndex(bornes.f, bornes.d)+1)*px);
+  const top = L.st==='groupe' ? L.y + 28 : L.y + (L.h - e)/2;
+  const yc = top + e/2;
+  const av = r.kind==='project' ? projAvancement(it) : (it.avancement||0);
+  const crit = ui.critique && ctx.cpm.critiques.has(it.id);
+  const fini = r.kind==='project' ? !!it.date_fin : av >= 100;
+  const sel = GT.sel && GT.sel.id===it.id;
+  let retard = 0;
+  if(r.kind==='project'){ if(resume ? projLateRollup(it) : projLate(it)) retard = Math.max(1, projDepassementJours(it)||1); }
+  else if(!fini && bornes.f < todayMid()) retard = dayIndex(todayMid(), bornes.f);
+  const num = ctx.num.map[it.id] || '';
+  GT.infos[it.id] = '<b>'+(num?num+' · ':'')+escapeHtml(it.nom)+'</b>' +
+    '<span>'+fmtFR(fmtDate(bornes.d))+' → '+fmtFR(fmtDate(bornes.f))+' · '+dureeOuvree(b, bornes.d, bornes.f)+' j ouvrés</span>' +
+    (it.responsable ? '<span>Responsable : '+escapeHtml(it.responsable)+'</span>' : '') +
+    '<span>Avancement : '+av+' %</span>' +
+    (predsDe(it).length ? '<span>Dépend de : '+predsDe(it).map(p=>{ const x = itemParId(p.id); return (ctx.num.map[p.id]||'')+' '+escapeHtml(x?truncate(x.nom,22):'?'); }).join(', ')+'</span>' : '') +
+    (ctx.cpm.marges[it.id]!=null ? '<span>Marge : '+(ctx.cpm.marges[it.id]<=0 ? 'critique' : ctx.cpm.marges[it.id]+' j')+'</span>' : '') +
+    (retard ? '<span class="r">Retard : '+retard+' j</span>' : '') +
+    (ro ? '' : '<span class="g">Glisser pour déplacer · bords pour la durée · points pour relier</span>');
+
+  if(L.st==='jalon'){
+    const mx = dayIndex(bornes.d, ctx.min)*px + (px>=10 ? px/2 : px/2);
+    GT.geo[it.id] = {x1:mx-8, x2:mx+8, yc:L.y+L.h/2, e:16, c:cx, cBase:base, table, jalon:true};
+    return '<div class="g2-barre jalon '+(sel?'sel':'')+' '+(crit?'crit':'')+' '+(fini?'fini':'')+'" data-id="'+it.id+'" data-t="'+table+'" style="left:'+(mx-8)+'px;top:'+(L.y+L.h/2-8)+'px;--c:'+cx+'">' +
+      '<i class="g2-losange"></i>' + (ro ? '' : '<i class="g2-point g" data-cote="g"></i><i class="g2-point d" data-cote="d"></i>') + '</div>';
+  }
+  GT.geo[it.id] = {x1, x2:x1+w, yc, e, c:cx, cBase:base, table, resume};
+  let ref = '';
+  if(ctx.bl){
+    const rf = baselineDe(ctx.bl, it.id);
+    if(rf && rf.d && rf.f){
+      const rx = dayIndex(dateFromStr(rf.d), ctx.min)*px;
+      const rw = Math.max(3, (dayIndex(dateFromStr(rf.f), dateFromStr(rf.d))+1)*px);
+      ref = '<div class="g2-ref" style="left:'+rx+'px;top:'+(top+e+3)+'px;width:'+rw+'px" title="Référence : '+fmtFR(rf.d)+' → '+fmtFR(rf.f)+'"></div>';
+    }
+  }
+  let eng = '';
+  if(r.kind==='project' && !resume){
+    const cible = projCible(it);
+    if(cible){
+      const cxp = (dayIndex(dateFromStr(cible), ctx.min)+1)*px;
+      if(cxp > x1 && cxp < x1+w-1){
+        eng = '<div class="g2-eng" style="left:'+cxp+'px;top:'+(top-5)+'px;height:'+(e+10)+'px" title="Engagement : '+fmtFR(cible)+'"></div>';
+        if(retard) eng += '<div class="g2-derive" style="left:'+cxp+'px;top:'+top+'px;width:'+(x1+w-cxp)+'px;height:'+e+'px"></div>';
+      }
+    }
+  }
+  const lbl = (L.st==='groupe' && it.responsable)
+    ? '<div class="g2-proprio" style="left:'+x1+'px;top:'+(L.y+6)+'px">'+escapeHtml(it.responsable)+'</div>' : '';
+  const fin = retard
+    ? '<span class="g2-fin retard" style="left:'+(x1+w+8)+'px;top:'+(yc-9)+'px">+'+retard+' j</span>'
+    : (fini ? '<span class="g2-fin ok" style="left:'+(x1+w+7)+'px;top:'+(yc-9)+'px">✓</span>'
+            : ((L.st==='groupe'||L.st==='sous') ? '<span class="g2-fin" style="left:'+(x1+w+8)+'px;top:'+(yc-8)+'px">'+av+' %</span>' : ''));
+  const poignees = (ro || resume) ? '' : '<i class="g2-poignee g" data-cote="g"></i><i class="g2-poignee d" data-cote="d"></i>';
+  const points = (ro || resume) ? '' : '<i class="g2-point g" data-cote="g"></i><i class="g2-point d" data-cote="d"></i>';
+  return ref + lbl +
+    '<div class="g2-barre b-'+L.st+' '+(resume?'resume':'')+' '+(sel?'sel':'')+' '+(crit?'crit':'')+' '+(retard?'retard':'')+' '+(fini?'fini':'')+'" data-id="'+it.id+'" data-t="'+table+'"' +
+    ' style="left:'+x1+'px;top:'+top+'px;width:'+w+'px;height:'+e+'px;--c:'+cx+';--cs:'+cs+';--cp:'+cp+'">' +
+      '<i class="g2-av" style="width:'+Math.max(0,Math.min(100,av))+'%"></i>' + poignees + points +
+    '</div>' + eng + fin;
+}
+function gChargeLignes(b, min, max, y0, ctx, wG){
   const par = chargeParPersonne(b, min, max);
   const gens = Object.keys(par).sort();
-  if(!gens.length){ z.innerHTML = `<div class="charge-vide">Aucune affectation : renseigne un responsable sur les lignes du planning.</div>`; return; }
-  const capacite = (b.config && b.config.capacite) || 1;
-  const totalDays = dayIndex(max,min);
-  z.innerHTML = `<div class="charge-inner" style="width:${totalWidth}px">
-    ${gens.map(qui=>{
-      let barres = '';
-      for(let i=0;i<totalDays;i++){
-        const d = addDays(min,i);
-        if(!estOuvre(b,d)) continue;
-        const v = par[qui][fmtDate(d)] || 0;
-        if(!v) continue;
-        const h = Math.min(100, v/capacite*100);
-        barres += `<div class="ch-bar ${v>capacite+0.001?'sur':''}" style="left:${i*px+LEFT_PAD}px;width:${Math.max(2,px-1)}px;height:${Math.max(8,h*0.34)}px" title="${qui} — ${fmtFR(fmtDate(d))} : ${Math.round(v*100)/100} j"></div>`;
+  const cap = (b.config && b.config.capacite) || 1;
+  const jours = dayIndex(max, min), px = ctx.px;
+  let y = y0, gauche = '', pistes = '', barres = '';
+  gauche += '<div class="g2-ligne g2-l-titre" style="height:'+GT_LIGNE.titre.h+'px"><span class="g2-c" style="width:'+wG+'px">Charge par personne'+(gens.length?'':' — renseigne un responsable et une charge')+'</span></div>';
+  pistes += '<div class="g2-piste titre" style="top:'+y+'px;height:'+GT_LIGNE.titre.h+'px"></div>';
+  y += GT_LIGNE.titre.h;
+  gens.forEach(qui=>{
+    const total = Object.keys(par[qui]).reduce((a,k)=>a+par[qui][k], 0);
+    const sur = Object.keys(par[qui]).filter(k=>par[qui][k] > cap + 0.001).length;
+    gauche += '<div class="g2-ligne g2-l-charge" style="height:'+GT_LIGNE.charge.h+'px"><span class="g2-c" style="width:'+wG+'px">' +
+      '<i class="g2-av-rond">'+initials(qui)+'</i><b>'+escapeHtml(qui)+'</b><small>'+(Math.round(total*10)/10)+' j'+(sur?' · '+sur+' j surchargé'+(sur>1?'s':''):'')+'</small></span></div>';
+    pistes += '<div class="g2-piste" style="top:'+y+'px;height:'+GT_LIGNE.charge.h+'px"></div>';
+    for(let i=0;i<jours;i++){
+      const d = addDays(min, i);
+      const v = par[qui][fmtDate(d)] || 0;
+      if(!v) continue;
+      const h = Math.max(4, Math.min(30, v/cap*26));
+      barres += '<i class="g2-ch '+(v > cap+0.001 ? 'sur':'')+'" style="left:'+(i*px)+'px;width:'+Math.max(2,px-1)+'px;top:'+(y+34-h)+'px;height:'+h+'px" title="'+escAttr(qui+' — '+fmtFR(fmtDate(d))+' : '+(Math.round(v*100)/100)+' j')+'"></i>';
+    }
+    y += GT_LIGNE.charge.h;
+  });
+  return {y, gauche, pistes, barres};
+}
+function gCalculerLiens(lignes, ctx){
+  const out = [];
+  lignes.forEach(L=>{
+    if(!GT.geo[L.id]) return;
+    predsDe(L.r.item).forEach(p=>{
+      if(!GT.geo[p.id]) return;
+      const t = gTableDe(p.id);
+      const src = t ? state[t].find(x=>x.id===p.id) : null;
+      const bs = gBornesItem(t, src), bz = gBornesItem(L.table, L.r.item);
+      const type = p.type || 'FD', lag = Number(p.lag)||0;
+      let viole = false;
+      if(bs && bz){
+        if(type==='FD') viole = dayIndex(bz.d, bs.f) < 1 + lag;
+        else if(type==='DD') viole = dayIndex(bz.d, bs.d) < lag;
+        else if(type==='FF') viole = dayIndex(bz.f, bs.f) < lag;
+        else viole = dayIndex(bz.f, bs.d) < lag;
       }
-      const total = Object.values(par[qui]).reduce((a,c)=>a+c,0);
-      const sur = Object.values(par[qui]).filter(v=>v>capacite+0.001).length;
-      return `<div class="charge-row">
-        <div class="charge-nom" style="width:${LEFT_PAD}px">
-          <span class="cn-av">${initials(qui)}</span><span class="cn-t">${escapeHtml(qui)}</span>
-          <span class="cn-j">${Math.round(total*10)/10} j${sur?` · <b>${sur} j surchargé${sur>1?'s':''}</b>`:''}</span>
-        </div>
-        <div class="charge-graph">${barres}</div>
-      </div>`;
-    }).join('')}
-  </div>`;
+      out.push({from:p.id, to:L.id, type, lag, viole, crit: ui.critique && ctx.cpm.critiques.has(p.id) && ctx.cpm.critiques.has(L.id)});
+    });
+  });
+  return out;
+}
+function gCalculerHier(lignes){
+  const out = [], deja = new Set(), vus = new Set(lignes.map(L=>L.id));
+  lignes.forEach(L=>{
+    const parent = L.table==='tasks' ? L.r.item.project_id : L.r.item.parent_id;
+    if(!parent || !vus.has(parent) || deja.has(parent)) return;
+    deja.add(parent);
+    out.push({parent, enfant:L.id});
+  });
+  return out;
+}
+function gCheminLien(a, z, type){
+  const y1 = a.yc, y2 = z.yc;
+  if(type==='DD'){ const x = Math.min(a.x1, z.x1) - 12; return 'M '+a.x1+' '+y1+' H '+x+' V '+y2+' H '+(z.x1-3); }
+  if(type==='FF'){ const x = Math.max(a.x2, z.x2) + 12; return 'M '+a.x2+' '+y1+' H '+x+' V '+y2+' H '+(z.x2+3); }
+  if(type==='DF'){ const x = Math.max(a.x1, z.x2) + 12; return 'M '+a.x1+' '+y1+' H '+(a.x1-12)+' V '+((y1+y2)/2)+' H '+x+' V '+y2+' H '+(z.x2+3); }
+  const xs = a.x2 + 9;
+  if(z.x1 >= xs + 6) return 'M '+a.x2+' '+y1+' H '+xs+' V '+y2+' H '+(z.x1-3);
+  const ym = y2 > y1 ? (y2 - (z.e/2 + 8)) : (y2 + (z.e/2 + 8));
+  return 'M '+a.x2+' '+y1+' H '+xs+' V '+ym+' H '+(z.x1-12)+' V '+y2+' H '+(z.x1-3);
+}
+function gDessinerLiens(){
+  const svg = document.getElementById('g2-liens');
+  if(!svg) return;
+  const pr = gPrefs();
+  const marq = {};
+  const mk = c=>{ const k = 'g2m'+String(c).replace(/[^a-z0-9]/gi,''); if(!marq[k]) marq[k] = '<marker id="'+k+'" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0.8 L7,4 L0,7.2 z" fill="'+c+'"/></marker>'; return k; };
+  let p = '';
+  if(pr.liens){
+    (GT.hier||[]).forEach(h=>{
+      const a = GT.geo[h.parent], z = GT.geo[h.enfant];
+      if(!a || !z) return;
+      const xs = Math.min(a.x1, z.x1) - 13;
+      p += '<path class="g2-h" d="M '+a.x1+' '+a.yc+' H '+xs+' V '+z.yc+' H '+(z.x1-1)+'" stroke="'+(a.cBase||a.c)+'"/>';
+    });
+  }
+  (GT.liens||[]).forEach(l=>{
+    const a = GT.geo[l.from], z = GT.geo[l.to];
+    if(!a || !z) return;
+    const d = gCheminLien(a, z, l.type);
+    const c = (l.viole || l.crit) ? '#ff5f5f' : (z.cBase || z.c);
+    const sel = GT.lienSel && GT.lienSel.from===l.from && GT.lienSel.to===l.to;
+    p += '<path class="g2-dep '+(l.viole?'viole':'')+' '+(sel?'sel':'')+'" d="'+d+'" stroke="'+c+'" marker-end="url(#'+mk(c)+')"/>' +
+         '<path class="g2-dep-hit" d="'+d+'" data-from="'+l.from+'" data-to="'+l.to+'"><title>'+(l.viole?'Lien non respecté · ':'')+(GT_TYPES_LIEN[l.type]||'')+(l.lag?' · '+l.lag+' j':'')+'</title></path>';
+  });
+  svg.innerHTML = '<defs>'+Object.keys(marq).map(k=>marq[k]).join('')+'</defs>'+p;
+}
+function gCapturerFocus(){
+  const a = document.activeElement;
+  if(!a || !a.dataset || !a.dataset.rid || !a.closest || !a.closest('#g2-gliste')) return null;
+  return {rid:a.dataset.rid, c:a.dataset.c, v:a.value, v0:a.dataset.v, s:a.selectionStart, e:a.selectionEnd};
+}
+function gRestaurerFocus(f){
+  if(!f) return;
+  const el = document.querySelector('#g2-gliste .g2-in[data-rid="'+gSel(f.rid)+'"][data-c="'+f.c+'"]');
+  if(!el) return;
+  if(f.v !== f.v0) el.value = f.v;   /* la frappe en cours est conservée */
+  try{ el.focus({preventScroll:true}); if(f.s!=null && el.setSelectionRange) el.setSelectionRange(f.s, f.e); }catch(e){}
+}
+function gEgaliser(HZ){
+  const droite = document.getElementById('gantt-scroll'), inner = document.querySelector('#g2-gliste .g2-glignes');
+  if(!droite || !inner) return;
+  const sb = Math.max(0, droite.offsetHeight - droite.clientHeight);
+  inner.style.height = (HZ + sb) + 'px';
+}
+function renderGantt(b){
+  const racine = document.getElementById('g2');
+  if(!racine || !b) return;
+  if(GT.drag){ GT.rendDiff = true; return; }
+  GT.rendDiff = false; GT.cacheCouleur = {};
+  const pr = gPrefs();
+  const clair = pr.theme==='clair' || GT.impression;
+  racine.classList.toggle('clair', clair);
+  racine.classList.toggle('nuit', !clair);
+  racine.classList.toggle('ro', gLectureSeule());
+  /* tout est déplié par défaut ; seul ce que l'utilisateur a replié lui-même reste fermé */
+  state.projects.filter(p=>p.board_id===b.id).forEach(p=>{ if(!GT.replies[p.id]) ui.expandedProjects.add(p.id); });
+  const focus = gCapturerFocus();
+  const droite = document.getElementById('gantt-scroll');
+  const liste = document.getElementById('g2-gliste');
+  const gauche = document.getElementById('g2-gauche');
+  const gtete = document.getElementById('g2-gtete');
+  const toile = document.getElementById('g2-toile');
+  if(!droite || !liste || !toile) return;
+  const sc = {l: droite.scrollLeft, t: droite.scrollTop};
+  const px = gPx(); ui.pxPerDay = px;
+  const plage = gPlage(b); GT.min = plage.min;
+  const jours = Math.max(1, dayIndex(plage.max, plage.min));
+  const W = Math.round(jours * px);
+  const ctx = {b, px, min: plage.min, num: wbsNumeros(b), cpm: analyseCritique(b), bl: baselineActive(b)};
+  const rows = ganttVisibleRows(b);
+  let y = 0;
+  const lignes = rows.map(r=>{
+    const st = gStyle(r), h = GT_LIGNE[st].h;
+    const L = {r, st, y, h, table: r.kind==='project' ? 'projects' : 'tasks', id: r.item.id};
+    y += h; return L;
+  });
+  const cols = gColonnes(b);
+  const wG = cols.reduce((n,c)=>n+c.w, 0);
+  GT.geo = {}; GT.infos = {};
+  const charge = ui.charge ? gChargeLignes(b, plage.min, plage.max, y, ctx, wG) : null;
+  const HZ = (charge ? charge.y : y) + 56;
+
+  gauche.style.width = wG + 'px';
+  gtete.innerHTML = '<div class="g2-titre"><span>'+escapeHtml(b.nom || 'Planning')+'</span></div>' +
+    '<div class="g2-cols">' + cols.map(c=>'<span class="g2-c c-'+c.key+'" style="width:'+c.w+'px">'+escapeHtml(c.key==='nom' ? 'Tâche' : c.label)+'</span>').join('') + '</div>';
+  const ajout = gLectureSeule() ? '' :
+    '<div class="g2-ajout-l"><button onclick="openProjectModal()">＋ Nouveau projet</button></div>';
+  liste.innerHTML = '<div class="g2-glignes" style="height:'+HZ+'px">' +
+    (rows.length ? lignes.map(L=>gLigneGauche(L, cols, ctx)).join('') : '<div class="g2-vide-l">Aucun projet à afficher</div>') +
+    (charge ? charge.gauche : '') + ajout + '</div>';
+
+  const ent = gEntete(b, plage.min, plage.max, px);
+  const xAuj = gXDate(todayMid(), plage.min, px, true);
+  const barres = lignes.map(L=>gBarre(L, ctx)).join('') + (charge ? charge.barres : '');
+  const pistes = lignes.map(L=>'<div class="g2-piste '+((GT.sel && GT.sel.id===L.id)?'sel':'')+'" data-rid="'+L.id+'" data-t="'+L.table+'" style="top:'+L.y+'px;height:'+L.h+'px"></div>').join('') + (charge ? charge.pistes : '');
+  toile.style.width = W + 'px';
+  toile.innerHTML = '<div class="g2-tete" style="width:'+W+'px"><div class="g2-t1">'+ent.l1+'</div><div class="g2-t2">'+ent.l2+'</div>' +
+      '<span class="g2-auj-lbl" style="left:'+xAuj+'px">Aujourd\u2019hui</span></div>' +
+    '<div class="g2-zone" id="g2-zone" style="width:'+W+'px;height:'+HZ+'px">' +
+      '<div class="g2-fond">'+gFond(b, plage.min, plage.max, px, lignes)+'</div>' +
+      '<div class="g2-pistes">'+pistes+'</div>' +
+      '<svg class="g2-liens" id="g2-liens" width="'+W+'" height="'+HZ+'"></svg>' +
+      '<div class="g2-barres" id="g2-barres">'+barres+'</div>' +
+      '<svg class="g2-tmp" width="'+W+'" height="'+HZ+'"><path id="g2-tmp-p" d=""></path></svg>' +
+      '<div class="g2-auj" style="left:'+xAuj+'px"></div>' +
+      (rows.length ? '' : '<div class="g2-vide-d">Crée un projet, puis ses tâches avec le ＋ de la colonne de gauche.</div>') +
+    '</div>';
+  GT.liens = gCalculerLiens(lignes, ctx);
+  GT.hier = gCalculerHier(lignes);
+  gDessinerLiens();
+
+  if(droite._neuf){
+    droite._neuf = false;
+    const memo = GT.scroll[b.id];
+    if(memo){ droite.scrollLeft = memo.l; droite.scrollTop = memo.t; }
+    else gAllerAujourdhui(true);
+  } else { droite.scrollLeft = sc.l; droite.scrollTop = sc.t; }
+  if(!GT.vu[b.id]){ GT.vu[b.id] = true; gInstantane('Ouverture'); }
+  liste.scrollTop = droite.scrollTop;
+  gEgaliser(HZ);
+  gRestaurerFocus(focus);
+  gMajOutils(); gMajStatut(); gMajAlerte(); gMajFiche();
 }
 
-function drawDependencies(){
-  const svg = document.getElementById('dep-svg');
-  if(!svg) return;
-  const area = document.getElementById('rows-area');
-  if(!area) return;
-  svg.setAttribute('width', area.scrollWidth);
-  svg.setAttribute('height', area.scrollHeight);
-  let defs = `<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path class="arrowhead" d="M0,0 L6,3 L0,6 z"/></marker></defs>`;
-  let paths = '';
-  const areaRect = area.getBoundingClientRect();
-  const isVisible = ()=>true;
-  const liens = []
-    .concat(state.tasks.filter(t=>t.depends_on).map(t=>({from:t.depends_on, to:t.id})))
-    .concat(state.projects.filter(p=>p.depends_on).map(p=>({from:p.depends_on, to:p.id})));
-  liens.forEach(t=>{
-    const fromEl = area.querySelector(`[data-depid="${t.from}"]`);
-    const toEl = area.querySelector(`[data-depid="${t.to}"]`);
-    if(!fromEl || !toEl) return;
-    if(!isVisible(fromEl) || !isVisible(toEl)) return;
-    const fr = fromEl.getBoundingClientRect(), tr = toEl.getBoundingClientRect();
-    const x1 = fr.right - areaRect.left, y1 = fr.top + fr.height/2 - areaRect.top;
-    const x2 = tr.left - areaRect.left, y2 = tr.top + tr.height/2 - areaRect.top;
-    paths += `<path d="M ${x1} ${y1} L ${x1+8} ${y1} L ${x1+8} ${y2} L ${x2-3} ${y2}" marker-end="url(#arrow)"/>`;
-  });
-  svg.innerHTML = defs + paths;
+/* ---------------- Déplacement de la vue ---------------- */
+function gAllerAujourdhui(immediat){
+  const droite = document.getElementById('gantt-scroll');
+  if(!droite || !GT.min) return;
+  const x = gXDate(todayMid(), GT.min, gPx(), true) - droite.clientWidth*0.3;
+  const cible = Math.max(0, x);
+  if(!immediat && typeof droite.scrollTo==='function') droite.scrollTo({left:cible, behavior:'smooth'});
+  else droite.scrollLeft = cible;
 }
-function toggleExpand(id){
-  ui.expandedProjects.has(id)?ui.expandedProjects.delete(id):ui.expandedProjects.add(id);
+function gDateAuCentre(){
+  const droite = document.getElementById('gantt-scroll');
+  if(!droite || !GT.min) return todayMid();
+  return addDays(GT.min, Math.round((droite.scrollLeft + droite.clientWidth/2)/gPx()));
+}
+function gCentrerSur(d){
+  const droite = document.getElementById('gantt-scroll');
+  if(!droite || !GT.min || !d) return;
+  droite.scrollLeft = Math.max(0, dayIndex(d, GT.min)*gPx() - droite.clientWidth/2);
+}
+function gZoom(k){
+  const d = gDateAuCentre();
+  gSetPref('zoom', k);
+  renderMain();
+  gCentrerSur(d);
+}
+function gAjuster(){
+  const b = currentBoard(), droite = document.getElementById('gantt-scroll');
+  if(!b || !droite) return;
+  const plage = gPlage(b);
+  const jours = Math.max(1, dayIndex(plage.max, plage.min));
+  const px = Math.max(0.6, Math.min(40, (droite.clientWidth - 24)/jours));
+  gSetPref('pxAjuste', px); gSetPref('zoom', 'ajuste');
   renderMain();
 }
-function scrollToToday(){
-  const line = document.querySelector('.today-line');
-  const scroll = document.getElementById('gantt-scroll');
-  if(!line || !scroll) return;
-  const target = Math.max(0, parseFloat(line.style.left) - scroll.clientWidth*0.35);
-  if(typeof scroll.scrollTo==='function') scroll.scrollTo({left:target, behavior:'smooth'});
-  else scroll.scrollLeft = target;
+function gToutDeplier(){ const b = currentBoard(); if(!b) return; state.projects.filter(p=>p.board_id===b.id).forEach(p=>ui.expandedProjects.add(p.id)); gFermerPop(); gRendre(); }
+function gToutReplier(){ const b = currentBoard(); if(!b) return; state.projects.filter(p=>p.board_id===b.id).forEach(p=>ui.expandedProjects.delete(p.id)); gFermerPop(); gRendre(); }
+function imprimerGantt(){
+  const b = currentBoard(); if(!b) return;
+  const plage = gPlage(b);
+  GT.impression = true;
+  GT.pxImpression = Math.max(0.8, Math.min(14, 1500/Math.max(1, dayIndex(plage.max, plage.min))));
+  document.body.classList.add('impression');
+  gRendre();
+  showToast('Choisis « Enregistrer au format PDF », orientation Paysage');
+  setTimeout(()=>{
+    window.print();
+    setTimeout(()=>{ document.body.classList.remove('impression'); GT.impression = false; gRendre(); }, 600);
+  }, 350);
 }
 
-/* ---- Drag / resize Gantt ---- */
-let dragCtx = null;
-function startDrag(e, id, kind){
-  if(document.body.classList.contains('presentation')) return;
-  if(e.target.classList.contains('resize-handle')) return;
+/* ---------------- Barre d'outils : états ---------------- */
+function gMajOutils(){
+  const a = document.getElementById('g2-annuler'), r = document.getElementById('g2-refaire');
+  if(a){ a.disabled = !GT.pile.length; a.title = GT.pile.length ? 'Annuler : '+GT.pile[GT.pile.length-1].label+' (Ctrl+Z)' : 'Rien à annuler'; }
+  if(r){ r.disabled = !GT.redo.length; }
+}
+function gMajStatut(){
+  const z = document.getElementById('g2-sync');
+  if(!z) return;
+  if(!USE_SUPABASE){ z.className = 'g2-sync local'; z.textContent = ''; return; }
+  const n = Object.keys(GT.attente).length;
+  if(!navigator.onLine){ z.className = 'g2-sync ko'; z.textContent = 'Hors ligne · '+n+' en attente'; }
+  else if(GT.pompe && n){ z.className = 'g2-sync envoi'; z.textContent = 'Enregistrement…'; }
+  else if(n){ z.className = 'g2-sync ko'; z.textContent = n+' en attente'; }
+  else { z.className = 'g2-sync ok'; z.textContent = 'Enregistré'; }
+  z.title = n ? 'Ces modifications sont gardées sur cet ordinateur et renvoyées automatiquement. Clique pour réessayer maintenant.' : 'Tout est enregistré dans la base partagée';
+  z.onclick = gRelancerFile;
+}
+function gMajAlerte(){
+  const z = document.getElementById('g2-alerte');
+  if(!z) return;
+  let h = '';
+  const abs = Object.keys(GT.absentes).filter(t=>(GT.absentes[t]||[]).length);
+  if(abs.length && USE_SUPABASE){
+    const txt = abs.map(t=>(t==='tasks'?'tâches':'projets')+' : '+GT.absentes[t].join(', ')).join(' · ');
+    h += '<div class="g2-al warn"><b>La base ne possède pas encore certaines colonnes</b> ('+escapeHtml(txt)+'). ' +
+      'Les valeurs saisies sont gardées sur cet ordinateur et partiront toutes seules dès que la base sera à jour. ' +
+      '<button onclick="gCopierSql()">Copier le correctif SQL</button><button onclick="gVerifierColonnes()">J\u2019ai passé le correctif</button></div>';
+  }
+  const refus = Object.keys(GT.attente).map(k=>GT.attente[k]).filter(e=>e.essais>=3 && e.erreur);
+  if(refus.length){
+    h += '<div class="g2-al err"><b>'+refus.length+' modification(s) pas encore enregistrée(s)</b> : '+escapeHtml(truncate(String(refus[0].erreur),120))+
+      ' — elles restent gardées ici et seront renvoyées. <button onclick="gRelancerFile()">Réessayer</button></div>';
+  }
+  z.innerHTML = h;
+  z.classList.toggle('vide', !h);
+}
+
+/* ---------------- Sélection, survol, bulle ---------------- */
+function gSelectionner(table, id, voir){
+  GT.sel = id ? {table, id} : null;
+  const g2 = document.getElementById('g2'); if(!g2) return;
+  g2.querySelectorAll('.g2-ligne.sel, .g2-piste.sel, .g2-barre.sel').forEach(e=>e.classList.remove('sel'));
+  if(id){
+    g2.querySelectorAll('.g2-ligne[data-rid="'+gSel(id)+'"], .g2-piste[data-rid="'+gSel(id)+'"], .g2-barre[data-id="'+gSel(id)+'"]').forEach(e=>e.classList.add('sel'));
+    if(voir) gVoirBarre(id);
+    if(GT.fiche && GT.fiche.id!==id){ GT.fiche = {table, id}; gRendreFiche(); }
+  }
+  gMajOutils();
+}
+function gVoirBarre(id){
+  const g = GT.geo[id], droite = document.getElementById('gantt-scroll');
+  if(!g || !droite) return;
+  if(g.x1 < droite.scrollLeft + 20 || g.x2 > droite.scrollLeft + droite.clientWidth - 20)
+    droite.scrollLeft = Math.max(0, g.x1 - droite.clientWidth*0.3);
+}
+function gSurvolRang(rid){
+  if(GT.survol===rid) return;
+  const g2 = document.getElementById('g2'); if(!g2) return;
+  if(GT.survol) g2.querySelectorAll('.g2-ligne[data-rid="'+gSel(GT.survol)+'"], .g2-piste[data-rid="'+gSel(GT.survol)+'"]').forEach(x=>x.classList.remove('survol'));
+  GT.survol = rid;
+  if(rid) g2.querySelectorAll('.g2-ligne[data-rid="'+gSel(rid)+'"], .g2-piste[data-rid="'+gSel(rid)+'"]').forEach(x=>x.classList.add('survol'));
+}
+function gBulle(html, x, y){
+  const z = document.getElementById('g2-bulle'); if(!z) return;
+  if(!html){ z.classList.remove('show'); return; }
+  if(z._h !== html){ z.innerHTML = html; z._h = html; }
+  z.classList.add('show');
+  const w = z.offsetWidth || 240, h = z.offsetHeight || 90;
+  const vw = window.innerWidth || 1200, vh = window.innerHeight || 800;
+  z.style.left = Math.max(8, Math.min(vw - w - 10, x + 16)) + 'px';
+  z.style.top = ((y + 20 + h > vh) ? Math.max(8, y - h - 14) : y + 20) + 'px';
+}
+function gSurvol(e){
+  if(GT.drag) return;
+  const cible = e.target.closest ? e.target.closest('.g2-barre, .g2-ligne, .g2-piste') : null;
+  gSurvolRang(cible ? (cible.dataset.id || cible.dataset.rid) : null);
+  const barre = e.target.closest ? e.target.closest('.g2-barre') : null;
+  if(barre && GT.infos[barre.dataset.id]) gBulle(GT.infos[barre.dataset.id], e.clientX, e.clientY);
+  else gBulle(null);
+}
+
+/* ---------------- Gestes ---------------- */
+function gZoneXY(e){
+  const z = document.getElementById('g2-zone');
+  if(!z) return {x:0, y:0};
+  const r = z.getBoundingClientRect();
+  return {x: e.clientX - r.left, y: e.clientY - r.top};
+}
+function gPointerDown(e){
+  if(e.button!==undefined && e.button!==0) return;
+  gFermerPop();
+  const barre = e.target.closest ? e.target.closest('.g2-barre') : null;
+  const piste = e.target.closest ? e.target.closest('.g2-piste') : null;
+  const ro = gLectureSeule();
+  if(barre){
+    const id = barre.dataset.id, table = barre.dataset.t;
+    gSelectionner(table, id);
+    if(ro) return;
+    e.preventDefault();
+    const point = e.target.closest('.g2-point');
+    if(point){
+      const g = GT.geo[id]; if(!g) return;
+      const cote = point.dataset.cote;
+      GT.drag = {mode:'lien', id, table, cote, x0: cote==='d' ? g.x2 : g.x1, y0: g.yc, cible:null};
+      document.getElementById('g2').classList.add('en-lien');
+      return;
+    }
+    const poignee = e.target.closest('.g2-poignee');
+    GT.drag = {mode: poignee ? 'etirer' : 'deplacer', cote: poignee ? poignee.dataset.cote : null,
+      id, table, el: barre, x0: e.clientX, l0: parseFloat(barre.style.left)||0,
+      w0: parseFloat(barre.style.width) || barre.offsetWidth || 10, dj:0, bouge:false,
+      resume: barre.classList.contains('resume'), jalon: barre.classList.contains('jalon')};
+    return;
+  }
+  if(piste && piste.dataset.rid) gSelectionner(piste.dataset.t, piste.dataset.rid);
+  else gSelectionner(null, null);
+}
+function gBulleDrag(e, d){
+  const it = state[d.table] && state[d.table].find(x=>x.id===d.id);
+  const b = currentBoard();
+  if(!it || !b) return;
+  const bs = gBornesLigne({kind: d.table==='projects' ? 'project' : 'task', item: it, parent: null});
+  if(!bs) return;
+  let nd = bs.d, nf = bs.f;
+  if(d.mode==='deplacer'){ nd = addDays(bs.d, d.dj); nf = addDays(bs.f, d.dj); }
+  else if(d.cote==='g'){ nd = addDays(bs.d, d.dj); if(nd > nf) nd = nf; }
+  else { nf = addDays(bs.f, d.dj); if(nf < nd) nf = nd; }
+  gBulle('<b>'+escapeHtml(it.nom)+'</b><span>'+fmtFR(fmtDate(nd))+' → '+fmtFR(fmtDate(nf))+' · '+dureeOuvree(b, nd, nf)+' j ouvrés</span>', e.clientX, e.clientY);
+}
+function gDragMove(e){
+  const d = GT.drag, px = gPx();
+  if(d.mode==='lien'){
+    const p = gZoneXY(e);
+    const path = document.getElementById('g2-tmp-p');
+    if(path) path.setAttribute('d', 'M '+d.x0+' '+d.y0+' C '+(d.x0 + (d.cote==='d'?46:-46))+' '+d.y0+', '+(p.x + (p.x>d.x0?-46:46))+' '+p.y+', '+p.x+' '+p.y);
+    let cible = null;
+    if(document.elementFromPoint){
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const bar = el && el.closest ? el.closest('.g2-barre') : null;
+      if(bar && bar.dataset.id!==d.id && !bar.classList.contains('resume')) cible = bar;
+    }
+    if(d.cible && d.cible!==cible) d.cible.classList.remove('cible');
+    if(cible) cible.classList.add('cible');
+    d.cible = cible;
+    return;
+  }
+  const dx = e.clientX - d.x0;
+  if(!d.bouge && Math.abs(dx) < 4) return;
+  d.bouge = true;
+  const dj = Math.round(dx/px);
+  if(dj===d.dj){ gBulleDrag(e, d); return; }
+  d.dj = dj;
+  if(d.mode==='deplacer') d.el.style.left = (d.l0 + dj*px) + 'px';
+  else if(d.cote==='g'){
+    const kmax = Math.round(d.w0/px) - 1;
+    const k = Math.min(dj, kmax);
+    d.el.style.left = (d.l0 + k*px) + 'px';
+    d.el.style.width = Math.max(px, d.w0 - k*px) + 'px';
+  } else {
+    const kmin = -(Math.round(d.w0/px) - 1);
+    d.el.style.width = Math.max(px, d.w0 + Math.max(dj, kmin)*px) + 'px';
+  }
+  const g = GT.geo[d.id];
+  if(g){ g.x1 = parseFloat(d.el.style.left)||g.x1; g.x2 = g.x1 + (d.jalon ? 16 : (parseFloat(d.el.style.width)||0)); }
+  gDessinerLiens();
+  gBulleDrag(e, d);
+}
+function gDragFin(e){
+  const d = GT.drag; GT.drag = null;
+  const g2 = document.getElementById('g2');
+  if(g2) g2.classList.remove('en-lien');
+  gBulle(null);
+  const b = currentBoard();
+  if(d.mode==='lien'){
+    const path = document.getElementById('g2-tmp-p');
+    if(path) path.setAttribute('d', '');
+    if(d.cible){
+      d.cible.classList.remove('cible');
+      const br = d.cible.getBoundingClientRect();
+      const versFin = (e.clientX - br.left) > br.width*0.66;
+      const type = d.cote==='d' ? (versFin ? 'FF' : 'FD') : (versFin ? 'DF' : 'DD');
+      gLier(d.id, d.cible.dataset.id, d.cible.dataset.t, type, 0);
+    } else gRendre();
+    return;
+  }
+  const it = b && state[d.table] ? state[d.table].find(x=>x.id===d.id) : null;
+  if(!d.bouge || !it || !d.dj){ if(GT.rendDiff) gRendre(); return; }
+  GT.clicBloque = true;
+  let op = null;
+  if(d.mode==='deplacer'){
+    if(d.resume) op = gOp('Déplacement du groupe', ()=>{ gDecaler('projects', it, d.dj); gPropager(b, [it.id]); });
+    else {
+      const bs = gBornesLigne({kind: d.table==='projects' ? 'project' : 'task', item: it});
+      if(bs) op = gOp('Déplacement', ()=>{ gPoserDates(d.table, it, fmtDate(addDays(bs.d, d.dj)), fmtDate(addDays(bs.f, d.dj))); gPropager(b, [it.id]); });
+    }
+  } else {
+    const bs = gBornesLigne({kind: d.table==='projects' ? 'project' : 'task', item: it});
+    if(bs){
+      let nd = bs.d, nf = bs.f;
+      if(d.cote==='g'){ nd = addDays(bs.d, d.dj); if(nd > nf) nd = nf; }
+      else { nf = addDays(bs.f, d.dj); if(nf < nd) nf = nd; }
+      op = gOp('Durée', ()=>{ gPoserDates(d.table, it, fmtDate(nd), fmtDate(nf)); gPropager(b, [it.id]); });
+    }
+  }
+  logActivity('a déplacé', (d.table==='projects' ? 'le projet « ' : 'la tâche « ') + it.nom + ' »', (d.dj>0?'+':'')+d.dj+' j');
+  gRendre();
+  const n = op ? Math.max(0, Object.keys(op.avant).length - 1) : 0;
+  gToast(n ? ('Dates mises à jour · '+n+' élément(s) décalé(s) par les liens') : 'Dates mises à jour · Ctrl+Z pour annuler');
+}
+function gClicToile(e){
+  if(GT.clicBloque){ GT.clicBloque = false; return; }
+  const hit = e.target.closest ? e.target.closest('.g2-dep-hit') : null;
+  if(hit){ gPopLien(hit.dataset.from, hit.dataset.to, e.clientX, e.clientY); return; }
+}
+function gCellule(el){
+  const ok = gAppliquerChamp(el.dataset.t, el.dataset.rid, el.dataset.c, el.value);
+  if(!ok) el.value = el.dataset.v || '';
+  gRendre();
+}
+function gAllerCellule(el, sens){
+  const toutes = [].slice.call(document.querySelectorAll('#g2-gliste .g2-in[data-c="'+el.dataset.c+'"]'));
+  const i = toutes.indexOf(el);
+  const cible = toutes[i + sens];
+  if(cible){ cible.focus(); if(cible.select) cible.select(); } else el.blur();
+}
+function gToucheCellule(e){
+  const el = e.target;
+  if(!el.classList || !el.classList.contains('g2-in')) return;
+  if(e.key==='Enter'){ e.preventDefault(); gAllerCellule(el, e.shiftKey ? -1 : 1); }
+  else if(e.key==='Escape'){ el.value = el.dataset.v || ''; el.blur(); }
+}
+function gRedimDebut(e){
+  if(gLectureSeule()) return;
   e.preventDefault();
-  const table = kind==='project'?'projects':'tasks';
-  const item = state[table].find(x=>x.id===id);
-  const fin0 = (kind==='project') ? (item.date_fin || projCible(item) || fmtDate(projEndDate(item))) : item.date_fin;
-  dragCtx = {mode:'move', id, kind, table, startX:e.clientX, origDebut:item.date_debut, origFin:fin0, cible: kind==='project' && !item.date_fin, moved:false};
-  document.body.style.userSelect='none';
+  const sep = e.currentTarget;
+  sep.classList.add('actif');
+  const w0 = gPrefs().largeurNom, x0 = e.clientX;
+  let attente = false;
+  const mv = ev=>{
+    const w = Math.max(140, Math.min(560, w0 + ev.clientX - x0));
+    gSetPref('largeurNom', w);
+    if(attente) return;
+    attente = true;
+    requestAnimationFrame(()=>{ attente = false; gRendre(); });
+  };
+  const up = ()=>{ document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); sep.classList.remove('actif'); gRendre(); };
+  document.addEventListener('pointermove', mv);
+  document.addEventListener('pointerup', up);
 }
-function startResize(e, id, kind, side){
-  if(document.body.classList.contains('presentation')) return;
-  e.stopPropagation(); e.preventDefault();
-  const table = kind==='project'?'projects':'tasks';
-  const item = state[table].find(x=>x.id===id);
-  const fin1 = (kind==='project') ? (item.date_fin || projCible(item) || fmtDate(projEndDate(item))) : item.date_fin;
-  dragCtx = {mode:'resize', side, id, kind, table, startX:e.clientX, origDebut:item.date_debut, origFin:fin1, cible: kind==='project' && !item.date_fin, moved:false};
-  document.body.style.userSelect='none';
+function gBrancher(){
+  const droite = document.getElementById('gantt-scroll');
+  const liste = document.getElementById('g2-gliste');
+  const gauche = document.getElementById('g2-gauche');
+  const sep = document.getElementById('g2-sep');
+  const toile = document.getElementById('g2-toile');
+  if(!droite || !liste || !toile || droite._branche) return;
+  droite._branche = true; droite._neuf = true;
+  droite.addEventListener('scroll', ()=>{
+    liste.scrollTop = droite.scrollTop;
+    if(GT.boardAffiche) GT.scroll[GT.boardAffiche] = {l: droite.scrollLeft, t: droite.scrollTop};
+    gFermerPop(); gBulle(null);
+  }, {passive:true});
+  gauche.addEventListener('wheel', ev=>{
+    if(Math.abs(ev.deltaY) > Math.abs(ev.deltaX)){ droite.scrollTop += ev.deltaY; ev.preventDefault(); }
+  }, {passive:false});
+  toile.addEventListener('pointerdown', gPointerDown);
+  toile.addEventListener('pointermove', gSurvol);
+  toile.addEventListener('pointerleave', ()=>{ gSurvolRang(null); gBulle(null); });
+  toile.addEventListener('click', gClicToile);
+  toile.addEventListener('dblclick', ev=>{
+    const bar = ev.target.closest ? ev.target.closest('.g2-barre') : null;
+    if(bar) gOuvrirFiche(bar.dataset.t, bar.dataset.id);
+  });
+  liste.addEventListener('pointermove', gSurvol);
+  liste.addEventListener('pointerleave', ()=>gSurvolRang(null));
+  liste.addEventListener('change', ev=>{ if(ev.target.classList && ev.target.classList.contains('g2-in')) gCellule(ev.target); });
+  liste.addEventListener('keydown', gToucheCellule);
+  liste.addEventListener('click', ev=>{
+    const l = ev.target.closest ? ev.target.closest('.g2-ligne') : null;
+    if(l && l.dataset.rid && !(ev.target.closest('input') || ev.target.closest('button'))) gSelectionner(l.dataset.t, l.dataset.rid, true);
+  });
+  liste.addEventListener('dblclick', ev=>{
+    const l = ev.target.closest ? ev.target.closest('.g2-ligne') : null;
+    if(l && l.dataset.rid && !ev.target.closest('button')) gOuvrirFiche(l.dataset.t, l.dataset.rid);
+  });
+  liste.addEventListener('focusin', ev=>{
+    if(ev.target.classList && ev.target.classList.contains('g2-in')){
+      const l = ev.target.closest('.g2-ligne');
+      if(l) gSelectionner(l.dataset.t, l.dataset.rid);
+    }
+  });
+  if(sep) sep.addEventListener('pointerdown', gRedimDebut);
 }
-document.addEventListener('mousemove', (e)=>{
-  if(!dragCtx) return;
-  const deltaDays = Math.round((e.clientX - dragCtx.startX)/ui.pxPerDay);
-  const item = state[dragCtx.table].find(x=>x.id===dragCtx.id);
-  if(!item) return;
-  let nd=dragCtx.origDebut, nf=dragCtx.origFin;
-  if(dragCtx.mode==='move'){
-    nd = fmtDate(addDays(dateFromStr(dragCtx.origDebut),deltaDays));
-    nf = fmtDate(addDays(dateFromStr(dragCtx.origFin),deltaDays));
-  } else if(dragCtx.side==='left') nd = fmtDate(addDays(dateFromStr(dragCtx.origDebut),deltaDays));
-  else nf = fmtDate(addDays(dateFromStr(dragCtx.origFin||fmtDate(todayMid())),deltaDays));
-  const champFin = dragCtx.cible ? 'engagement_date' : 'date_fin';
-  if(dateFromStr(nf)>=dateFromStr(nd) && (nd!==item.date_debut||nf!==item[champFin])){
-    item.date_debut=nd; item[champFin]=nf; dragCtx.moved=true;
-    const bb = currentBoard();
-    if(bb) renderGantt(bb);
-    const el = document.querySelector(`[data-id="${dragCtx.id}"].strip, [data-tid="${dragCtx.id}"]`);
-    if(el) el.dataset.dragged='1';
+
+/* ---------------- Fenêtres volantes ---------------- */
+function gPop(){
+  let p = document.getElementById('g2-pop');
+  if(!p){ p = document.createElement('div'); p.id = 'g2-pop'; p.className = 'g2-pop'; document.body.appendChild(p); }
+  return p;
+}
+function gPlacerPop(html, x, y){
+  const p = gPop();
+  p.innerHTML = html;
+  p.classList.add('show');
+  const w = p.offsetWidth || 240, h = p.offsetHeight || 140;
+  p.style.left = Math.max(8, Math.min((window.innerWidth||1200) - w - 10, x)) + 'px';
+  p.style.top = Math.max(8, Math.min((window.innerHeight||800) - h - 10, y)) + 'px';
+}
+function gFermerPop(){
+  const p = document.getElementById('g2-pop');
+  if(p) p.classList.remove('show');
+  if(GT.lienSel){ GT.lienSel = null; gDessinerLiens(); }
+}
+function gPopLien(fromId, toId){
+  const from = itemParId(fromId), to = itemParId(toId);
+  if(!from || !to) return;
+  const p = predsDe(to).find(q=>q.id===fromId) || {type:'FD', lag:0};
+  const ro = gLectureSeule();
+  GT.lienSel = {from:fromId, to:toId};
+  gDessinerLiens();
+  const ev = window.event || {};
+  gPlacerPop('<div class="g2p-t">'+escapeHtml(truncate(from.nom,26))+' <span>→</span> '+escapeHtml(truncate(to.nom,26))+'</div>' +
+    (ro ? '<div class="g2p-l">'+GT_TYPES_LIEN[p.type||'FD']+(p.lag?' · '+p.lag+' j':'')+'</div>' :
+      '<label class="g2p-l">Type<select id="g2p-type">'+Object.keys(GT_TYPES_LIEN).map(k=>'<option value="'+k+'" '+((p.type||'FD')===k?'selected':'')+'>'+GT_TYPES_LIEN[k]+'</option>').join('')+'</select></label>' +
+      '<label class="g2p-l">Décalage <input type="number" id="g2p-lag" value="'+(Number(p.lag)||0)+'"> j</label>' +
+      '<div class="g2p-b"><button class="btn small primary" onclick="gModifierLien(\''+fromId+'\',\''+toId+'\')">Appliquer</button>' +
+      '<button class="btn small g2-suppr" onclick="gSupprimerLien(\''+fromId+'\',\''+toId+'\')">Supprimer le lien</button></div>'),
+    (ev.clientX||200) + 8, (ev.clientY||200) + 8);
+}
+function gMenuAjout(ev, pid){
+  ev = ev || window.event;
+  gPlacerPop('<button class="g2p-item" onclick="gFermerPop();gCreerTache(\''+pid+'\')">＋ Tâche</button>' +
+    '<button class="g2p-item" onclick="gFermerPop();openProjectModal(\''+pid+'\')">＋ Sous-projet</button>' +
+    '<button class="g2p-item" onclick="gFermerPop();gEnchainer(\''+pid+'\')">⛓ Enchaîner ses éléments</button>',
+    (ev.clientX||200) - 20, (ev.clientY||200) + 10);
+}
+function gMenuAffichage(ev){
+  ev = ev || window.event;
+  const pr = gPrefs();
+  gPlacerPop(
+    '<div class="g2p-t">Affichage</div>' +
+    '<div class="g2p-seg"><button class="'+(pr.theme==='nuit'?'on':'')+'" onclick="gSetPref(\'theme\',\'nuit\');gRendre()">🌙 Nuit</button>' +
+      '<button class="'+(pr.theme==='clair'?'on':'')+'" onclick="gSetPref(\'theme\',\'clair\');gRendre()">☀ Clair</button></div>' +
+    '<div class="g2p-seg"><button class="'+(pr.couleurs==='groupe'?'on':'')+'" onclick="gSetPref(\'couleurs\',\'groupe\');gRendre()">Couleurs par groupe</button>' +
+      '<button class="'+(pr.couleurs==='statut'?'on':'')+'" onclick="gSetPref(\'couleurs\',\'statut\');gRendre()">par statut</button></div>' +
+    '<button class="g2p-item" onclick="gSetPref(\'liens\','+(pr.liens?'false':'true')+');gRendre()">'+(pr.liens?'☑':'☐')+' Lignes de rattachement</button>' +
+    '<button class="g2p-item" onclick="gToutDeplier()">⊞ Tout déplier</button>' +
+    '<button class="g2p-item" onclick="gToutReplier()">⊟ Tout replier</button>' +
+    '<button class="g2p-item" onclick="gFermerPop();openGanttCols()">▤ Colonnes…</button>' +
+    '<button class="g2p-item" onclick="gFermerPop();openCalendrier()">📆 Calendrier…</button>' +
+    '<button class="g2p-item" onclick="gFermerPop();ui.horizonPlus=(ui.horizonPlus||0)+365;gRendre();showToast(\'Horizon étendu d\\u2019un an\')">▸ Étendre l\u2019horizon d\u2019un an</button>' +
+    '<button class="g2p-item" onclick="gFermerPop();gVersions()">🕑 Versions enregistrées…</button>',
+    (ev.clientX||300) - 60, (ev.clientY||120) + 14);
+}
+function gAide(){
+  document.getElementById('modal-content').innerHTML =
+    '<div class="modal-head">Gestes du planning</div><div class="modal-body">' +
+    '<table class="pa-table"><tbody>' +
+    '<tr><td><b>Glisser une barre</b></td><td>Déplacer la tâche ou le groupe entier</td></tr>' +
+    '<tr><td><b>Glisser un bord</b></td><td>Changer la durée</td></tr>' +
+    '<tr><td><b>Glisser un point rond</b></td><td>Relier deux barres — le suivant se recale tout seul</td></tr>' +
+    '<tr><td><b>Clic sur un lien</b></td><td>Changer son type, son décalage, ou le supprimer</td></tr>' +
+    '<tr><td><b>Double-clic</b></td><td>Ouvrir la fiche (dates, responsable, liens, jalon)</td></tr>' +
+    '<tr><td><b>Suppr</b></td><td>Supprimer la ligne sélectionnée</td></tr>' +
+    '<tr><td><b>← →</b></td><td>Décaler d\u2019un jour (Maj : une semaine)</td></tr>' +
+    '<tr><td><b>Ctrl+Z / Ctrl+Y</b></td><td>Annuler / rétablir, sur plusieurs niveaux</td></tr>' +
+    '<tr><td><b>Entrée</b></td><td>Dans la table : valider et passer à la ligne suivante</td></tr>' +
+    '<tr><td><b>Dates</b></td><td>Se tapent librement : 12/03, 12/03/27 ou 2027-03-12</td></tr>' +
+    '<tr><td><b>Prédécesseurs</b></td><td>3 · 3DD · 3FD+2 · plusieurs séparés par un point-virgule</td></tr>' +
+    '</tbody></table>' +
+    '<div style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6">Tes modifications sont enregistrées au fil de l\u2019eau. Si la base est momentanément injoignable, elles restent gardées sur cet ordinateur et repartent toutes seules : le voyant de la barre d\u2019outils indique ce qui reste à envoyer.</div>' +
+    '</div><div class="modal-foot"><button class="btn primary" onclick="closeModal()">Fermer</button></div>';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+/* ---------------- Fiche latérale ---------------- */
+function gOuvrirFiche(table, id){
+  if(!state[table] || !state[table].some(x=>x.id===id)) return;
+  GT.fiche = {table, id};
+  const r = document.getElementById('g2');
+  if(r) r.classList.add('fiche-on');
+  gSelectionner(table, id, true);
+  gRendreFiche();
+}
+function gFermerFiche(){
+  GT.fiche = null;
+  const r = document.getElementById('g2');
+  if(r) r.classList.remove('fiche-on');
+  const z = document.getElementById('g2-fiche');
+  if(z) z.innerHTML = '';
+}
+function gMajFiche(){
+  if(!GT.fiche) return;
+  const z = document.getElementById('g2-fiche');
+  if(!z || z.contains(document.activeElement)) return;
+  gRendreFiche();
+}
+function gRendreFiche(){
+  const z = document.getElementById('g2-fiche');
+  if(!z) return;
+  if(!GT.fiche){ z.innerHTML = ''; return; }
+  const b = currentBoard();
+  const table = GT.fiche.table, id = GT.fiche.id;
+  const it = state[table] && state[table].find(x=>x.id===id);
+  if(!b || !it){ gFermerFiche(); return; }
+  const actif = document.activeElement;
+  const memo = (actif && z.contains(actif) && actif.dataset && actif.dataset.f) ? {f:actif.dataset.f, s:actif.selectionStart, e:actif.selectionEnd} : null;
+  const est = table==='projects', resume = est && projHasChildren(it), ro = gLectureSeule();
+  const r = {kind: est ? 'project' : 'task', item: it, depth: est ? projDepth(it) : 1, parent: est ? null : state.projects.find(p=>p.id===it.project_id)};
+  const col = gCouleur(b, r);
+  const num = wbsNumeros(b);
+  const bornes = gBornesLigne(r);
+  const d0 = it.date_debut || '';
+  const f0 = table==='tasks' ? (it.date_fin || it.date_debut || '') : (it.date_fin || it.engagement_date || '');
+  const duree = bornes ? dureeOuvree(b, bornes.d, bornes.f) : '';
+  const av = est ? projAvancement(it) : (it.avancement||0);
+  const preds = predsDe(it);
+  const succ = gSuccesseurs(id);
+  const noms = [...new Set(state.projects.filter(p=>p.board_id===b.id).map(p=>p.responsable).concat(state.tasks.map(t=>t.responsable)).filter(Boolean))].sort();
+  const ids = new Set(state.projects.filter(p=>p.board_id===b.id).map(p=>p.id));
+  const candidats = state.projects.filter(p=>ids.has(p.id) && !projHasChildren(p) && p.id!==id)
+    .concat(state.tasks.filter(t=>ids.has(t.project_id) && t.id!==id))
+    .filter(x=>!preds.some(p=>p.id===x.id) && !gCreeCycle(x.id, id));
+  const dis = ro ? 'disabled' : '';
+  const type = est ? (r.depth===0 ? 'Groupe' : (resume ? 'Sous-projet' : 'Projet')) : (it.jalon ? 'Jalon' : 'Tâche');
+  z.innerHTML =
+    '<div class="g2f-tete"><i class="g2f-pastille" style="background:'+col+'"></i><span class="g2f-type">'+type+' '+(num.map[id]||'')+'</span>' +
+      '<button class="g2f-x" onclick="gFermerFiche()" aria-label="Fermer la fiche">✕</button></div>' +
+    '<div class="g2f-corps">' +
+      '<label class="g2f-l">Nom</label><input class="g2f-in" data-f="nom" value="'+escAttr(it.nom)+'" '+dis+'>' +
+      (est && r.depth===0 && !ro ? '<label class="g2f-l">Couleur du groupe</label><div class="g2f-couleurs">' +
+        GT_PALETTE.map(c=>'<button class="'+(gHex((it.extra||{}).gcouleur)===c?'on':'')+'" style="background:'+c+'" onclick="gChoisirCouleur(\''+id+'\',\''+c+'\')" aria-label="'+c+'"></button>').join('') +
+        '<button class="auto '+((it.extra||{}).gcouleur?'':'on')+'" onclick="gChoisirCouleur(\''+id+'\',\'\')" title="Couleur automatique">auto</button></div>' : '') +
+      (resume
+        ? '<div class="g2f-info">Du <b>'+(bornes?fmtFR(fmtDate(bornes.d)):'—')+'</b> au <b>'+(bornes?fmtFR(fmtDate(bornes.f)):'—')+'</b> · '+duree+' j ouvrés<br><small>Calculé à partir des sous-projets et des tâches.</small></div>'
+        : '<div class="g2f-grille">' +
+            '<div><label class="g2f-l">Début</label><input type="date" class="g2f-in" data-f="debut" value="'+d0+'" '+dis+'></div>' +
+            '<div><label class="g2f-l">'+(it.jalon?'Date':'Fin')+'</label><input type="date" class="g2f-in" data-f="fin" value="'+f0+'" '+(dis||(it.jalon?'disabled':''))+'></div>' +
+            '<div><label class="g2f-l">Durée (j)</label><input type="number" min="1" class="g2f-in" data-f="duree" value="'+duree+'" '+(dis||(it.jalon?'disabled':''))+'></div>' +
+          '</div>') +
+      '<label class="g2f-l">Responsable</label><input class="g2f-in" data-f="resp" list="g2f-noms" value="'+escAttr(it.responsable||'')+'" '+dis+'>' +
+      '<datalist id="g2f-noms">'+noms.map(n=>'<option value="'+escAttr(n)+'">').join('')+'</datalist>' +
+      (resume ? '<div class="g2f-info">Avancement moyen : <b>'+av+' %</b></div>'
+              : '<label class="g2f-l">Avancement · <b id="g2f-avv">'+av+' %</b></label>' +
+                '<input type="range" min="0" max="100" step="5" class="g2f-range" data-f="av" value="'+av+'" '+dis+' oninput="var e=document.getElementById(\'g2f-avv\');if(e)e.textContent=this.value+\' %\'">') +
+      '<div class="g2f-cases">' +
+        (!est ? '<label><input type="checkbox" data-f="jalon" '+(it.jalon?'checked':'')+' '+dis+'> Jalon (date clé)</label>' : '') +
+        (!resume ? '<label><input type="checkbox" data-f="verrou" '+(it.verrou?'checked':'')+' '+dis+'> Dates verrouillées</label>' : '') +
+      '</div>' +
+      (resume ? '' :
+        '<div class="g2f-sec">Dépend de</div><div class="g2f-liens">' +
+        (preds.length ? preds.map(p=>{ const x = itemParId(p.id);
+            return '<div class="g2f-lien"><span class="n">'+(num.map[p.id]||'')+'</span><span class="t">'+escapeHtml(x?x.nom:'(supprimé)')+'</span>' +
+              '<span class="k">'+(GT_TYPES_LIEN[p.type||'FD'])+(p.lag?(p.lag>0?' +':' ')+p.lag+' j':'')+'</span>' +
+              (ro?'':'<button onclick="gSupprimerLien(\''+p.id+'\',\''+id+'\')" aria-label="Retirer le lien">✕</button>')+'</div>'; }).join('')
+          : '<div class="g2f-vide">Aucun lien. Glisse le point rond d\u2019une barre vers une autre, ou ajoute-le ici.</div>') +
+        '</div>' +
+        (ro || !candidats.length ? '' :
+          '<div class="g2f-ajout"><select id="g2f-pred"><option value="">Ajouter une tâche précédente…</option>' +
+          candidats.slice(0,300).map(x=>'<option value="'+x.id+'">'+(num.map[x.id]||'')+' · '+escapeHtml(truncate(x.nom,36))+'</option>').join('') + '</select>' +
+          '<select id="g2f-type">'+Object.keys(GT_TYPES_LIEN).map(k=>'<option value="'+k+'">'+GT_TYPES_LIEN[k]+'</option>').join('')+'</select>' +
+          '<input type="number" id="g2f-lag" value="0" title="Décalage en jours"><button class="btn small" onclick="gAjouterPredFiche(\''+id+'\')">Lier</button></div>')) +
+      (succ.length ? '<div class="g2f-sec">Est suivi par</div><div class="g2f-liens">' +
+        succ.map(s=>'<div class="g2f-lien clic" onclick="gOuvrirFiche(\''+s.table+'\',\''+s.it.id+'\')"><span class="n">'+(num.map[s.it.id]||'')+'</span>' +
+          '<span class="t">'+escapeHtml(s.it.nom)+'</span><span class="k">'+(GT_TYPES_LIEN[s.lien.type||'FD'])+'</span></div>').join('') + '</div>' : '') +
+    '</div>' +
+    (ro ? '' : '<div class="g2f-pied">' +
+      (est && (projChildren(id).length + gTachesDe(id).length) >= 2 ? '<button class="btn small" onclick="gEnchainer(\''+id+'\')" title="Relie ses éléments les uns après les autres">⛓ Enchaîner</button>' : '') +
+      (est ? '<button class="btn small" onclick="gCreerTache(\''+id+'\')">＋ Tâche</button>' : '') +
+      (est ? '<button class="btn small" onclick="gFermerFiche();openProjectDrawer(\''+id+'\')">Fiche complète</button>' : '') +
+      '<button class="btn small g2-suppr" onclick="gSupprimer(\''+table+'\',\''+id+'\')">Supprimer</button></div>');
+  z.querySelectorAll('[data-f]').forEach(el=>el.addEventListener('change', ()=>gFicheChamp(el)));
+  if(memo){
+    const el = z.querySelector('[data-f="'+memo.f+'"]');
+    if(el){ try{ el.focus({preventScroll:true}); if(memo.s!=null && el.setSelectionRange) el.setSelectionRange(memo.s, memo.e); }catch(e){} }
   }
+}
+function gFicheChamp(el){
+  if(!GT.fiche) return;
+  const c = el.dataset.f;
+  const v = el.type==='checkbox' ? el.checked : el.value;
+  const ok = gAppliquerChamp(GT.fiche.table, GT.fiche.id, c, v);
+  gRendre();
+  if(!ok || c!=='nom') gRendreFiche();
+}
+function gAjouterPredFiche(id){
+  const pred = (document.getElementById('g2f-pred')||{}).value;
+  if(!pred) return;
+  const type = (document.getElementById('g2f-type')||{}).value || 'FD';
+  const lag = parseInt((document.getElementById('g2f-lag')||{}).value, 10) || 0;
+  const t = gTableDe(id);
+  if(t) gLier(pred, id, t, type, lag);
+  gRendreFiche();
+}
+function gChoisirCouleur(id, c){
+  const p = state.projects.find(x=>x.id===id);
+  if(!p) return;
+  const extra = Object.assign({}, p.extra || {});
+  if(c) extra.gcouleur = c; else delete extra.gcouleur;
+  gOp('Couleur du groupe', ()=>gMaj('projects', id, {extra}));
+  gRendre(); gRendreFiche();
+}
+
+/* ---------------- Branchements globaux ---------------- */
+gChargerFile();
+(function(){
+  const orig = loadAll;
+  loadAll = async function(){
+    await orig.apply(this, arguments);
+    gReappliquer();
+    if(Object.keys(GT.attente).length) setTimeout(gPomper, 250);
+  };
+})();
+(function(){
+  const orig = undoLast;
+  undoLast = async function(){
+    if(gActif() && GT.pile.length){ gAnnuler(); return; }
+    return orig.apply(this, arguments);
+  };
+})();
+/* Le panneau latéral vit dans un autre bloc de script : on pose l'enveloppe
+   une fois toute la page lue, et au plus tard à la première ouverture. */
+function gEnvelopperPanneau(){
+  if(typeof openProjectDrawer !== 'function' || openProjectDrawer._g2) return;
+  const orig = openProjectDrawer;
+  const enveloppe = function(id){
+    const r = orig.apply(this, arguments);
+    const p = state.projects.find(x=>x.id===id);
+    if(p && ui.drawer && ui.drawer.id===id){
+      const t = {};
+      state.tasks.filter(x=>x.project_id===id).forEach(x=>{ t[x.id] = gClone(x); });
+      ui.drawer.orig = {id, p: gClone(p), t};
+    }
+    return r;
+  };
+  enveloppe._g2 = true;
+  window.openProjectDrawer = enveloppe;
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', gEnvelopperPanneau);
+else gEnvelopperPanneau();
+setTimeout(gEnvelopperPanneau, 0);
+document.addEventListener('pointermove', e=>{ if(GT.drag) gDragMove(e); });
+document.addEventListener('pointerup', e=>{ if(GT.drag) gDragFin(e); });
+document.addEventListener('pointercancel', ()=>{ if(GT.drag){ GT.drag = null; gRendre(); } });
+document.addEventListener('mousedown', e=>{
+  const p = document.getElementById('g2-pop');
+  if(p && p.classList.contains('show') && !p.contains(e.target)) gFermerPop();
 });
-document.addEventListener('mouseup', async ()=>{
-  if(!dragCtx) return;
-  document.body.style.userSelect='';
-  const ctx = dragCtx; dragCtx = null;
-  if(!ctx.moved) return;
-  const item = state[ctx.table].find(x=>x.id===ctx.id);
-  const cf = ctx.cible ? 'engagement_date' : 'date_fin';
-  if(item && (item.date_debut!==ctx.origDebut || item[cf]!==ctx.origFin)){
-    const before = {date_debut:ctx.origDebut}; before[cf] = ctx.origFin;
-    pushUndo(ctx.table, ctx.id, before);
-    const patchD = {date_debut:item.date_debut}; patchD[cf] = item[cf];
-    await dbUpdate(ctx.table, ctx.id, patchD);
-    await logActivity('a déplacé', (ctx.kind==='project'?'le projet « ':'la tâche « ')+item.nom+' »', fmtFR(item.date_debut)+' → '+fmtFR(item[cf]));
-    const c = await propagateFrom(ctx.id);
-    if(c && c.n) { renderMain(); showToast(c.n+' élément(s) décalé(s) par dépendance · Ctrl+Z'); }
-    else showToast('Dates mises à jour · Ctrl+Z pour annuler');
+document.addEventListener('keydown', e=>{
+  if(!gActif()) return;
+  const t = (e.target && e.target.tagName) || '';
+  const saisie = /^(INPUT|TEXTAREA|SELECT)$/.test(t) || (e.target && e.target.isContentEditable);
+  const mod = e.ctrlKey || e.metaKey;
+  if(mod && !saisie && (e.key==='y' || e.key==='Y' || (e.shiftKey && (e.key==='z' || e.key==='Z')))){
+    e.preventDefault(); e.stopImmediatePropagation(); gRefaire(); return;
   }
-});
+  if(saisie || mod) return;
+  if(e.key==='Escape'){ gFermerPop(); if(GT.fiche) gFermerFiche(); else if(GT.sel) gSelectionner(null, null); return; }
+  if(!GT.sel || gLectureSeule()) return;
+  if(e.key==='Delete'){ e.preventDefault(); gSupprimer(GT.sel.table, GT.sel.id); }
+  else if(e.key==='ArrowLeft' || e.key==='ArrowRight'){ e.preventDefault(); gPousser((e.key==='ArrowRight'?1:-1) * (e.shiftKey?7:1)); }
+  else if(e.key==='Enter'){ e.preventDefault(); gOuvrirFiche(GT.sel.table, GT.sel.id); }
+}, true);
+window.addEventListener('online', ()=>{ Object.keys(GT.attente).forEach(k=>{ GT.attente[k].prochain = 0; }); gMajStatut(); gPomper(); });
+window.addEventListener('offline', gMajStatut);
+
 
 /* ---- Vue liste des projets ---- */
 function renderProjListe(b){
@@ -5715,9 +7374,19 @@ async function saveProjectDrawer(){
   if(patch.date_fin && patch.statut!==FIN){ patch.statut=FIN; patch.avancement=100; }
   if(patch.statut===FIN && !patch.date_fin) patch.date_fin = fmtDate(new Date());
   if(patch.statut!==FIN) patch.date_fin = null;
-  await dbUpdate('projects', p.id, patch);
+  /* On n'envoie que ce qui a changé dans ce panneau depuis son ouverture :
+     une date déplacée entre-temps dans le Gantt n'est pas écrasée, et une
+     tâche créée entre-temps n'est jamais supprimée. */
+  const orig = (ui.drawer && ui.drawer.orig && ui.drawer.orig.id===p.id) ? ui.drawer.orig : null;
+  const diffP = {};
+  Object.keys(patch).forEach(k=>{ if(!orig || !gMemeValeur(orig.p[k], patch[k])) diffP[k] = patch[k]; });
+  if(Object.keys(diffP).length) gMajHorsOp('projects', p.id, diffP);
+  if(('depends_on' in diffP) && orig){
+    const reste = predsDe(orig.p).filter(x=>x.id!==orig.p.depends_on && x.id!==diffP.depends_on);
+    const preds = diffP.depends_on ? [{id:diffP.depends_on, type:'FD', lag:0}].concat(reste) : reste;
+    gMajHorsOp('projects', p.id, {predecesseurs:preds, depends_on: preds.length?preds[0].id:null});
+  }
   const prop = await propagateFrom(p.id);
-  const existingIds = new Set(state.tasks.filter(t=>t.project_id===p.id).map(t=>t.id));
   const domTasks = [...document.querySelectorAll('#tasks-list .task-item')];
   const keptIds = new Set();
   for(const el of domTasks){
@@ -5732,9 +7401,27 @@ async function saveProjectDrawer(){
       depends_on: el.querySelector('.t-depends').value||null,
     };
     if(String(id).startsWith('new-')){ const ins = await dbInsert('tasks', {...data}); keptIds.add(ins.id); }
-    else { keptIds.add(id); await dbUpdate('tasks', id, data); }
+    else {
+      keptIds.add(id);
+      const o = orig ? orig.t[id] : null;
+      const diff = {};
+      Object.keys(data).forEach(k=>{
+        const avant = o ? (k==='date_fin' ? (o.date_fin || o.date_debut || '') : o[k]) : undefined;
+        if(!o || !gMemeValeur(avant, data[k])) diff[k] = data[k];
+      });
+      if(('depends_on' in diff) && o){
+        const reste = predsDe(o).filter(x=>x.id!==o.depends_on && x.id!==diff.depends_on);
+        const preds = diff.depends_on ? [{id:diff.depends_on, type:'FD', lag:0}].concat(reste) : reste;
+        diff.predecesseurs = preds;
+        diff.depends_on = preds.length ? preds[0].id : null;
+      }
+      if(Object.keys(diff).length) gMajHorsOp('tasks', id, diff);
+    }
   }
-  for(const oldId of existingIds){ if(!keptIds.has(oldId)) await dbDelete('tasks', oldId); }
+  /* seules les tâches affichées à l'ouverture puis retirées ici sont supprimées */
+  for(const oldId of (orig ? Object.keys(orig.t) : [])){
+    if(!keptIds.has(oldId) && state.tasks.some(t=>t.id===oldId)) await dbDelete('tasks', oldId);
+  }
   await logActivity('a modifié', '« '+patch.nom+' »', oldStatut!==patch.statut?oldStatut+' → '+patch.statut:'avancement '+patch.avancement+'%');
   closeDrawer();
   renderMain();
@@ -7929,7 +9616,7 @@ function wbsNumeros(b){
     map[p.id] = num; inverse[num] = p.id;
     let i = 0;
     projChildren(p.id).forEach(k=>{ i++; walk(k, num+'.'+i); });
-    state.tasks.filter(t=>t.project_id===p.id).forEach(t=>{ i++; map[t.id] = num+'.'+i; inverse[num+'.'+i] = t.id; });
+    gTachesDe(p.id).forEach(t=>{ i++; map[t.id] = num+'.'+i; inverse[num+'.'+i] = t.id; });
   };
   const ids = new Set(state.projects.filter(p=>p.board_id===b.id).map(p=>p.id));
   let r = 0;
@@ -8221,11 +9908,6 @@ async function saveCalendrier(){
 }
 
 /* ============ IMPRESSION / PDF ============ */
-function imprimerGantt(){
-  document.body.classList.add('impression');
-  showToast('Choisis « Enregistrer au format PDF » dans la fenêtre d\u2019impression');
-  setTimeout(()=>{ window.print(); setTimeout(()=>document.body.classList.remove('impression'), 600); }, 350);
-}
 
 /* ============ LIEN DE CONSULTATION ============ */
 function lienLecture(){
@@ -8723,7 +10405,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v16.0'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.0'; st.classList.add('ready'); }
 })();
 </script>
 </body>
