@@ -7350,15 +7350,52 @@ function ensureHtml2Canvas(){
   });
   return h2cPromise;
 }
+/* html2canvas 1.4 ne lit pas les couleurs CSS récentes (color(), color-mix(), lab, oklch…) :
+   juste avant la capture, chaque couleur de la copie capturée est convertie en rgba() classique.
+   L'écran réel n'est pas modifié. */
+const PA_FN_COULEUR = /\b(?:color-mix|color|oklab|oklch|lab|lch|hwb)\(/i;
+const PA_PROPS_COULEUR = ['color','background-color','background-image','border-top-color','border-right-color','border-bottom-color',
+  'border-left-color','outline-color','text-decoration-color','box-shadow','text-shadow','fill','stroke','caret-color','column-rule-color'];
+let paSondeCtx = null;
+function paVersRGBA(c){
+  try{
+    if(!paSondeCtx){ const cv = document.createElement('canvas'); cv.width = cv.height = 1; paSondeCtx = cv.getContext('2d', {willReadFrequently:true}); }
+    const x = paSondeCtx;
+    x.clearRect(0, 0, 1, 1); x.fillStyle = 'rgba(0,0,0,0)'; x.fillStyle = c; x.fillRect(0, 0, 1, 1);
+    const d = x.getImageData(0, 0, 1, 1).data;
+    return 'rgba(' + d[0] + ', ' + d[1] + ', ' + d[2] + ', ' + (Math.round(d[3]/255*1000)/1000) + ')';
+  }catch(e){ return 'rgba(0, 0, 0, 0)'; }
+}
+function paRemplacerCouleurs(v){
+  const re = /\b(?:color-mix|color|oklab|oklch|lab|lch|hwb)\(/gi;
+  let out = '', i = 0, m;
+  while((m = re.exec(v))){
+    let j = m.index + m[0].length, prof = 1;
+    while(j < v.length && prof){ if(v[j]==='(') prof++; else if(v[j]===')') prof--; j++; }
+    out += v.slice(i, m.index) + paVersRGBA(v.slice(m.index, j));
+    i = j; re.lastIndex = j;
+  }
+  return out + v.slice(i);
+}
+function paNettoyerCouleurs(doc){
+  const win = doc.defaultView || window;
+  doc.querySelectorAll('*').forEach(el=>{
+    let cs; try{ cs = win.getComputedStyle(el); }catch(e){ return; }
+    PA_PROPS_COULEUR.forEach(p=>{
+      const v = cs.getPropertyValue(p);
+      if(v && PA_FN_COULEUR.test(v)) el.style.setProperty(p, paRemplacerCouleurs(v), 'important');
+    });
+  });
+}
 async function captureScreen(cibleId, nomFichier){
   try{
     showToast('Capture en cours…');
     await ensureHtml2Canvas();
     const target = document.getElementById(cibleId || 'app');
     if(!target) throw new Error('zone introuvable');
-    const opts = {backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false};
+    const opts = {backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false, onclone: doc=>paNettoyerCouleurs(doc)};
     if(cibleId){ opts.width = target.scrollWidth; opts.height = target.scrollHeight;
-                 opts.windowWidth = target.scrollWidth + 40; opts.scrollX = 0; opts.scrollY = 0; }
+                 opts.windowWidth = target.scrollWidth + 40; opts.windowHeight = target.scrollHeight + 40; opts.scrollX = 0; opts.scrollY = 0; }
     const canvas = await window.html2canvas(target, opts);
     const a = document.createElement('a');
     a.href = canvas.toDataURL('image/png');
@@ -8299,7 +8336,7 @@ function renderA3(main){
   const age = a3AgeJours(a);
   const retenues = (c.causes||[]).filter(z=>z.retenue);
 
-  main.innerHTML = `<div class="a3-wrap" id="a3-sheet">
+  main.innerHTML = `<div class="a3-wrap" id="a3-feuille" id="a3-sheet">
     <div class="a3-head" style="border-left-color:${col.main}">
       <div class="a3-head-main">
         <div class="a3-ref">${escapeHtml(a.ref||'')} ${a.secteur?'· '+escapeHtml(a.secteur):''}</div>
@@ -8319,7 +8356,7 @@ function renderA3(main){
         <select class="a3-inline" onchange="saveA3Field('gravite',this.value)">
           ${['Faible','Moyenne','Haute','Critique'].map(g=>`<option ${g===a.gravite?'selected':''}>Gravité : ${g}</option>`).join('')}
         </select>
-        <button class="btn small" onclick="captureScreen()">📸 Capture A3</button>
+        <button class="btn small" onclick="captureScreen('a3-feuille', 'fiche-a3')">📸 Capture A3</button>
         <button class="btn small danger" onclick="deleteA3()">Supprimer</button>
       </div>
     </div>
@@ -10792,7 +10829,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.5'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.6'; st.classList.add('ready'); }
 })();
 </script>
 </body>
