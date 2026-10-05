@@ -4532,6 +4532,11 @@ function gRefaire(){ return gRejouer(GT.redo, GT.pile, 'Rétabli'); }
 
 /* ---------------- File d'attente d'enregistrement ---------------- */
 function gChargerFile(){
+  if(/[?&]purge=1/.test(location.search)){
+    ['pa_g_attente','pa_g_local','pa_g_absentes'].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+    try{ history.replaceState(null, '', location.pathname + location.hash); }catch(e){}
+    setTimeout(()=>{ try{ gToast('File d\u2019attente vidée sur ce poste'); }catch(e){} }, 1500);
+  }
   GT.attente = gLs('pa_g_attente', {}) || {};
   GT.local = gLs('pa_g_local', {}) || {};
   GT.absentes = gLs('pa_g_absentes', {}) || {};
@@ -5644,7 +5649,7 @@ function gMajStatut(){
   else if(n){ z.className = 'g2-sync ko'; z.textContent = n+' en attente'; }
   else { z.className = 'g2-sync ok'; z.textContent = 'Enregistré'; }
   z.title = n ? 'Ces modifications sont gardées sur cet ordinateur et renvoyées automatiquement. Clique pour réessayer maintenant.' : 'Tout est enregistré dans la base partagée';
-  z.onclick = gRelancerFile;
+  z.onclick = gDetailFile;
 }
 function gMajAlerte(){
   const z = document.getElementById('g2-alerte');
@@ -10754,7 +10759,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.2'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.3'; st.classList.add('ready'); }
 })();
 </script>
 </body>
