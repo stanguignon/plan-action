@@ -4591,9 +4591,64 @@ async function gEnvoyerEntree(e){
       const p = Object.assign({}, data); delete p.id; delete p.created_at;
       data = p; continue;
     }
+    if(/foreign key|23503/i.test(String(r.error.message||'') + ' ' + String(r.error.code||''))){
+      const fk = gTraiterFK(e);
+      if(fk) return fk;
+    }
     return {ok:false, message: r.error.message || 'erreur inconnue'};
   }
   return {ok:false, message:'trop de tentatives'};
+}
+/* Une tâche refusée parce que son projet manque dans la base :
+   · le projet a été supprimé → la tâche orpheline est écartée (copie gardée sur l'appareil) ;
+   · le projet existe ici mais n'a jamais atteint la base → il est renvoyé d'abord. */
+function gTraiterFK(e){
+  if(e.table!=='tasks') return null;
+  const t = state.tasks.find(x=>x.id===e.id) || e.data || {};
+  const pid = (e.data && e.data.project_id) || t.project_id;
+  const p = pid ? state.projects.find(x=>x.id===pid) : null;
+  if(!p){
+    const l = gLs('pa_g_ecartees', []) || [];
+    l.unshift({ts: Date.now(), tache: gClone(Object.assign({}, t, e.data || {}))}); gLsSet('pa_g_ecartees', l.slice(0, 30));
+    state.tasks = state.tasks.filter(x=>x.id!==e.id);
+    delete GT.local[gCle('tasks', e.id)];
+    GT.ecartees = (GT.ecartees||0) + 1;
+    return {ok:true, ecartee:true};
+  }
+  if(!GT.attente[gCle('projects', pid)]) gFile('ins', 'projects', pid, gClone(p));
+  return {ok:false, attente:true, message:'en attente de l\u2019enregistrement du projet « '+(p.nom||'')+' »'};
+}
+function gNomEntree(e){ const it = ((state[e.table]||[]).find(x=>x.id===e.id)) || e.data || {}; return truncate(String(it.nom || e.id), 40); }
+function gLibErreur(e){
+  const m = String((e && e.erreur) || ''), nom = gNomEntree(e);
+  if(/foreign key|23503/i.test(m)) return e.table==='tasks' ? 'la tâche « '+nom+' » appartient à un projet absent de la base' : '« '+nom+' » fait référence à un élément absent de la base';
+  if(/fetch|network|Failed/i.test(m)) return 'la base est momentanément injoignable — tout repartira seul';
+  if(/permission|policy|row-level/i.test(m)) return 'la base refuse l\u2019écriture de « '+nom+' » (droits)';
+  if(/null value/i.test(m)) return 'un champ obligatoire manque pour « '+nom+' »';
+  return truncate(m, 110);
+}
+function gDetailFile(){
+  const cles = Object.keys(GT.attente);
+  const lignes = cles.map(k=>{ const e = GT.attente[k];
+    return '<tr><td>'+(e.table==='tasks' ? 'Tâche' : (e.table==='projects' ? 'Projet' : escapeHtml(e.table)))+'</td><td>'+escapeHtml(gNomEntree(e))+'</td>' +
+      '<td>'+({ins:'création', maj:'modification', sup:'suppression'}[e.op] || e.op)+'</td><td>'+escapeHtml(e.erreur ? gLibErreur(e) : 'en attente d\u2019envoi')+'</td>' +
+      '<td style="text-align:center">'+(e.essais||0)+'</td><td><button class="btn small" onclick="gAbandonner(\''+k+'\')">Abandonner</button></td></tr>'; }).join('');
+  document.getElementById('modal-content').innerHTML =
+    '<div class="modal-head">Modifications en attente d\u2019enregistrement</div><div class="modal-body">' +
+    '<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px">Ces modifications sont gardées sur cet ordinateur et renvoyées automatiquement. Abandonne seulement celles que la base refusera toujours : elles disparaîtront de l\u2019écran au prochain rafraîchissement.</div>' +
+    (cles.length ? '<table class="pa-table"><thead><tr><th>Type</th><th>Élément</th><th>Opération</th><th>Situation</th><th>Essais</th><th></th></tr></thead><tbody>'+lignes+'</tbody></table>'
+                 : '<div style="font-size:12px;color:var(--muted-2)">Rien en attente : tout est enregistré.</div>') +
+    '</div><div class="modal-foot">'+(cles.length ? '<button class="btn" onclick="gRelancerFile();closeModal()">Réessayer tout</button>' : '')+'<button class="btn primary" onclick="closeModal()">Fermer</button></div>';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+async function gAbandonner(k){
+  const e = GT.attente[k]; if(!e) return;
+  if(!confirm('Abandonner cette modification ?\n\n« '+gNomEntree(e)+' » ne sera pas enregistré dans la base.')) return;
+  delete GT.attente[k]; delete GT.local[k];
+  if(e.op==='ins') state[e.table] = (state[e.table]||[]).filter(x=>x.id!==e.id);
+  gSauverFile(); gMajStatut(); gMajAlerte();
+  try{ if(USE_SUPABASE){ await loadAll(); } renderMain(); }catch(err){}
+  if(Object.keys(GT.attente).length) gDetailFile(); else closeModal();
 }
 async function gPomper(){
   if(!USE_SUPABASE || !sbClient){ return; }
@@ -4613,6 +4668,8 @@ async function gPomper(){
           GT.recents[k] = {op:e.op, table:e.table, id:e.id, data:e.data, jusqu: Date.now()+4000};
           delete GT.attente[k];
         }
+      } else if(r.attente){
+        e.erreur = r.message; e.prochain = Date.now() + 1200;
       } else {
         e.essais = (e.essais||0) + 1;
         e.erreur = r.message;
@@ -4622,6 +4679,7 @@ async function gPomper(){
   } catch(err){ console.warn('Gantt : envoi interrompu', err); }
   finally {
     GT.pompe = false; gSauverFile(); gMajStatut(); gMajAlerte();
+    if(GT.ecartees){ gToast(GT.ecartees + ' tâche(s) d\u2019un projet supprimé non enregistrée(s) — copie gardée sur cet ordinateur'); GT.ecartees = 0; if(gActif()) gRendre(); }
     const reste = Object.values(GT.attente);
     clearTimeout(GT.minuterie);
     if(GT.relance){ GT.relance = false; GT.minuterie = setTimeout(gPomper, 60); }
@@ -5585,8 +5643,8 @@ function gMajAlerte(){
   }
   const refus = Object.keys(GT.attente).map(k=>GT.attente[k]).filter(e=>e.essais>=3 && e.erreur);
   if(refus.length){
-    h += '<div class="g2-al err"><b>'+refus.length+' modification(s) pas encore enregistrée(s)</b> : '+escapeHtml(truncate(String(refus[0].erreur),120))+
-      ' — elles restent gardées ici et seront renvoyées. <button onclick="gRelancerFile()">Réessayer</button></div>';
+    h += '<div class="g2-al err"><b>'+refus.length+' modification(s) pas encore enregistrée(s)</b> : '+escapeHtml(gLibErreur(refus[0]))+
+      '. <button onclick="gRelancerFile()">Réessayer</button><button onclick="gDetailFile()">Voir le détail</button></div>';
   }
   z.innerHTML = h;
   z.classList.toggle('vide', !h);
@@ -10680,7 +10738,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.0'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.1'; st.classList.add('ready'); }
 })();
 </script>
 </body>
