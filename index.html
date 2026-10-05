@@ -4638,8 +4638,16 @@ function gDetailFile(){
     '<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px">Ces modifications sont gardées sur cet ordinateur et renvoyées automatiquement. Abandonne seulement celles que la base refusera toujours : elles disparaîtront de l\u2019écran au prochain rafraîchissement.</div>' +
     (cles.length ? '<table class="pa-table"><thead><tr><th>Type</th><th>Élément</th><th>Opération</th><th>Situation</th><th>Essais</th><th></th></tr></thead><tbody>'+lignes+'</tbody></table>'
                  : '<div style="font-size:12px;color:var(--muted-2)">Rien en attente : tout est enregistré.</div>') +
-    '</div><div class="modal-foot">'+(cles.length ? '<button class="btn" onclick="gRelancerFile();closeModal()">Réessayer tout</button>' : '')+'<button class="btn primary" onclick="closeModal()">Fermer</button></div>';
+    '</div><div class="modal-foot">'+(cles.length ? '<button class="btn danger" onclick="gAbandonnerTout()">Tout abandonner</button><button class="btn" onclick="gRelancerFile();closeModal()">Réessayer tout</button>' : '')+'<button class="btn primary" onclick="closeModal()">Fermer</button></div>';
   document.getElementById('modal-overlay').classList.add('show');
+}
+async function gAbandonnerTout(){
+  if(!confirm('Abandonner toutes les modifications en attente sur cet ordinateur ?\n\nL\u2019écran repartira des données de la base.')) return;
+  GT.attente = {}; GT.local = {}; GT.absentes = {};
+  gSauverFile(); closeModal();
+  try{ if(USE_SUPABASE) await loadAll(); renderMain(); }catch(err){}
+  gMajStatut(); gMajAlerte();
+  gToast('File vidée : tout est repris depuis la base');
 }
 async function gAbandonner(k){
   const e = GT.attente[k]; if(!e) return;
@@ -4674,6 +4682,14 @@ async function gPomper(){
         e.essais = (e.essais||0) + 1;
         e.erreur = r.message;
         e.prochain = Date.now() + Math.min(60000, 1500 * Math.pow(2, Math.min(5, e.essais-1)));
+        if(e.essais >= 4 && /foreign key|violates|constraint|permission|row-level|invalid input|23503|23502|23514|22P02|42501/i.test(String(r.message||''))){
+          const l = gLs('pa_g_ecartees', []) || [];
+          l.unshift({ts: Date.now(), table: e.table, op: e.op, erreur: r.message, ligne: gClone(e.data || (state[e.table]||[]).find(x=>x.id===e.id) || {id:e.id})});
+          gLsSet('pa_g_ecartees', l.slice(0, 30));
+          delete GT.attente[k]; delete GT.local[k];
+          if(e.op==='ins') state[e.table] = (state[e.table]||[]).filter(x=>x.id!==e.id);
+          GT.ecartees = (GT.ecartees||0) + 1;
+        }
       }
     }
   } catch(err){ console.warn('Gantt : envoi interrompu', err); }
@@ -5624,7 +5640,7 @@ function gMajStatut(){
   if(!USE_SUPABASE){ z.className = 'g2-sync local'; z.textContent = ''; return; }
   const n = Object.keys(GT.attente).length;
   if(!navigator.onLine){ z.className = 'g2-sync ko'; z.textContent = 'Hors ligne · '+n+' en attente'; }
-  else if(GT.pompe && n){ z.className = 'g2-sync envoi'; z.textContent = 'Enregistrement…'; }
+  else if(GT.pompe && n && !Object.keys(GT.attente).some(k=>GT.attente[k].erreur)){ z.className = 'g2-sync envoi'; z.textContent = 'Enregistrement…'; }
   else if(n){ z.className = 'g2-sync ko'; z.textContent = n+' en attente'; }
   else { z.className = 'g2-sync ok'; z.textContent = 'Enregistré'; }
   z.title = n ? 'Ces modifications sont gardées sur cet ordinateur et renvoyées automatiquement. Clique pour réessayer maintenant.' : 'Tout est enregistré dans la base partagée';
@@ -10738,7 +10754,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.1'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.2'; st.classList.add('ready'); }
 })();
 </script>
 </body>
