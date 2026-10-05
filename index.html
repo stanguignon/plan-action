@@ -2691,6 +2691,11 @@ body.impression .g2-tete{position:relative}
   .g2-fiche{width:100%;max-width:100%}
   .g2-proprio{font-size:11px}
 }
+
+/* partage de la fiche A3 */
+.modal:has(.a3p-apercu){max-width:900px !important;width:96vw !important}
+.a3p-etapes{font-size:12.5px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.a3p-apercu{max-height:62vh;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#ffffff;padding:18px;display:flex;justify-content:center}
 </style>
 
 </head>
@@ -8336,7 +8341,7 @@ function renderA3(main){
   const age = a3AgeJours(a);
   const retenues = (c.causes||[]).filter(z=>z.retenue);
 
-  main.innerHTML = `<div class="a3-wrap" id="a3-feuille" id="a3-sheet">
+  main.innerHTML = `<div class="a3-wrap" id="a3-sheet">
     <div class="a3-head" style="border-left-color:${col.main}">
       <div class="a3-head-main">
         <div class="a3-ref">${escapeHtml(a.ref||'')} ${a.secteur?'· '+escapeHtml(a.secteur):''}</div>
@@ -8356,7 +8361,7 @@ function renderA3(main){
         <select class="a3-inline" onchange="saveA3Field('gravite',this.value)">
           ${['Faible','Moyenne','Haute','Critique'].map(g=>`<option ${g===a.gravite?'selected':''}>Gravité : ${g}</option>`).join('')}
         </select>
-        <button class="btn small" onclick="captureScreen('a3-feuille', 'fiche-a3')">📸 Capture A3</button>
+        <button class="btn small primary" onclick="a3Partager()">✉ Partager la fiche</button>
         <button class="btn small danger" onclick="deleteA3()">Supprimer</button>
       </div>
     </div>
@@ -10829,8 +10834,170 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.6'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.7'; st.classList.add('ready'); }
 })();
+</script>
+<script>
+/* ============================================================
+   FICHE A3 — RENDU PARTAGEABLE (e-mail, PDF, image)
+   HTML « compatible messagerie » : tableaux et styles en ligne,
+   lisible dans Outlook, Gmail, sur téléphone et à l'impression.
+   ============================================================ */
+function a3Esc(v){ return escapeHtml(String(v==null ? '' : v)).replace(/\n/g, '<br>'); }
+function a3Vide(v){ return !String(v==null ? '' : v).trim(); }
+const A3P_F = "font-family:'Segoe UI',Calibri,Arial,sans-serif;";
+const A3P_NR = '<span style="color:#9aa3ad;font-style:italic">Non renseigné</span>';
+function a3Val(v){ return a3Vide(v) ? A3P_NR : a3Esc(v); }
+function a3RapportHTML(a){
+  const c = a3Content(a), acts = a3Actions(a.id), age = a3AgeJours(a), duree = a3DureeJours(a), prog = a3Progress(a);
+  const col = (typeof A3_COLORS !== 'undefined' && (A3_COLORS[a.statut] || A3_COLORS['Ouvert'])) || {main:'#0c66e4', soft:'#e9f2ff'};
+  const F = A3P_F;
+  const tab = 'role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"';
+  const lbl = F + 'font-size:11px;font-weight:700;color:#5b6470;letter-spacing:.03em;background:#f6f8fa;border:1px solid #e3e7ec;padding:8px 10px;vertical-align:top;';
+  const val = F + 'font-size:13px;color:#1f2328;border:1px solid #e3e7ec;padding:8px 10px;vertical-align:top;line-height:1.45;';
+  const sec = (n, t, sous)=>`<tr><td style="padding:22px 0 8px">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td style="${F}background:#0c3b5e;color:#ffffff;font-size:12px;font-weight:700;width:22px;height:22px;text-align:center">${n}</td>
+      <td style="${F}padding-left:10px;font-size:15px;font-weight:700;color:#0c3b5e">${t}${sous ? ` <span style="font-weight:400;color:#7a8592;font-size:12px">— ${sous}</span>` : ''}</td>
+    </tr></table></td></tr>`;
+  let h = `<table role="presentation" width="760" cellpadding="0" cellspacing="0" border="0" style="width:760px;max-width:100%;border-collapse:collapse;background:#ffffff">`;
+  /* en-tête */
+  h += `<tr><td style="${F}background:#0c3b5e;padding:18px 22px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#9fc3e6">FICHE A3${a.ref ? ' · ' + a3Esc(a.ref) : ''}${a.secteur ? ' · ' + a3Esc(a.secteur) : ''}</div>
+    <div style="font-size:21px;font-weight:700;color:#ffffff;margin-top:4px">${a3Esc(a.titre || 'Sans titre')}</div></td></tr>`;
+  const ref = a.date_cloture ? duree : age;
+  const meta = [['Pilote', a.pilote], ['Équipe', a.equipe], ['Ouverte le', a.date_ouverture ? fmtFR(a.date_ouverture) : ''], ['Clôturée le', a.date_cloture ? fmtFR(a.date_cloture) : ''],
+                ['Statut', a.statut], ['Gravité', a.gravite], [a.date_cloture ? 'Durée' : 'Ouverte depuis', ref!=null ? ref + ' jours' : ''], ['Actions soldées', acts.length ? prog + ' %' : '']];
+  const ligneMeta = l=>`<tr>${l.map((m, i)=>`<td width="25%" style="${F}padding:9px 12px;border-bottom:1px solid #e3e7ec;${i<3 ? 'border-right:1px solid #e3e7ec;' : ''}background:${m[0]==='Statut' ? col.soft : '#ffffff'};vertical-align:top">
+      <div style="font-size:10px;font-weight:700;color:#7a8592;letter-spacing:.04em">${m[0].toUpperCase()}</div>
+      <div style="font-size:13px;font-weight:600;color:${m[0]==='Statut' ? col.main : '#1f2328'};margin-top:2px">${a3Vide(m[1]) ? '—' : a3Esc(m[1])}</div></td>`).join('')}</tr>`;
+  h += `<tr><td style="border-left:1px solid #e3e7ec;border-right:1px solid #e3e7ec"><table ${tab}>${ligneMeta(meta.slice(0, 4))}${ligneMeta(meta.slice(4))}</table></td></tr>`;
+  /* 1. description */
+  h += sec(1, 'Description du problème', 'QQOQCCP');
+  h += `<tr><td><table ${tab}>${QQOQCCP.map(f=>`<tr><td width="110" style="${lbl}">${f.l}</td><td style="${val}">${a3Val(c.qqoqccp[f.k])}</td></tr>`).join('')}</table></td></tr>`;
+  h += `<tr><td style="padding-top:8px"><table ${tab}><tr>
+    <td width="50%" style="${val}background:#eef8f2;border-color:#cfe9da"><div style="font-size:11px;font-weight:700;color:#1f7a4d;margin-bottom:3px">EST</div>${a3Val(c.estnestpas.est)}</td>
+    <td width="50%" style="${val}background:#f6f8fa"><div style="font-size:11px;font-weight:700;color:#5b6470;margin-bottom:3px">N\u2019EST PAS</div>${a3Val(c.estnestpas.nestpas)}</td></tr></table></td></tr>`;
+  /* 2. causes */
+  const causes = (c.causes || []).filter(z=>!a3Vide(z.texte));
+  const nRet = causes.filter(z=>z.retenue).length;
+  h += sec(2, 'Recherche des causes', 'Ishikawa 6M' + (nRet ? ' · ' + nRet + ' cause' + (nRet>1 ? 's' : '') + ' retenue' + (nRet>1 ? 's' : '') : ''));
+  h += `<tr><td><table ${tab}>${M6.map(m=>{
+    const l = causes.filter(z=>z.m===m.k);
+    return `<tr><td width="110" style="${lbl}">${a3Esc(m.l)}</td><td style="${val}">${l.length ? l.map(z=>z.retenue
+      ? `<div style="margin:2px 0;padding:4px 8px;background:#fdecea;border-left:3px solid #c0392b;color:#8e2418;font-weight:600">${a3Esc(z.texte)}<span style="font-weight:400;font-size:11px;color:#a1493d"> · cause retenue${z.axe && CAUSE_AXES[z.axe] ? ' (' + CAUSE_AXES[z.axe].toLowerCase() + ')' : ''}</span></div>`
+      : `<div style="margin:2px 0;color:#3d4650">• ${a3Esc(z.texte)}</div>`).join('') : '<span style="color:#b3bac2">—</span>'}</td></tr>`; }).join('')}</table></td></tr>`;
+  /* 3. 5 pourquoi */
+  const chaine = axe=>{
+    const l = (c.cinq[axe] || []).map((t, i)=>({t, i})).filter(x=>!a3Vide(x.t));
+    return (l.length ? l.map(x=>`<div style="margin:4px 0"><span style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;background:#0c3b5e;color:#ffffff;font-size:10px;font-weight:700;margin-right:7px">${x.i + 1}</span>${a3Esc(x.t)}</div>`).join('') : A3P_NR)
+      + `<div style="margin-top:10px;padding:8px 10px;background:#fff7e0;border:1px solid #f1d58a"><div style="font-size:10px;font-weight:700;color:#8a5a00;letter-spacing:.04em">CAUSE RACINE</div><div style="font-weight:600;color:#3d2e00;margin-top:2px">${a3Val(c.racines[axe])}</div></div>`;
+  };
+  h += sec(3, 'Cause racine', '5 Pourquoi');
+  h += `<tr><td><table ${tab}><tr>
+    <td width="50%" style="${val}"><div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:4px">OCCURRENCE <span style="font-weight:400;color:#7a8592">— pourquoi c\u2019est arrivé</span></div>${chaine('occurrence')}</td>
+    <td width="50%" style="${val}"><div style="font-size:11px;font-weight:700;color:#6b46c1;margin-bottom:4px">NON-DÉTECTION <span style="font-weight:400;color:#7a8592">— pourquoi on ne l\u2019a pas vu</span></div>${chaine('detection')}</td>
+  </tr></table></td></tr>`;
+  /* 4. actions */
+  const faites = acts.filter(x=>x.statut==='Fait').length;
+  h += sec(4, 'Plan d\u2019actions', acts.length ? faites + ' / ' + acts.length + ' soldée' + (faites>1 ? 's' : '') : '');
+  h += acts.length ? `<tr><td><table ${tab}><tr>${['Catégorie','Action','Responsable','Échéance','Statut'].map(t=>`<td style="${lbl}">${t.toUpperCase()}</td>`).join('')}</tr>
+    ${acts.map(x=>{ const sc = ACTION_COLORS[x.statut] || ACTION_COLORS['À faire']; const retard = typeof actionLate==='function' && actionLate(x);
+      return `<tr><td style="${val}font-size:12px;color:#5b6470">${a3Esc((x.extra && x.extra.categorie) || 'Corrective')}</td>
+        <td style="${val}font-weight:600">${a3Esc(x.titre)}${retard ? '<span style="color:#c0392b;font-size:11px;font-weight:700"> · EN RETARD</span>' : ''}</td>
+        <td style="${val}">${a3Esc(x.responsable || '—')}</td><td style="${val}white-space:nowrap">${x.echeance ? fmtFR(x.echeance) : '—'}</td>
+        <td style="${val}"><span style="display:inline-block;padding:2px 8px;background:${sc.soft};color:${sc.main};font-weight:700;font-size:11px">${a3Esc(x.statut || 'À faire')}</span></td></tr>`; }).join('')}</table></td></tr>`
+    : `<tr><td style="${val}color:#9aa3ad;font-style:italic">Aucune action définie pour l\u2019instant.</td></tr>`;
+  /* 5. synthèse */
+  const S = [['État initial','initial'], ['État visé','vise'], ['Gains obtenus','gains'], ['Standardisation','standard'], ['Extension & RETEX','retex'], ['Vérification d\u2019efficacité','efficacite']];
+  h += sec(5, 'Synthèse et capitalisation', '');
+  h += `<tr><td><table ${tab}>${[0, 2, 4].map(i=>`<tr>${S.slice(i, i + 2).map(([t, k])=>`<td width="50%" style="${val}"><div style="font-size:11px;font-weight:700;color:#5b6470;margin-bottom:3px">${t.toUpperCase()}</div>${a3Val(c.synthese[k])}${k==='efficacite' && c.synthese.date_efficacite ? '<div style="font-size:11px;color:#7a8592;margin-top:4px">Constat du ' + fmtFR(c.synthese.date_efficacite) + '</div>' : ''}</td>`).join('')}</tr>`).join('')}</table></td></tr>`;
+  h += `<tr><td style="${F}padding:16px 0 2px;font-size:11px;color:#8a929c">Fiche générée le ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})} depuis le Pilotage &amp; Performance ONET × REVIMA.</td></tr></table>`;
+  return h;
+}
+function a3RapportTexte(a){
+  const c = a3Content(a), acts = a3Actions(a.id), t = v=>a3Vide(v) ? '—' : String(v).trim();
+  const L = ['FICHE A3' + (a.ref ? ' ' + a.ref : '') + ' — ' + (a.titre || ''), 'Pilote : ' + t(a.pilote) + ' · Statut : ' + t(a.statut) + ' · Gravité : ' + t(a.gravite), '',
+    '1. DESCRIPTION DU PROBLÈME'];
+  QQOQCCP.forEach(f=>L.push('  ' + f.l + ' : ' + t(c.qqoqccp[f.k])));
+  L.push('  EST : ' + t(c.estnestpas.est), '  N\u2019EST PAS : ' + t(c.estnestpas.nestpas), '', '2. CAUSES (6M)');
+  M6.forEach(m=>{ const l = (c.causes || []).filter(z=>z.m===m.k && !a3Vide(z.texte)); if(l.length) L.push('  ' + m.l + ' : ' + l.map(z=>z.texte + (z.retenue ? ' [retenue]' : '')).join(' ; ')); });
+  L.push('', '3. CAUSES RACINES', '  Occurrence : ' + t(c.racines.occurrence), '  Non-détection : ' + t(c.racines.detection), '', '4. PLAN D\u2019ACTIONS');
+  acts.forEach(x=>L.push('  - ' + x.titre + ' · ' + t(x.responsable) + ' · ' + (x.echeance ? fmtFR(x.echeance) : '—') + ' · ' + t(x.statut)));
+  if(!acts.length) L.push('  Aucune action');
+  L.push('', '5. SYNTHÈSE', '  État initial : ' + t(c.synthese.initial), '  État visé : ' + t(c.synthese.vise), '  Gains : ' + t(c.synthese.gains));
+  return L.join('\n');
+}
+function a3Courante(){ return state.a3.find(x=>x.id===route.a3Id); }
+function a3Partager(){
+  const a = a3Courante(); if(!a) return;
+  document.getElementById('modal-content').innerHTML = `<div class="modal-head">Partager la fiche A3</div>
+    <div class="modal-body">
+      <div class="a3p-etapes"><b>Par e-mail :</b> 1. « Copier la fiche » · 2. « Ouvrir un e-mail » · 3. coller dans le message avec Ctrl+V. La mise en forme est conservée dans Outlook.</div>
+      <div class="a3p-apercu" id="a3-apercu">${a3RapportHTML(a)}</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Fermer</button>
+      <div style="flex:1"></div>
+      <button class="btn" onclick="a3Image()">Image</button>
+      <button class="btn" onclick="a3Pdf()">PDF / Imprimer</button>
+      <button class="btn" onclick="a3OuvrirMail()">Ouvrir un e-mail</button>
+      <button class="btn primary" onclick="a3CopierMail()">Copier la fiche</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+async function a3CopierMail(){
+  const a = a3Courante(); if(!a) return;
+  const html = '<div style="background:#ffffff">' + a3RapportHTML(a) + '</div>', txt = a3RapportTexte(a);
+  let ok = false;
+  try{
+    if(navigator.clipboard && window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html], {type:'text/html'}), 'text/plain': new Blob([txt], {type:'text/plain'})})]);
+      ok = true;
+    }
+  }catch(e){}
+  if(!ok){
+    const z = document.getElementById('a3-apercu');
+    if(z){ const r = document.createRange(); r.selectNodeContents(z); const s = getSelection(); s.removeAllRanges(); s.addRange(r); try{ ok = document.execCommand('copy'); }catch(e){} s.removeAllRanges(); }
+  }
+  showToast(ok ? 'Fiche copiée — colle-la dans le corps du mail (Ctrl+V)' : 'Copie impossible : sélectionne l\u2019aperçu puis Ctrl+C');
+}
+function a3OuvrirMail(){
+  const a = a3Courante(); if(!a) return;
+  const moi = (function(){ try{ return localStorage.getItem('pa_user') || ''; }catch(e){ return ''; } })();
+  const sujet = 'Fiche A3' + (a.ref ? ' ' + a.ref : '') + ' — ' + (a.titre || '') + (a.statut ? ' (' + a.statut + ')' : '');
+  const corps = 'Bonjour,\n\nVoici la fiche A3 « ' + (a.titre || '') + ' »' + (a.pilote ? ', pilotée par ' + a.pilote : '') + '.\n\n'
+    + '[Colle ici la fiche copiée : Ctrl+V]\n\nCordialement,\n' + moi;
+  window.location.href = 'mailto:?subject=' + encodeURIComponent(sujet) + '&body=' + encodeURIComponent(corps);
+}
+function a3Pdf(){
+  const a = a3Courante(); if(!a) return;
+  const w = window.open('', '_blank');
+  if(!w){ showToast('Autorise les fenêtres surgissantes pour ce site, puis recommence'); return; }
+  w.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Fiche A3 ' + escapeHtml(a.ref || '') + ' — ' + escapeHtml(a.titre || '') + '</title>'
+    + '<style>@page{size:A4;margin:12mm}body{margin:0;padding:16px;background:#ffffff;-webkit-print-color-adjust:exact;print-color-adjust:exact}table{page-break-inside:auto}tr{page-break-inside:avoid}</style></head><body>'
+    + a3RapportHTML(a) + '<script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script></body></html>');
+  w.document.close();
+}
+async function a3Image(){
+  const a = a3Courante(); if(!a) return;
+  try{
+    showToast('Image en préparation…');
+    await ensureHtml2Canvas();
+    const z = document.createElement('div');
+    z.style.cssText = 'position:fixed;left:-10000px;top:0;width:800px;padding:20px;background:#ffffff';
+    z.innerHTML = a3RapportHTML(a);
+    document.body.appendChild(z);
+    const cv = await window.html2canvas(z, {backgroundColor:'#ffffff', scale:2, useCORS:true, logging:false, onclone: doc=>paNettoyerCouleurs(doc)});
+    z.remove();
+    const l = document.createElement('a');
+    l.href = cv.toDataURL('image/png');
+    l.download = 'fiche-a3-' + slug(a.ref || a.titre || 'a3') + '.png';
+    l.click();
+    showToast('Image téléchargée dans « Téléchargements »');
+  }catch(e){ showToast('Image impossible (' + (e.message || e) + ')'); }
+}
+
 </script>
 </body>
 </html>
