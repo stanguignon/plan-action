@@ -4573,55 +4573,85 @@ async function gEnvoyerEntree(e){
     const r = await sbClient.from(e.table).delete().eq('id', e.id);
     return r.error ? {ok:false, message:r.error.message} : {ok:true};
   }
-  const abs = GT.absentes[e.table] || [];
-  let data = Object.assign({}, e.data);
-  abs.forEach(c=>{ if(c in data){ gGarderLocal(e.table, e.id, c, data[c]); delete data[c]; } });
-  for(let tour=0; tour<8; tour++){
+  if(e.op==='maj'){
+    const r = await gEcrire(e.table, e.id, e.data, 'maj', 0);
+    if(!r.ok || !r.absente) return r;
+    /* la ligne n'existe pas dans la base : on la crée à partir de l'écran */
+    const ligne = (state[e.table]||[]).find(x=>x.id===e.id);
+    if(!ligne) return {ok:true};
+    return gEcrire(e.table, e.id, Object.assign({}, ligne, e.data), 'ins', 0);
+  }
+  return gEcrire(e.table, e.id, e.data, 'ins', 0);
+}
+/* Écrit une ligne en tolérant les colonnes absentes, les doublons et les parents manquants.
+   Une création est un « créer ou mettre à jour » : un doublon ne bloque jamais. */
+async function gEcrire(table, id, donnees, mode, prof){
+  const abs = GT.absentes[table] || [];
+  let data = Object.assign({}, donnees || {});
+  abs.forEach(c=>{ if(c in data){ gGarderLocal(table, id, c, data[c]); delete data[c]; } });
+  if(mode==='ins') data.id = id;
+  for(let tour=0; tour<10; tour++){
     const utiles = Object.keys(data).filter(c=>c!=='updated_at' && c!=='id');
-    if(e.op==='maj' && !utiles.length) return {ok:true};
-    const r = e.op==='ins'
-      ? await sbClient.from(e.table).insert(data)
-      : await sbClient.from(e.table).update(data).eq('id', e.id);
-    if(!r.error) return {ok:true};
+    if(mode==='maj' && !utiles.length) return {ok:true};
+    const r = mode==='ins'
+      ? await sbClient.from(table).upsert(data, {onConflict:'id'}).select('id')
+      : await sbClient.from(table).update(data).eq('id', id).select('id');
+    if(!r.error){
+      if(mode==='maj' && Array.isArray(r.data) && !r.data.length) return {ok:true, absente:true};
+      return {ok:true};
+    }
     const col = gColonneAbsente(r.error);
     if(col && (col in data)){
-      const l = GT.absentes[e.table] = GT.absentes[e.table] || [];
+      const l = GT.absentes[table] = GT.absentes[table] || [];
       if(l.indexOf(col)<0) l.push(col);
-      gGarderLocal(e.table, e.id, col, data[col]);
+      gGarderLocal(table, id, col, data[col]);
       delete data[col];
       continue;
     }
-    if(e.op==='ins' && /duplicate key|already exists/i.test(r.error.message||'')){
-      e.op = 'maj';
-      const p = Object.assign({}, data); delete p.id; delete p.created_at;
-      data = p; continue;
+    if(gEstFK(r.error) && prof < 3){
+      const ligne = Object.assign({}, (state[table]||[]).find(x=>x.id===id) || {}, donnees || {});
+      const rep = await gReparerParents(table, ligne, prof);
+      if(rep===true) continue;
+      if(rep==='orphelin') return gEcarter(table, id, donnees, r.error.message);
     }
-    if(/foreign key|23503/i.test(String(r.error.message||'') + ' ' + String(r.error.code||''))){
-      const fk = gTraiterFK(e);
-      if(fk) return fk;
-    }
-    return {ok:false, message: r.error.message || 'erreur inconnue'};
+    return {ok:false, message: (r.error.message || 'erreur') + (r.error.code ? ' ['+r.error.code+']' : '')};
   }
   return {ok:false, message:'trop de tentatives'};
 }
-/* Une tâche refusée parce que son projet manque dans la base :
-   · le projet a été supprimé → la tâche orpheline est écartée (copie gardée sur l'appareil) ;
-   · le projet existe ici mais n'a jamais atteint la base → il est renvoyé d'abord. */
-function gTraiterFK(e){
-  if(e.table!=='tasks') return null;
-  const t = state.tasks.find(x=>x.id===e.id) || e.data || {};
-  const pid = (e.data && e.data.project_id) || t.project_id;
-  const p = pid ? state.projects.find(x=>x.id===pid) : null;
-  if(!p){
-    const l = gLs('pa_g_ecartees', []) || [];
-    l.unshift({ts: Date.now(), tache: gClone(Object.assign({}, t, e.data || {}))}); gLsSet('pa_g_ecartees', l.slice(0, 30));
-    state.tasks = state.tasks.filter(x=>x.id!==e.id);
-    delete GT.local[gCle('tasks', e.id)];
-    GT.ecartees = (GT.ecartees||0) + 1;
-    return {ok:true, ecartee:true};
+function gEstFK(err){ return /foreign key|23503/i.test(String((err && err.message) || '') + ' ' + String((err && err.code) || '')); }
+async function gExisteEnBase(table, id){
+  if(!id) return false;
+  const r = await sbClient.from(table).select('id').eq('id', id).limit(1);
+  return !r.error && Array.isArray(r.data) && r.data.length > 0;
+}
+/* Un parent manque vraiment dans la base (vérifié dans la base, pas à l'écran) : on le crée. */
+async function gReparerParents(table, ligne, prof){
+  if(table==='tasks'){
+    const pid = ligne.project_id;
+    if(!pid || await gExisteEnBase('projects', pid)) return false;
+    const p = state.projects.find(x=>x.id===pid) || (GT.attente[gCle('projects', pid)] || {}).data;
+    if(!p) return 'orphelin';
+    const r = await gEcrire('projects', pid, p, 'ins', prof + 1);
+    return r.ok && !r.ecartee ? true : false;
   }
-  if(!GT.attente[gCle('projects', pid)]) gFile('ins', 'projects', pid, gClone(p));
-  return {ok:false, attente:true, message:'en attente de l\u2019enregistrement du projet « '+(p.nom||'')+' »'};
+  if(table==='projects'){
+    const bid = ligne.board_id;
+    if(!bid || await gExisteEnBase('boards', bid)) return false;
+    const b = (state.boards||[]).find(x=>x.id===bid);
+    if(!b) return 'orphelin';
+    const r = await gEcrire('boards', bid, b, 'ins', prof + 1);
+    return r.ok ? true : false;
+  }
+  return false;
+}
+function gEcarter(table, id, donnees, message){
+  const l = gLs('pa_g_ecartees', []) || [];
+  l.unshift({ts: Date.now(), table, erreur: message, ligne: gClone(Object.assign({}, (state[table]||[]).find(x=>x.id===id) || {}, donnees || {}))});
+  gLsSet('pa_g_ecartees', l.slice(0, 30));
+  state[table] = (state[table]||[]).filter(x=>x.id!==id);
+  delete GT.local[gCle(table, id)];
+  GT.ecartees = (GT.ecartees||0) + 1;
+  return {ok:true, ecartee:true};
 }
 function gNomEntree(e){ const it = ((state[e.table]||[]).find(x=>x.id===e.id)) || e.data || {}; return truncate(String(it.nom || e.id), 40); }
 function gLibErreur(e){
@@ -4636,7 +4666,7 @@ function gDetailFile(){
   const cles = Object.keys(GT.attente);
   const lignes = cles.map(k=>{ const e = GT.attente[k];
     return '<tr><td>'+(e.table==='tasks' ? 'Tâche' : (e.table==='projects' ? 'Projet' : escapeHtml(e.table)))+'</td><td>'+escapeHtml(gNomEntree(e))+'</td>' +
-      '<td>'+({ins:'création', maj:'modification', sup:'suppression'}[e.op] || e.op)+'</td><td>'+escapeHtml(e.erreur ? gLibErreur(e) : 'en attente d\u2019envoi')+'</td>' +
+      '<td>'+({ins:'création', maj:'modification', sup:'suppression'}[e.op] || e.op)+'</td><td>'+escapeHtml(e.erreur ? gLibErreur(e) : 'en attente d\u2019envoi')+(e.erreur ? '<br><small style="color:var(--muted-2)">'+escapeHtml(String(e.erreur))+'</small>' : '')+'</td>' +
       '<td style="text-align:center">'+(e.essais||0)+'</td><td><button class="btn small" onclick="gAbandonner(\''+k+'\')">Abandonner</button></td></tr>'; }).join('');
   document.getElementById('modal-content').innerHTML =
     '<div class="modal-head">Modifications en attente d\u2019enregistrement</div><div class="modal-body">' +
@@ -10759,7 +10789,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.3'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.4'; st.classList.add('ready'); }
 })();
 </script>
 </body>
