@@ -3348,12 +3348,34 @@ function subscribeRealtime(){
       realtimeDebounce = setTimeout(async ()=>{ await loadAll(); renderMain(); }, 350);
     }).subscribe();
 }
+// la présence (« qui est connecté ») n'est qu'un confort : quand le serveur de présence
+// de Supabase ne répond plus, on lâche le canal et on réessaie de plus en plus tard,
+// au lieu de relancer toutes les 6 secondes (les données, elles, passent par pa-data)
+let presenceCh = null, presenceFails = 0, presenceRetry = null;
 function joinPresence(){
+  if(presenceCh) return;
   const ch = sbClient.channel('pa-presence', {config:{presence:{key: ui.userName+'-'+Math.random().toString(36).slice(2,6)}}});
+  presenceCh = ch;
   ch.on('presence', {event:'sync'}, ()=>{
     const st = ch.presenceState();
     renderPresence([...new Set(Object.values(st).flat().map(x=>x.name))]);
-  }).subscribe(async (status)=>{ if(status==='SUBSCRIBED') await ch.track({name: ui.userName}); });
+  }).subscribe(async (status)=>{
+    if(presenceCh!==ch) return;
+    if(status==='SUBSCRIBED'){
+      const r = await ch.track({name: ui.userName}).catch(()=>'error');
+      if(r!=='timed out' && r!=='error'){ presenceFails = 0; return; }
+    } else if(status!=='CHANNEL_ERROR' && status!=='TIMED_OUT') return;
+    dropPresence(ch);
+  });
+}
+function dropPresence(ch){
+  if(presenceCh!==ch) return;
+  presenceCh = null;
+  sbClient.removeChannel(ch);
+  renderPresence([ui.userName]);
+  presenceFails++;
+  clearTimeout(presenceRetry);
+  presenceRetry = setTimeout(joinPresence, Math.min(15, 2 ** (presenceFails - 1)) * 60000);   // 1, 2, 4, 8 puis 15 min
 }
 function renderPresence(names){
   const row = document.getElementById('presence-row');
@@ -10834,7 +10856,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.7'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.8'; st.classList.add('ready'); }
 })();
 </script>
 <script>
