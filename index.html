@@ -3280,6 +3280,7 @@ async function loadAll(){
     /* une table en erreur (réseau coupé, table absente) garde son contenu :
        un rechargement raté ne doit jamais effacer ce qui est à l'écran */
     TABLES.forEach((t,i)=>{ if(res[i] && !res[i].error && Array.isArray(res[i].data)) state[t] = res[i].data; });
+    reappliquerEcritures();
   } else {
     try{ TABLES.forEach(t=>{ state[t] = JSON.parse(localStorage.getItem('pa_'+t) || '[]'); }); }
     catch(e){ TABLES.forEach(t=>{ state[t]=state[t]||[]; }); }
@@ -3308,11 +3309,15 @@ async function dbInsert(table, row){
   normaliserDates(row);
   row.id = row.id || uid();
   if(table!=='activity' && table!=='kpi_values' && !row.created_at) row.created_at = new Date().toISOString();
+  /* la ligne est à l'écran tout de suite : une deuxième saisie sur la même case,
+     pendant que la première part, la retrouve au lieu d'en créer un doublon */
+  state[table].push(row);
   if(USE_SUPABASE){
+    noterEcriture(table, row.id, row, 'ins');
     const {error} = await sbClient.from(table).insert(row);
     if(error){ showToast('Erreur enregistrement : '+error.message); console.error(error); }
-    state[table].push(row);
-  } else { state[table].push(row); persistLocal(); }
+    finEcriture(table, row.id);
+  } else persistLocal();
   return row;
 }
 async function dbUpdate(table, id, patch){
@@ -3321,32 +3326,117 @@ async function dbUpdate(table, id, patch){
   const item = state[table].find(x=>x.id===id);
   if(item) Object.assign(item, patch);
   if(USE_SUPABASE){
+    noterEcriture(table, id, patch);
     const {error} = await sbClient.from(table).update(patch).eq('id', id);
     if(error){ showToast('Erreur mise à jour : '+error.message); console.error(error); }
+    finEcriture(table, id);
   } else persistLocal();
 }
 async function dbDelete(table, id){
   state[table] = state[table].filter(x=>x.id!==id);
   if(USE_SUPABASE){
+    noterEcriture(table, id, null, 'sup');
     const {error} = await sbClient.from(table).delete().eq('id', id);
     if(error){ showToast('Erreur suppression : '+error.message); console.error(error); }
   } else persistLocal();
 }
 async function logActivity(action, cible, details, boardId){
   const entry = { id: uid(), ts: new Date().toISOString(), auteur: ui.userName||'Anonyme', action, cible: cible||'', details: details||'', board_id: boardId||route.boardId||null };
-  if(USE_SUPABASE){ await sbClient.from('activity').insert(entry); }
+  if(USE_SUPABASE){ noterEcriture('activity', entry.id, entry, 'ins'); await sbClient.from('activity').insert(entry); finEcriture('activity', entry.id); }
   else persistLocal();
   state.activity.unshift(entry);
+}
+
+/* ============ SAISIE EN COURS ============
+   Un rechargement qui arrive pendant qu'on tape ne doit ni effacer la frappe,
+   ni remettre une ancienne valeur : on attend qu'on ait fini, et ce qu'on vient
+   d'enregistrer reste affiché tant que la base ne l'a pas renvoyé. */
+let dernierGeste = 0;
+['input','keydown','pointerdown'].forEach(t=>document.addEventListener(t, ()=>{ dernierGeste = Date.now(); }, true));
+function champActif(){
+  const a = document.activeElement;
+  if(!a || a.id==='search-input') return null;
+  if(a.isContentEditable || a.tagName==='TEXTAREA' || a.tagName==='SELECT') return a;
+  if(a.tagName==='INPUT' && !/^(checkbox|radio|button|submit|reset|range|color|file|image)$/i.test(a.type)) return a;
+  return null;
+}
+// on tape, ou on vient de cliquer d'une case à l'autre (le curseur n'y est pas encore arrivé)
+function enSaisie(){
+  const depuis = Date.now() - dernierGeste;
+  return depuis < 1500 || (!!champActif() && depuis < 3000);
+}
+// de quoi retrouver un champ après que l'écran a été redessiné
+function cleChamp(el){
+  if(el.id) return '#'+el.id;
+  const k = el.getAttribute('onchange') || el.getAttribute('name') || (el.dataset.rid ? el.dataset.rid+'/'+el.dataset.c : '');
+  return k ? el.tagName+'|'+k : null;
+}
+// rendu déclenché par le réseau (fin d'enregistrement, temps réel) et non par un clic
+let renduFond = null;
+function renderMainFond(){
+  clearTimeout(renduFond);
+  if(enSaisie()){ renduFond = setTimeout(renderMainFond, 800); return; }
+  const main = document.getElementById('main'), el = champActif();
+  const memo = el && main && main.contains(el) && cleChamp(el)
+    ? {cle: cleChamp(el), v: el.value, tape: el.value!==el.defaultValue, s: el.selectionStart, e: el.selectionEnd} : null;
+  renderMain();
+  if(!memo) return;
+  const n = [...main.querySelectorAll('input,textarea,select')].find(x=>cleChamp(x)===memo.cle);
+  if(!n) return;
+  if(memo.tape) n.value = memo.v;
+  try{ n.focus({preventScroll:true}); if(memo.s!=null && n.setSelectionRange) n.setSelectionRange(memo.s, memo.e); }catch(e){}
+}
+/* ce qu'on vient d'écrire : sert à reconnaître son propre retour par le temps réel,
+   et à ne pas le perdre si un rechargement passe avant que la base l'ait pris */
+const ecritures = {};
+function noterEcriture(table, id, data, genre){
+  const k = table+'|'+id, e = ecritures[k];
+  if(e && Date.now() - e.t < 15000){
+    if(data) e.data = Object.assign(e.data||{}, data);
+    if(genre==='sup') e.genre = 'sup';
+    e.t = Date.now(); e.enCours = true;
+    return;
+  }
+  ecritures[k] = {t: Date.now(), data: data ? Object.assign({}, data) : null, genre: genre||'maj', enCours: true};
+}
+function finEcriture(table, id){ const e = ecritures[table+'|'+id]; if(e){ e.t = Date.now(); e.enCours = false; } }
+// encore en route (une minute au plus), ou partie depuis moins de 10 s
+function ecritureRecente(e){ return !!e && Date.now() - e.t < (e.enCours ? 60000 : 10000); }
+function reappliquerEcritures(){
+  Object.keys(ecritures).forEach(k=>{
+    const e = ecritures[k];
+    if(!ecritureRecente(e)){ delete ecritures[k]; return; }
+    const i = k.indexOf('|'), t = k.slice(0, i), id = k.slice(i+1);
+    if(!state[t]) return;
+    const it = state[t].find(x=>x.id===id);
+    if(e.genre==='sup'){ if(it) state[t] = state[t].filter(x=>x.id!==id); }
+    else if(it){ if(e.data) Object.assign(it, e.data); }
+    else if(e.genre==='ins' && e.data) state[t].push(Object.assign({}, e.data));
+  });
+}
+function notreEcho(p){
+  const id = (p.new && p.new.id) || (p.old && p.old.id);
+  const e = ecritures[p.table+'|'+id];
+  if(!ecritureRecente(e)) return false;
+  // même ligne mais modifiée après nous par quelqu'un d'autre : ce n'est pas notre écho
+  const a = p.new && p.new.updated_at, b = e.data && e.data.updated_at;
+  return !(a && b && new Date(a).getTime() !== new Date(b).getTime());
 }
 
 /* ============ REALTIME + PRÉSENCE ============ */
 let realtimeDebounce = null;
 function subscribeRealtime(){
   sbClient.channel('pa-data')
-    .on('postgres_changes', {event:'*', schema:'public'}, ()=>{
+    .on('postgres_changes', {event:'*', schema:'public'}, (p)=>{
+      if(notreEcho(p)) return;
       clearTimeout(realtimeDebounce);
-      realtimeDebounce = setTimeout(async ()=>{ await loadAll(); renderMain(); }, 350);
+      realtimeDebounce = setTimeout(rechargerFond, 350);
     }).subscribe();
+}
+async function rechargerFond(){
+  if(enSaisie()){ realtimeDebounce = setTimeout(rechargerFond, 1000); return; }
+  await loadAll();
+  renderMainFond();
 }
 // la présence (« qui est connecté ») n'est qu'un confort : quand le serveur de présence
 // de Supabase ne répond plus, on lâche le canal et on réessaie de plus en plus tard,
@@ -4600,6 +4690,7 @@ function gGarderLocal(table, id, col, val){
 }
 async function gEnvoyerEntree(e){
   if(e.op==='sup'){
+    noterEcriture(e.table, e.id, null, 'sup');
     const r = await sbClient.from(e.table).delete().eq('id', e.id);
     return r.error ? {ok:false, message:r.error.message} : {ok:true};
   }
@@ -4616,6 +4707,7 @@ async function gEnvoyerEntree(e){
 /* Écrit une ligne en tolérant les colonnes absentes, les doublons et les parents manquants.
    Une création est un « créer ou mettre à jour » : un doublon ne bloque jamais. */
 async function gEcrire(table, id, donnees, mode, prof){
+  noterEcriture(table, id, donnees, mode==='ins' ? 'ins' : null);
   const abs = GT.absentes[table] || [];
   let data = Object.assign({}, donnees || {});
   abs.forEach(c=>{ if(c in data){ gGarderLocal(table, id, c, data[c]); delete data[c]; } });
@@ -4627,6 +4719,7 @@ async function gEcrire(table, id, donnees, mode, prof){
       ? await sbClient.from(table).upsert(data, {onConflict:'id'}).select('id')
       : await sbClient.from(table).update(data).eq('id', id).select('id');
     if(!r.error){
+      finEcriture(table, id);
       if(mode==='maj' && Array.isArray(r.data) && !r.data.length) return {ok:true, absente:true};
       return {ok:true};
     }
@@ -5331,13 +5424,13 @@ function gLigneGauche(L, cols, ctx){
     if(c.key==='num') h = '<span class="g2-num">'+(ctx.num.map[it.id]||'')+'</span>';
     else if(c.key==='nom'){
       const enfants = est && (projChildren(it.id).length || state.tasks.some(t=>t.project_id===it.id));
-      h = '<button class="g2-tw '+(ui.expandedProjects.has(it.id)?'ouvert':'')+'" '+(enfants?'':'style="visibility:hidden"')+' onclick="event.stopPropagation();toggleExpand(\''+it.id+'\')" title="Replier ou déplier" aria-label="Replier ou déplier"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>' +
+      h = '<button tabindex="-1" class="g2-tw '+(ui.expandedProjects.has(it.id)?'ouvert':'')+'" '+(enfants?'':'style="visibility:hidden"')+' onclick="event.stopPropagation();toggleExpand(\''+it.id+'\')" title="Replier ou déplier" aria-label="Replier ou déplier"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>' +
         (L.st==='jalon' ? '<i class="g2-ico-jalon" style="background:'+col+'"></i>' : '<i class="g2-pastille" style="background:'+col+'"></i>') +
         inp('nom', it.nom, 'spellcheck="false"') +
         (it.verrou ? '<span class="g2-cad" title="Dates verrouillées">🔒</span>' : '') +
         (ro ? '' : '<span class="g2-act">' +
-          (est ? '<button onclick="event.stopPropagation();gMenuAjout(event,\''+it.id+'\')" title="Ajouter une tâche ou un sous-projet">＋</button>' : '') +
-          '<button onclick="event.stopPropagation();gOuvrirFiche(\''+table+'\',\''+it.id+'\')" title="Ouvrir la fiche">⋯</button></span>');
+          (est ? '<button tabindex="-1" onclick="event.stopPropagation();gMenuAjout(event,\''+it.id+'\')" title="Ajouter une tâche ou un sous-projet">＋</button>' : '') +
+          '<button tabindex="-1" onclick="event.stopPropagation();gOuvrirFiche(\''+table+'\',\''+it.id+'\')" title="Ouvrir la fiche">⋯</button></span>');
       return '<span class="g2-c c-nom" style="width:'+c.w+'px;padding-left:'+(4 + r.depth*14)+'px">'+h+'</span>';
     }
     else if(c.key==='duree') h = (resume || L.st==='jalon' || !bornes)
@@ -5911,7 +6004,8 @@ function gClicToile(e){
 function gCellule(el){
   const ok = gAppliquerChamp(el.dataset.t, el.dataset.rid, el.dataset.c, el.value);
   if(!ok) el.value = el.dataset.v || '';
-  gRendre();
+  // le clic vers une autre case n'est pas fini : on redessine quand le curseur y est arrivé, pour l'y garder
+  setTimeout(gRendre, 0);
 }
 function gAllerCellule(el, sens){
   const toutes = [].slice.call(document.querySelectorAll('#g2-gliste .g2-in[data-c="'+el.dataset.c+'"]'));
@@ -6176,8 +6270,7 @@ function gFicheChamp(el){
   const c = el.dataset.f;
   const v = el.type==='checkbox' ? el.checked : el.value;
   const ok = gAppliquerChamp(GT.fiche.table, GT.fiche.id, c, v);
-  gRendre();
-  if(!ok || c!=='nom') gRendreFiche();
+  setTimeout(()=>{ gRendre(); if(!ok || c!=='nom') gRendreFiche(); }, 0);
 }
 function gAjouterPredFiche(id){
   const pred = (document.getElementById('g2f-pred')||{}).value;
@@ -8501,7 +8594,7 @@ async function saveA3Field(champ, val){
   if(champ==='gravite') patch.gravite = String(val).replace('Gravité : ','');
   await dbUpdate('a3', a.id, patch);
   await logActivity('a mis à jour la fiche A3', '« '+a.titre+' »', champ, a.board_id);
-  renderMain();
+  renderMainFond();
 }
 async function saveA3Deep(section, champ, val){
   const a = state.a3.find(x=>x.id===route.a3Id);
@@ -8531,7 +8624,7 @@ async function editCause(id, val){
   const z = c.causes.find(x=>x.id===id); if(!z) return;
   z.texte = val;
   await dbUpdate('a3', a.id, {contenu:c});
-  renderMain();
+  renderMainFond();
 }
 async function toggleCause(id){
   const a = state.a3.find(x=>x.id===route.a3Id);
@@ -8691,7 +8784,13 @@ function otdJours(lundi, nb){
   return Array.from({length:nb||5}, (_,i)=>addDays(lundi,i));
 }
 function otdVal(boardId, act, serie, jour){
-  return state.otd_values.find(v=>v.board_id===boardId && v.activite===act && v.serie===serie && v.jour===jour) || null;
+  return plusRecente(state.otd_values.filter(v=>v.board_id===boardId && v.activite===act && v.serie===serie && v.jour===jour));
+}
+// s'il existe deux lignes pour la même case, on prend toujours la dernière modifiée
+function plusRecente(l){
+  if(l.length < 2) return l[0] || null;
+  const d = x=>new Date(x.updated_at || x.created_at || 0).getTime() || 0;
+  return l.reduce((a, b)=>d(b) > d(a) ? b : a);
 }
 /* Moyenne pondérée d'une activité sur un jour (ou sur une plage) */
 /* Toutes les vues (semaine, mois, synthèse) passent par le même calcul :
@@ -8874,17 +8973,51 @@ async function otdSupprimerNote(){
   renderMain();
   showToast('Commentaire supprimé');
 }
-async function otdSaveChamp(act, serie, jour, champ, valeur){
+/* Une case OTD = une seule ligne en base (verrou unique board/activité/série/jour).
+   Si la case n'est pas encore à l'écran, on regarde d'abord en base : un autre poste
+   a pu la créer. Deux saisies rapides sur une case neuve passent l'une après l'autre. */
+const otdCreations = {};
+async function otdEcrire(act, serie, jour, champ, valeur){
   const b = currentBoard();
+  const k = [b.id, act, serie, jour].join('|');
+  while(otdCreations[k]) await otdCreations[k];
+  const patch = {}; patch[champ] = valeur;
   const v = otdVal(b.id, act, serie, jour);
-  if(v){
-    const patch = {}; patch[champ] = valeur;
-    await dbUpdate('otd_values', v.id, patch);
-  } else {
-    const row = {board_id:b.id, activite:act, serie, jour, quantite:null, pct:null, commentaire:null};
-    row[champ] = valeur;
-    await dbInsert('otd_values', row);
-  }
+  if(v){ await dbUpdate('otd_values', v.id, patch); return; }
+  const row = {board_id:b.id, activite:act, serie, jour, quantite:null, pct:null, commentaire:null};
+  row[champ] = valeur;
+  if(!USE_SUPABASE){ await dbInsert('otd_values', row); return; }
+  otdCreations[k] = (async ()=>{
+    const r = await sbClient.from('otd_values').select('*').eq('board_id', b.id).eq('activite', act).eq('serie', serie).eq('jour', jour).limit(1);
+    const existante = !r.error && r.data && r.data[0];
+    if(existante){
+      if(!state.otd_values.some(x=>x.id===existante.id)) state.otd_values.push(existante);
+      await dbUpdate('otd_values', existante.id, patch);
+      return;
+    }
+    row.id = uid(); row.created_at = new Date().toISOString();
+    state.otd_values.push(row);
+    noterEcriture('otd_values', row.id, row, 'ins');
+    const {error} = await sbClient.from('otd_values').insert(row);
+    finEcriture('otd_values', row.id);
+    if(!error) return;
+    state.otd_values = state.otd_values.filter(x=>x.id!==row.id);
+    // créée entre-temps par un autre poste : on écrit dans la sienne
+    if(/23505|duplicate/i.test((error.code||'')+' '+(error.message||''))){
+      const r2 = await sbClient.from('otd_values').select('*').eq('board_id', b.id).eq('activite', act).eq('serie', serie).eq('jour', jour).limit(1);
+      const autre = !r2.error && r2.data && r2.data[0];
+      if(autre){
+        if(!state.otd_values.some(x=>x.id===autre.id)) state.otd_values.push(autre);
+        await dbUpdate('otd_values', autre.id, patch);
+        return;
+      }
+    }
+    showToast('Erreur enregistrement : '+error.message); console.error(error);
+  })();
+  try{ await otdCreations[k]; } finally { delete otdCreations[k]; }
+}
+async function otdSaveChamp(act, serie, jour, champ, valeur){
+  await otdEcrire(act, serie, jour, champ, valeur);
 }
 
 function otdSemaine(delta){
@@ -8892,18 +9025,8 @@ function otdSemaine(delta){
   renderMain();
 }
 async function otdSave(act, serie, jour, champ, valeur){
-  const b = currentBoard();
-  const v = otdVal(b.id, act, serie, jour);
-  const val = valeur===''? null : Number(valeur);
-  if(v){
-    const patch = {}; patch[champ] = val;
-    await dbUpdate('otd_values', v.id, patch);
-  } else {
-    const row = {board_id:b.id, activite:act, serie, jour, quantite:null, pct:null, commentaire:null};
-    row[champ] = val;
-    await dbInsert('otd_values', row);
-  }
-  renderMain();
+  await otdEcrire(act, serie, jour, champ, valeur==='' ? null : Number(String(valeur).replace(',', '.')));
+  renderMainFond();
 }
 
 /* ============ SYNTHÈSE HEBDOMADAIRE ============ */
@@ -9680,7 +9803,7 @@ function sqcdpAxes(b){ return (b.config && b.config.axes) ? b.config.axes : SQCD
 function sqcdpStatuts(b){ return (b.config && b.config.statuts) ? b.config.statuts : SQCDP_STATUTS; }
 function sqcdpStat(b, key){ return sqcdpStatuts(b).find(x=>x.key===key) || sqcdpStatuts(b)[0]; }
 function sqcdpVal(boardId, axe, jour){
-  return state.sqcdp_values.find(v=>v.board_id===boardId && v.axe===axe && v.jour===jour) || null;
+  return plusRecente(state.sqcdp_values.filter(v=>v.board_id===boardId && v.axe===axe && v.jour===jour));
 }
 function sqcdpStatutDe(boardId, axe, jour){
   const v = sqcdpVal(boardId, axe, jour);
@@ -10856,7 +10979,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.8'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.10'; st.classList.add('ready'); }
 })();
 </script>
 <script>
