@@ -3260,22 +3260,36 @@ function updateConnBadge(){
   if(USE_SUPABASE){ b.className='conn-badge live'; t.textContent='LIVE · partagé'; b.title='Connecté à Supabase — modifications partagées en direct avec l’équipe'; }
   else { b.className='conn-badge local'; t.textContent='LOCAL'; b.title='Données stockées sur cet appareil uniquement. Configure Supabase (écran d’accueil) pour partager.'; }
 }
+/* Supabase ne renvoie jamais plus de 1000 lignes par lecture : au-delà, les lignes
+   les plus récentes manquaient à l'écran (et la grille OTD recréait des cases).
+   On lit donc par paquets de 1000 jusqu'au bout. */
+async function toutLire(table, tri){
+  const tout = [];
+  for(let debut = 0; ; debut += 1000){
+    let q = sbClient.from(table).select('*');
+    if(tri) q = q.order(tri);
+    const r = await q.order('id').range(debut, debut + 999);
+    if(r.error) return r;
+    tout.push(...(r.data || []));
+    if(!r.data || r.data.length < 1000) return {data: tout, error: null};
+  }
+}
 async function loadAll(){
   if(USE_SUPABASE){
     const res = await Promise.all([
-      sbClient.from('boards').select('*').order('created_at'),
-      sbClient.from('actions').select('*').order('ordre'),
-      sbClient.from('projects').select('*'),
-      sbClient.from('tasks').select('*'),
+      toutLire('boards', 'created_at'),
+      toutLire('actions', 'ordre'),
+      toutLire('projects'),
+      toutLire('tasks'),
       sbClient.from('activity').select('*').order('ts',{ascending:false}).limit(400),
-      sbClient.from('comments').select('*').order('ts'),
-      sbClient.from('kpis').select('*').order('created_at'),
-      sbClient.from('kpi_values').select('*').order('ts'),
-      sbClient.from('a3').select('*').order('created_at'),
-      sbClient.from('otd_values').select('*').order('jour'),
-      sbClient.from('sqcdp_values').select('*').order('jour'),
-      sbClient.from('baselines').select('*').order('ts'),
-      sbClient.from('imp_historique').select('*').order('ts'),
+      toutLire('comments', 'ts'),
+      toutLire('kpis', 'created_at'),
+      toutLire('kpi_values', 'ts'),
+      toutLire('a3', 'created_at'),
+      toutLire('otd_values', 'jour'),
+      toutLire('sqcdp_values', 'jour'),
+      toutLire('baselines', 'ts'),
+      toutLire('imp_historique', 'ts'),
     ]);
     /* une table en erreur (réseau coupé, table absente) garde son contenu :
        un rechargement raté ne doit jamais effacer ce qui est à l'écran */
@@ -10979,7 +10993,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.10'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.11'; st.classList.add('ready'); }
 })();
 </script>
 <script>
