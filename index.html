@@ -8887,6 +8887,7 @@ function renderOtdBoard(main, b){
     ${route.sub==='mois'?`<button class="btn small" onclick="openOtdImport()">⬆ Importer depuis Excel</button>
       <button class="btn small" onclick="otdOuvrirNotesMois()">💬 Commentaires${(function(){const n=otdNotes(b.id, moisJoursOuvres(otdMoisCourant())).length;return n?' ('+n+')':'';})()}</button>
       <button class="btn small danger" onclick="otdViderMois()">🗑 Vider le mois</button>`:''}
+    <button class="btn small" onclick="openOtdExport()" title="Télécharger les relevés OTD dans un fichier Excel">⬇ Excel</button>
     <button class="btn small" onclick="openOtdConfig()">⚙ Activités</button>
     <button class="btn small primary" onclick="captureScreen()">📸 Capture</button>
   </div>`;
@@ -10993,7 +10994,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.11'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.12'; st.classList.add('ready'); }
 })();
 </script>
 <script>
@@ -11157,6 +11158,242 @@ async function a3Image(){
   }catch(e){ showToast('Image impossible (' + (e.message || e) + ')'); }
 }
 
+</script>
+<script>
+/* ============================================================
+   EXPORT EXCEL DE L'OTD (v17.12)
+   Un onglet par mois, présenté comme la grille Mois (couleurs,
+   commentaires de cellule), et un onglet « Relevés » à plat.
+   La librairie Excel n'est chargée qu'au premier export.
+   ============================================================ */
+const XLSX_URL = 'https://unpkg.com/xlsx-js-style@1.2.0/dist/xlsx.bundle.js';
+let xlsxPromesse = null;
+function chargerXlsx(){
+  if(window.XLSX && window.XLSX.utils) return Promise.resolve(window.XLSX);
+  if(!xlsxPromesse) xlsxPromesse = new Promise((ok, ko)=>{
+    const s = document.createElement('script');
+    s.src = XLSX_URL;
+    s.onload = ()=> (window.XLSX && window.XLSX.utils) ? ok(window.XLSX) : ko(new Error('librairie Excel absente'));
+    s.onerror = ()=>{ xlsxPromesse = null; s.remove(); ko(new Error('unpkg.com injoignable depuis ce réseau')); };
+    document.head.appendChild(s);
+  });
+  return xlsxPromesse;
+}
+
+function openOtdExport(){
+  const b = currentBoard();
+  if(!b) return;
+  const m = route.sub==='mois' ? otdMoisCourant() : fmtDate(otdSemaineCourante()).slice(0,7);
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Exporter l'OTD en Excel</div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Du mois</label><input type="month" id="ox-du" value="${m}"></div>
+        <div class="field"><label>Au mois</label><input type="month" id="ox-au" value="${m}"></div>
+      </div>
+      <label class="k-check" style="margin-top:4px"><input type="checkbox" id="ox-releves" checked> Ajouter l'onglet « Relevés » (une ligne par saisie, pour les tableaux croisés)</label>
+      <div style="font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:10px">
+        Un onglet par mois, comme la vue Mois : mêmes calculs, mêmes couleurs, commentaires en notes de cellule.
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" id="ox-go" onclick="otdExporter()">⬇ Télécharger</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function oxMoisListe(du, au){
+  if(au < du){ const t = du; du = au; au = t; }
+  const out = [];
+  let [y, m] = du.split('-').map(Number);
+  while(out.length < 24){
+    const k = y + '-' + String(m).padStart(2,'0');
+    out.push(k);
+    if(k === au) break;
+    m++; if(m > 12){ m = 1; y++; }
+  }
+  return out;
+}
+function oxLibMois(ym){
+  const [y, m] = ym.split('-').map(Number);
+  const t = new Date(y, m-1, 1).toLocaleDateString('fr-FR', {month:'long', year:'numeric'});
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+function oxDateExcel(d){ return (Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(1899, 11, 30)) / 86400000; }
+function oxRgb(h){ return String(h||'#ffffff').replace('#','').toUpperCase(); }
+
+const OX_TRAIT = {style:'thin', color:{rgb:'BFBFBF'}};
+const OX_BORD = {top:OX_TRAIT, bottom:OX_TRAIT, left:OX_TRAIT, right:OX_TRAIT};
+function oxStyle(fond, encre, gras, aligne){
+  return {
+    fill: {patternType:'solid', fgColor:{rgb:oxRgb(fond)}},
+    font: {name:'Calibri', sz:10, bold:!!gras, color:{rgb:oxRgb(encre)}},
+    alignment: {horizontal: aligne || 'center', vertical:'center', wrapText:true},
+    border: OX_BORD,
+  };
+}
+function oxPct(v, obj, gras){
+  if(v==null || isNaN(v)) return {v:'NA', t:'s', s:oxStyle('#ffffff', '#b7b7b7', false)};
+  const f = sqFill(v, obj);
+  return {v: Math.round(v*10)/1000, t:'n', z:'0.0%', s:oxStyle(f.bg, f.c, gras)};
+}
+function oxQte(v, gras){
+  if(v==null || v==='' || isNaN(Number(v))) return {v:'', t:'s', s:oxStyle('#ffffff', '#333333', false)};
+  return {v:Number(v), t:'n', z:'0', s:oxStyle(gras ? '#f2f2f2' : '#ffffff', '#333333', gras)};
+}
+function oxNote(cell, texte){
+  if(texte) cell.c = [{a:'Plan Action', t:texte}];
+  return cell;
+}
+function oxStyleLibelle(L){
+  if(L.kind==='glob') return oxStyle('#7030a0', '#ffffff', true, 'left');
+  if(L.kind==='qte')  return oxStyle('#ffffff', '#333333', false, 'left');
+  const se = sansAccents(L.serie||'');
+  if(se.indexOf('urg')>=0) return oxStyle('#ffc000', '#3f3000', true, 'left');
+  if(se.indexOf('aog')>=0) return oxStyle('#ff0000', '#ffffff', true, 'left');
+  return oxStyle('#00b050', '#ffffff', true, 'left');
+}
+
+/* Onglet d'un mois : même structure et mêmes calculs que renderOtdMois */
+function otdFeuilleMois(X, b, acts, ym){
+  const cols = moisColonnes(ym);
+  const jours = moisJoursOuvres(ym);
+  const lignes = [], fusions = [];
+  const nc = cols.length + 2;
+  const titre = 'SUIVI KPI SQDCP — ' + oxLibMois(ym).toUpperCase() + ' · ' + jours.length + ' jours ouvrés · ' + b.nom;
+  lignes.push([{v:titre, t:'s', s:oxStyle('#1f2a44', '#ffffff', true, 'left')}].concat(Array(nc-1).fill({v:'', t:'s', s:oxStyle('#1f2a44', '#ffffff')})));
+  fusions.push({s:{r:0, c:0}, e:{r:0, c:nc-1}});
+  const tete = [{v:'KPI', t:'s', s:oxStyle('#1f2a44', '#ffffff', true)}, {v:'Détail', t:'s', s:oxStyle('#1f2a44', '#ffffff', true)}];
+  cols.forEach(c=>{
+    if(c.type==='jour') tete.push({v:c.d.getDate() + ' ' + ['dim','lun','mar','mer','jeu','ven','sam'][c.d.getDay()], t:'s', s:oxStyle('#d9e1f2', '#1f2a44', true)});
+    else if(c.type==='semaine') tete.push({v:'S' + String(c.sem).padStart(2,'0'), t:'s', s:oxStyle('#1f4e79', '#ffffff', true)});
+    else tete.push({v:'Moyenne mensuelle', t:'s', s:oxStyle('#1f2a44', '#ffffff', true)});
+  });
+  lignes.push(tete);
+
+  acts.forEach((a, ai)=>{
+    const L = [];
+    a.series.forEach(se=>{
+      if(a.mode==='qte') L.push({kind:'qte', serie:se, label:'Qté traitée' + (se ? ' ' + se : '')});
+      L.push({kind:'pct', serie:se, label:(a.mode==='pct' || a.mode==='pct_qte') ? se : '% OTD' + (se ? ' ' + se : '')});
+    });
+    if(a.mode==='pct_qte') L.push({kind:'qte', serie:QTE_SERIE, label:a.qteLabel || 'Quantité de colis'});
+    if(a.global!==false && (a.series.filter(Boolean).length > 1 || a.mode==='qte'))
+      L.push({kind:'glob', label:'% Global' + (a.court ? ' ' + a.court : '')});
+    const debut = lignes.length;
+    const teinte = OTD_TINTS[ai % OTD_TINTS.length];
+    L.forEach((l, li)=>{
+      const ligne = [
+        li===0 ? {v:a.nom + ' (obj. ' + a.objectif + ' %)', t:'s', s:oxStyle(teinte, '#1f2a44', true)} : {v:'', t:'s', s:oxStyle(teinte, '#1f2a44')},
+        {v:l.label, t:'s', s:oxStyleLibelle(l)},
+      ];
+      cols.forEach(c=>{
+        const agg = c.type!=='jour';
+        const js = agg ? c.jours : [c.d];
+        const cle = agg ? null : fmtDate(c.d);
+        if(l.kind==='glob'){
+          const cell = oxPct(otdGlobal(b.id, a, js), a.objectif, true);
+          ligne.push(agg ? cell : oxNote(cell, otdNoteTxt(b.id, a.key, GLOB_SERIE, cle)));
+        } else if(l.kind==='qte'){
+          if(agg) ligne.push(oxQte(otdQteSomme(b.id, a, l.serie, js), true));
+          else ligne.push(oxNote(oxQte(otdRaw(b.id, a.key, l.serie, cle).quantite, false), otdNoteTxt(b.id, a.key, l.serie, cle)));
+        } else {
+          if(agg) ligne.push(oxPct(otdSerieMoy(b.id, a, l.serie, js), a.objectif, true));
+          else {
+            const raw = otdRaw(b.id, a.key, l.serie, cle).pct;
+            const v = (raw==null || raw==='') ? null : Number(raw);
+            ligne.push(oxNote(oxPct(v, a.objectif, false), otdNoteTxt(b.id, a.key, l.serie, cle)));
+          }
+        }
+      });
+      lignes.push(ligne);
+    });
+    if(L.length > 1) fusions.push({s:{r:debut, c:0}, e:{r:debut + L.length - 1, c:0}});
+  });
+
+  const ws = X.utils.aoa_to_sheet([[]]);
+  lignes.forEach((ligne, r)=> ligne.forEach((cell, c)=>{ ws[X.utils.encode_cell({r, c})] = Object.assign({}, cell); }));
+  ws['!ref'] = X.utils.encode_range({s:{r:0, c:0}, e:{r:lignes.length-1, c:nc-1}});
+  ws['!merges'] = fusions;
+  ws['!cols'] = [{wch:16}, {wch:22}].concat(cols.map(c=> ({wch: c.type==='jour' ? 7 : (c.type==='semaine' ? 8 : 11)})));
+  ws['!rows'] = [{hpt:24}, {hpt:30}];
+  return ws;
+}
+
+/* Onglet « Relevés » : une ligne par case saisie, prête pour un tableau croisé */
+function otdFeuilleReleves(X, b, acts, mois){
+  const garder = new Set(mois);
+  const cles = new Set();
+  state.otd_values.forEach(v=>{
+    if(v.board_id===b.id && v.jour && garder.has(String(v.jour).slice(0,7))) cles.add(v.activite + '\u0001' + v.serie + '\u0001' + v.jour);
+  });
+  const ordre = {}; acts.forEach((a, i)=>{ ordre[a.key] = i; });
+  const lignes = [...cles].map(k=>{
+    const [act, serie, jour] = k.split('\u0001');
+    return {act, serie, jour, v: otdVal(b.id, act, serie, jour) || {}};
+  }).filter(x=> x.v.pct!=null && x.v.pct!=='' || x.v.quantite!=null && x.v.quantite!=='' || x.v.commentaire)
+    .sort((x, y)=> x.jour.localeCompare(y.jour) || ((ordre[x.act]??99) - (ordre[y.act]??99)) || String(x.serie).localeCompare(String(y.serie)));
+  const st = oxStyle('#1f2a44', '#ffffff', true);
+  const aoa = [[
+    {v:'Date', t:'s', s:st}, {v:'Semaine', t:'s', s:st}, {v:'Activité', t:'s', s:st}, {v:'Série', t:'s', s:st},
+    {v:'Quantité', t:'s', s:st}, {v:'% OTD', t:'s', s:st}, {v:'Objectif', t:'s', s:st}, {v:'Commentaire', t:'s', s:st},
+  ]];
+  const blanc = (al)=> oxStyle('#ffffff', '#1f2a44', false, al);
+  lignes.forEach(x=>{
+    const a = acts.find(z=>z.key===x.act);
+    const d = dateFromStr(x.jour);
+    const libSerie = x.serie===QTE_SERIE ? ((a && a.qteLabel) || 'Quantité') : (x.serie===GLOB_SERIE ? '% Global' : (x.serie || 'OTD'));
+    const p = (x.v.pct==null || x.v.pct==='') ? null : Number(x.v.pct);
+    const q = (x.v.quantite==null || x.v.quantite==='') ? null : Number(x.v.quantite);
+    aoa.push([
+      {v:oxDateExcel(d), t:'n', z:'dd/mm/yyyy', s:blanc()},
+      {v:numSemaine(d), t:'n', s:blanc()},
+      {v:a ? a.nom : x.act, t:'s', s:blanc('left')},
+      {v:libSerie, t:'s', s:blanc('left')},
+      q==null ? {v:'', t:'s', s:blanc()} : {v:q, t:'n', z:'0', s:blanc()},
+      p==null ? {v:'', t:'s', s:blanc()} : oxPct(p, a ? a.objectif : 95, false),
+      a ? {v:a.objectif/100, t:'n', z:'0%', s:blanc()} : {v:'', t:'s', s:blanc()},
+      {v:x.v.commentaire || '', t:'s', s:blanc('left')},
+    ]);
+  });
+  const ws = X.utils.aoa_to_sheet(aoa);
+  ws['!cols'] = [{wch:11}, {wch:9}, {wch:16}, {wch:22}, {wch:10}, {wch:9}, {wch:9}, {wch:50}];
+  ws['!autofilter'] = {ref: X.utils.encode_range({s:{r:0, c:0}, e:{r:Math.max(aoa.length-1, 1), c:7}})};
+  return ws;
+}
+
+async function otdExporter(){
+  const b = currentBoard();
+  const du = (document.getElementById('ox-du')||{}).value, au = (document.getElementById('ox-au')||{}).value;
+  if(!du || !au){ showToast('Choisis les mois à exporter'); return; }
+  const mois = oxMoisListe(du, au);
+  const btn = document.getElementById('ox-go');
+  if(btn){ btn.disabled = true; btn.textContent = 'Préparation…'; }
+  let X;
+  try{ X = await chargerXlsx(); }
+  catch(e){
+    showToast('Export Excel impossible : ' + e.message);
+    if(btn){ btn.disabled = false; btn.textContent = '⬇ Télécharger'; }
+    return;
+  }
+  try{
+    const acts = otdActivites(b);
+    const wb = X.utils.book_new();
+    mois.forEach(ym=> X.utils.book_append_sheet(wb, otdFeuilleMois(X, b, acts, ym), oxLibMois(ym).slice(0, 31)));
+    if(document.getElementById('ox-releves').checked) X.utils.book_append_sheet(wb, otdFeuilleReleves(X, b, acts, mois), 'Relevés');
+    const periode = mois.length > 1 ? mois[0] + ' à ' + mois[mois.length-1] : mois[0];
+    const nom = ((/otd/i.test(b.nom) ? '' : 'OTD ') + b.nom + ' ' + periode).replace(/[\\/:*?"<>|]+/g, '-');
+    X.writeFile(wb, nom + '.xlsx');
+    closeModal();
+    showToast('Fichier Excel téléchargé : ' + mois.length + ' mois');
+    logActivity('a exporté en Excel', '« ' + b.nom + ' »', periode, b.id);
+  }catch(e){
+    console.error(e);
+    showToast('Erreur pendant l’export : ' + (e.message || e));
+    if(btn){ btn.disabled = false; btn.textContent = '⬇ Télécharger'; }
+  }
+}
 </script>
 </body>
 </html>
