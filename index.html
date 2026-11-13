@@ -11042,7 +11042,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.15'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.16'; st.classList.add('ready'); }
 })();
 </script>
 <script>
@@ -11659,7 +11659,7 @@ function openPassation(){
     <div class="modal-body">
       <div style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px">
         Un fichier Excel avec <b>tous les sujets en cours</b>, quel que soit le module : actions, actions des fiches A3, projets et tâches, fiches A3.
-        Le premier onglet, <b>GLOBAL</b>, liste chaque projet avec sa charge, sa complexité, la date de la demande client et la date de livraison ; ce que l’appli ne connaît pas reste vide, sur fond jaune, à compléter dans Excel.
+        Le premier onglet, <b>GLOBAL</b>, reprend <b>tous les sujets</b> (actions, projets, fiches A3 et leurs actions, en cours et terminés) avec la charge, la complexité, la date de la demande client et la date de livraison ; ce que l’appli ne connaît pas reste vide, sur fond jaune, à compléter dans Excel.
         Pour chacun : responsable, statut, échéance initiale et actuelle, nombre de reports et leur historique, retard, avancement, dernier mouvement.
       </div>
       <div class="field"><label>Responsable</label>
@@ -12108,10 +12108,14 @@ function psOngletSynthese(X, res, filtreResp){
   return ws;
 }
 
-/* Onglet GLOBAL : un projet par ligne (projets de premier niveau, en cours et livrés).
-   Une information absente de l'appli reste vide, à compléter dans Excel. */
+/* Onglet GLOBAL : tous les sujets du Plan Action, une ligne chacun, tous modules et tous statuts :
+   actions des plans d'actions, projets, fiches A3 et leurs actions.
+   Une information absente de l'appli reste vide, sur fond jaune, à compléter dans Excel. */
 function psChampProjet(b, regle){
   return projChamps(b).find(c=> regle.test(sansAccents(c.label||'')));
+}
+function psColonneAction(b, regle){
+  return boardCols(b).find(c=> !c.sys && regle.test(sansAccents(c.label||'')));
 }
 function psChargeProjet(p){
   /* même règle que le Gantt : charge des projets sans sous-projet + charge de toutes les tâches */
@@ -12127,47 +12131,97 @@ function psChargeProjet(p){
 function psOngletGlobal(X, filtreResp){
   const st = oxStyle('#1f2a44', '#ffffff', true);
   const aRemplir = '#fffbea';
-  const tete = ['Espace', 'Code', 'Projet', 'Charge (jours, saisie dans le Gantt)', 'Niveau de complexité', 'Date initiale de la demande client', 'Date de livraison du projet'];
+  const tete = ['Module', 'Espace', 'Type', 'Réf.', 'Projet / action', 'Statut',
+    'Charge mesurée en temps (projets : jours saisis dans le Gantt)', 'Niveau de complexité',
+    'Date initiale de la demande client', 'Date de livraison'];
   const aoa = [tete.map(t=>({v:t, t:'s', s:st}))];
   const garde = r => !filtreResp || psTxt(r).toLowerCase() === filtreResp.toLowerCase();
-  const cellule = (v, type, al)=>{
+  const cellule = (v, type, al, gras)=>{
     const vide = v==null || v==='';
-    const s = oxStyle(vide && type ? aRemplir : '#ffffff', '#1f2a44', type==null, al || 'center');
+    const s = oxStyle(vide && type ? aRemplir : '#ffffff', '#1f2a44', !!gras, al || 'center');
     s.alignment.vertical = 'top';
     if(type==='date'){
       if(vide) return {v:'', t:'s', z:'dd/mm/yyyy', s};
       const d = dateFromStr(String(v).slice(0,10));
       return isNaN(d) ? {v:String(v), t:'s', s} : {v:oxDateExcel(d), t:'n', z:'dd/mm/yyyy', s};
     }
-    if(type==='nombre') return vide ? {v:'', t:'s', z:'0.0', s} : {v:Number(v), t:'n', z:'0.0', s};
+    if(type==='nombre'){
+      if(vide) return {v:'', t:'s', z:'0.0', s};
+      const n = Number(String(v).replace(',', '.'));
+      return isNaN(n) ? {v:String(v), t:'s', s} : {v:n, t:'n', z:'0.0', s};
+    }
     return {v:vide ? '' : String(v), t:'s', s};
   };
+  const extra = (obj, col)=> col && obj.extra && obj.extra[col.key]!=null ? String(obj.extra[col.key]).trim() : '';
+  const ligne = (module, espace, type, ref, nom, statut, charge, complexite, demande, livraison, retrait)=>{
+    const c = [
+      cellule(module, null, 'left'), cellule(espace, null, 'left'), cellule(type, null, 'left'), cellule(ref, null),
+      cellule(nom, null, 'left', type==='Projet' || type==='Fiche A3'), cellule(statut, null),
+      cellule(charge, 'nombre'), cellule(complexite, 'texte'), cellule(demande, 'date'), cellule(livraison, 'date'),
+    ];
+    if(retrait) c[4].s.alignment.indent = retrait;
+    aoa.push(c);
+  };
   let n = 0;
-  state.boards.filter(b=>b.type==='projet').sort((a, c)=> a.nom.localeCompare(c.nom, 'fr')).forEach(b=>{
+  const parType = (t)=> state.boards.filter(b=>b.type===t).sort((a, c)=> a.nom.localeCompare(c.nom, 'fr'));
+
+  /* 1. Plans d'actions */
+  parType('actions').forEach(b=>{
+    const cCharge = psColonneAction(b, /charge|temps|heure|duree/i);
+    const cComplex = psColonneAction(b, /complex/i);
+    const cDemande = psColonneAction(b, /demande/i);
+    const cLivr = psColonneAction(b, /livr/i);
+    let num = 0;
+    state.actions.filter(a=>a.board_id===b.id && !a.a3_id).sort((x, y)=>(x.ordre||0)-(y.ordre||0)).forEach(a=>{
+      num++;
+      if(!garde(a.responsable)) return;
+      n++;
+      ligne('Plans d\u2019actions', b.nom, 'Action', String(num), psTxt(a.titre) || psTxt(a.probleme), a.statut||'',
+        extra(a, cCharge), extra(a, cComplex), extra(a, cDemande),
+        extra(a, cLivr) || (a.statut==='Fait' ? (a.date_cloture||'') : ''));
+    });
+  });
+
+  /* 2. Projets (premier niveau, charge des sous-projets et tâches comprise) */
+  parType('projet').forEach(b=>{
+    const chCharge = psChampProjet(b, /charge|temps|heure|duree/i);
     const chComplex = psChampProjet(b, /complex/i);
     const chDemande = psChampProjet(b, /demande/i);
     const chLivr = psChampProjet(b, /livr/i);
-    const val = (p, ch)=> ch && p.extra && p.extra[ch.key]!=null ? String(p.extra[ch.key]).trim() : '';
     state.projects.filter(p=>p.board_id===b.id && !p.parent_id && garde(p.responsable))
       .sort((x, y)=>(x.ordre||0)-(y.ordre||0) || String(x.created_at||'').localeCompare(String(y.created_at||'')))
       .forEach(p=>{
         n++;
-        const livraison = val(p, chLivr) || p.date_fin || '';
-        aoa.push([
-          cellule(b.nom, null, 'left'),
-          cellule(p.code||'', null),
-          cellule(psTxt(p.nom), null, 'left'),
-          cellule(psChargeProjet(p), 'nombre'),
-          cellule(val(p, chComplex), 'texte'),
-          cellule(val(p, chDemande), chDemande && chDemande.type!=='date' && val(p, chDemande) && isNaN(dateFromStr(val(p, chDemande).slice(0,10))) ? 'texte' : 'date'),
-          cellule(livraison, 'date'),
-        ]);
+        ligne('Espace projet', b.nom, 'Projet', p.code||'', psTxt(p.nom), p.statut||'',
+          extra(p, chCharge) || psChargeProjet(p), extra(p, chComplex), extra(p, chDemande),
+          extra(p, chLivr) || p.date_fin || '');
       });
   });
-  if(!n) aoa.push([{v: filtreResp ? 'Aucun projet dont ' + filtreResp + ' est responsable.' : 'Aucun projet dans l’appli.', t:'s', s:oxStyle('#ffffff', '#6b7a90', false, 'left')}]);
+
+  /* 3. Fiches A3, chacune suivie de ses actions */
+  parType('resolution').forEach(b=>{
+    state.a3.filter(x=>x.board_id===b.id)
+      .sort((x, y)=> String(x.date_ouverture||'').localeCompare(String(y.date_ouverture||'')))
+      .forEach(x=>{
+        const acts = a3Actions(x.id).sort((u, v)=>(u.ordre||0)-(v.ordre||0)).filter(a=>garde(a.responsable));
+        const voirFiche = garde(x.pilote);
+        if(voirFiche){
+          n++;
+          ligne('Résolution A3', b.nom, 'Fiche A3', x.ref||'', psTxt(x.titre), x.statut||'', '', '', '',
+            x.statut==='Clôturé' ? (x.date_cloture||'') : '');
+        }
+        acts.forEach(a=>{
+          n++;
+          ligne('Résolution A3', b.nom, 'Action A3', x.ref||'', psTxt(a.titre), a.statut||'', '', '', '',
+            a.statut==='Fait' ? (a.date_cloture||'') : '', voirFiche ? 1 : 0);
+        });
+      });
+  });
+
+  if(!n) aoa.push([{v: filtreResp ? 'Aucun sujet dont ' + filtreResp + ' est responsable.' : 'Aucun sujet dans l\u2019appli.', t:'s', s:oxStyle('#ffffff', '#6b7a90', false, 'left')}]);
   const ws = X.utils.aoa_to_sheet(aoa);
-  ws['!cols'] = [{wch:24}, {wch:10}, {wch:44}, {wch:16}, {wch:16}, {wch:18}, {wch:16}];
-  ws['!rows'] = [{hpt:32}];
+  ws['!cols'] = [{wch:16}, {wch:24}, {wch:11}, {wch:11}, {wch:46}, {wch:15}, {wch:20}, {wch:15}, {wch:17}, {wch:13}];
+  ws['!rows'] = [{hpt:44}];
   if(n) ws['!autofilter'] = {ref: X.utils.encode_range({s:{r:0, c:0}, e:{r:aoa.length-1, c:tete.length-1}})};
   return ws;
 }
