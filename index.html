@@ -11042,7 +11042,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.14'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.15'; st.classList.add('ready'); }
 })();
 </script>
 <script>
@@ -11659,6 +11659,7 @@ function openPassation(){
     <div class="modal-body">
       <div style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px">
         Un fichier Excel avec <b>tous les sujets en cours</b>, quel que soit le module : actions, actions des fiches A3, projets et tâches, fiches A3.
+        Le premier onglet, <b>GLOBAL</b>, liste chaque projet avec sa charge, sa complexité, la date de la demande client et la date de livraison ; ce que l’appli ne connaît pas reste vide, sur fond jaune, à compléter dans Excel.
         Pour chacun : responsable, statut, échéance initiale et actuelle, nombre de reports et leur historique, retard, avancement, dernier mouvement.
       </div>
       <div class="field"><label>Responsable</label>
@@ -12107,6 +12108,69 @@ function psOngletSynthese(X, res, filtreResp){
   return ws;
 }
 
+/* Onglet GLOBAL : un projet par ligne (projets de premier niveau, en cours et livrés).
+   Une information absente de l'appli reste vide, à compléter dans Excel. */
+function psChampProjet(b, regle){
+  return projChamps(b).find(c=> regle.test(sansAccents(c.label||'')));
+}
+function psChargeProjet(p){
+  /* même règle que le Gantt : charge des projets sans sous-projet + charge de toutes les tâches */
+  let total = 0, saisie = false;
+  projSubtree(p).forEach(q=>{
+    if(!projHasChildren(q) && q.charge!=null && q.charge!=='' && !isNaN(Number(q.charge))){ total += Number(q.charge); saisie = true; }
+    state.tasks.filter(t=>t.project_id===q.id).forEach(t=>{
+      if(t.charge!=null && t.charge!=='' && !isNaN(Number(t.charge))){ total += Number(t.charge); saisie = true; }
+    });
+  });
+  return saisie && total > 0 ? Math.round(total*10)/10 : null;
+}
+function psOngletGlobal(X, filtreResp){
+  const st = oxStyle('#1f2a44', '#ffffff', true);
+  const aRemplir = '#fffbea';
+  const tete = ['Espace', 'Code', 'Projet', 'Charge (jours, saisie dans le Gantt)', 'Niveau de complexité', 'Date initiale de la demande client', 'Date de livraison du projet'];
+  const aoa = [tete.map(t=>({v:t, t:'s', s:st}))];
+  const garde = r => !filtreResp || psTxt(r).toLowerCase() === filtreResp.toLowerCase();
+  const cellule = (v, type, al)=>{
+    const vide = v==null || v==='';
+    const s = oxStyle(vide && type ? aRemplir : '#ffffff', '#1f2a44', type==null, al || 'center');
+    s.alignment.vertical = 'top';
+    if(type==='date'){
+      if(vide) return {v:'', t:'s', z:'dd/mm/yyyy', s};
+      const d = dateFromStr(String(v).slice(0,10));
+      return isNaN(d) ? {v:String(v), t:'s', s} : {v:oxDateExcel(d), t:'n', z:'dd/mm/yyyy', s};
+    }
+    if(type==='nombre') return vide ? {v:'', t:'s', z:'0.0', s} : {v:Number(v), t:'n', z:'0.0', s};
+    return {v:vide ? '' : String(v), t:'s', s};
+  };
+  let n = 0;
+  state.boards.filter(b=>b.type==='projet').sort((a, c)=> a.nom.localeCompare(c.nom, 'fr')).forEach(b=>{
+    const chComplex = psChampProjet(b, /complex/i);
+    const chDemande = psChampProjet(b, /demande/i);
+    const chLivr = psChampProjet(b, /livr/i);
+    const val = (p, ch)=> ch && p.extra && p.extra[ch.key]!=null ? String(p.extra[ch.key]).trim() : '';
+    state.projects.filter(p=>p.board_id===b.id && !p.parent_id && garde(p.responsable))
+      .sort((x, y)=>(x.ordre||0)-(y.ordre||0) || String(x.created_at||'').localeCompare(String(y.created_at||'')))
+      .forEach(p=>{
+        n++;
+        const livraison = val(p, chLivr) || p.date_fin || '';
+        aoa.push([
+          cellule(b.nom, null, 'left'),
+          cellule(p.code||'', null),
+          cellule(psTxt(p.nom), null, 'left'),
+          cellule(psChargeProjet(p), 'nombre'),
+          cellule(val(p, chComplex), 'texte'),
+          cellule(val(p, chDemande), chDemande && chDemande.type!=='date' && val(p, chDemande) && isNaN(dateFromStr(val(p, chDemande).slice(0,10))) ? 'texte' : 'date'),
+          cellule(livraison, 'date'),
+        ]);
+      });
+  });
+  if(!n) aoa.push([{v: filtreResp ? 'Aucun projet dont ' + filtreResp + ' est responsable.' : 'Aucun projet dans l’appli.', t:'s', s:oxStyle('#ffffff', '#6b7a90', false, 'left')}]);
+  const ws = X.utils.aoa_to_sheet(aoa);
+  ws['!cols'] = [{wch:24}, {wch:10}, {wch:44}, {wch:16}, {wch:16}, {wch:18}, {wch:16}];
+  ws['!rows'] = [{hpt:32}];
+  if(n) ws['!autofilter'] = {ref: X.utils.encode_range({s:{r:0, c:0}, e:{r:aoa.length-1, c:tete.length-1}})};
+  return ws;
+}
 async function exporterPassation(){
   const btn = document.getElementById('ps-go');
   const filtreResp = (document.getElementById('ps-resp')||{}).value || '';
@@ -12121,6 +12185,7 @@ async function exporterPassation(){
     const journal = await psJournal();
     const res = psCollecte(journal, filtreResp);
     const wb = X.utils.book_new();
+    X.utils.book_append_sheet(wb, psOngletGlobal(X, filtreResp), 'GLOBAL');
     X.utils.book_append_sheet(wb, psOngletSynthese(X, res, filtreResp), 'Synthèse');
     X.utils.book_append_sheet(wb, psOngletTous(X, res), 'Tous les sujets');
     X.utils.book_append_sheet(wb, psOngletActions(X, res), 'Actions');
