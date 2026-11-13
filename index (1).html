@@ -3812,6 +3812,7 @@ function renderHome(main){
           <button class="${mode==='confort'?'active':''}" onclick="setHomeMode('confort')" title="Grandes cartes">◻ Confort</button>
         </div>
         <button class="btn small" onclick="openModulesConfig()" title="Choisir les modules affichés">⊟ Modules${nCaches?` <span class="mod-badge">${nCaches}</span>`:''}</button>
+        <button class="btn small" onclick="openPassation()" title="Fichier Excel de tous les sujets en cours, tous modules confondus">⇪ Passation</button>
         <button class="btn small primary" onclick="openBoardModal('${visibles[0]||'actions'}')">＋ Nouvel espace</button>
       </div>
     </div>`;
@@ -3961,6 +3962,7 @@ function renderHome(main){
   const barreDonnees = `<div class="data-bar">
       <span class="section-label" style="margin:0">Données</span>
       <button class="btn small" onclick="exportBackup()">⬇ Sauvegarde complète (JSON)</button>
+        <button class="btn small" onclick="openPassation()">⇪ Fichier de passation (Excel)</button>
       <button class="btn small" onclick="importBackupPrompt()">⬆ Restaurer une sauvegarde</button>
       <input type="file" id="backup-file" accept="application/json,.json" class="hidden" onchange="importBackupFile(event)">
     </div>`;
@@ -8035,6 +8037,7 @@ function openReglages(){
       <div class="section-div"><h4>Données</h4></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn small" onclick="exportBackup()">⬇ Sauvegarde complète (JSON)</button>
+        <button class="btn small" onclick="openPassation()">⇪ Fichier de passation (Excel)</button>
         <button class="btn small" onclick="importBackupPrompt()">⬆ Restaurer une sauvegarde</button>
         <input type="file" id="backup-file" accept="application/json,.json" class="hidden" onchange="importBackupFile(event)">
       </div>
@@ -11039,7 +11042,7 @@ function tryUnlock(){
   appliquerPerso();
   appliquerIdentite();
   const st = document.getElementById('gate-status');
-  if(st){ st.textContent = '● Système prêt — v17.13'; st.classList.add('ready'); }
+  if(st){ st.textContent = '● Système prêt — v17.15'; st.classList.add('ready'); }
 })();
 </script>
 <script>
@@ -11634,6 +11637,572 @@ async function otdExporterEcarts(){
     console.error(e);
     showToast('Erreur pendant l’extraction : ' + (e.message || e));
     if(btn){ btn.disabled = false; btn.textContent = '⬇ Télécharger'; }
+  }
+}
+</script>
+<script>
+/* ============================================================
+   EXPORT DE PASSATION (v17.14)
+   Un fichier Excel avec tous les sujets en cours, tous modules
+   confondus : actions, actions A3, projets, tâches, fiches A3,
+   échéances, reports, retards, dernier mouvement du journal.
+   ============================================================ */
+function openPassation(){
+  const resps = new Set();
+  state.actions.forEach(a=>{ if(a.responsable) resps.add(a.responsable.trim()); });
+  state.projects.forEach(p=>{ if(p.responsable) resps.add(p.responsable.trim()); });
+  state.tasks.forEach(t=>{ if(t.responsable) resps.add(t.responsable.trim()); });
+  state.a3.forEach(x=>{ if(x.pilote) resps.add(x.pilote.trim()); });
+  const liste = [...resps].filter(Boolean).sort((a,b)=>a.localeCompare(b,'fr'));
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-head">Fichier de passation</div>
+    <div class="modal-body">
+      <div style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px">
+        Un fichier Excel avec <b>tous les sujets en cours</b>, quel que soit le module : actions, actions des fiches A3, projets et tâches, fiches A3.
+        Le premier onglet, <b>GLOBAL</b>, liste chaque projet avec sa charge, sa complexité, la date de la demande client et la date de livraison ; ce que l’appli ne connaît pas reste vide, sur fond jaune, à compléter dans Excel.
+        Pour chacun : responsable, statut, échéance initiale et actuelle, nombre de reports et leur historique, retard, avancement, dernier mouvement.
+      </div>
+      <div class="field"><label>Responsable</label>
+        <select id="ps-resp"><option value="">Tout le monde</option>${liste.map(r=>`<option value="${escAttr(r)}">${escapeHtml(r)}</option>`).join('')}</select>
+      </div>
+      <label class="k-check"><input type="checkbox" id="ps-faits" checked> Ajouter les sujets terminés depuis 90 jours (onglet à part)</label>
+      <label class="k-check" style="margin-top:6px"><input type="checkbox" id="ps-ind" checked> Ajouter l'état des indicateurs (OTD et studio)</label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" id="ps-go" onclick="exporterPassation()">⬇ Télécharger</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+/* ---------- outils ---------- */
+function psJours(d1, d2){ return Math.round((d2 - d1) / 86400000); }
+function psRetard(echeance, fini){
+  if(!echeance || fini) return 0;
+  const j = psJours(dateFromStr(String(echeance).slice(0,10)), todayMid());
+  return j > 0 ? j : 0;
+}
+function psDansJours(echeance){
+  if(!echeance) return null;
+  return psJours(todayMid(), dateFromStr(String(echeance).slice(0,10)));
+}
+function psTxt(s){ return String(s==null ? '' : s).replace(/\s+/g, ' ').trim(); }
+function psFr(ts){ return ts ? fmtFR(String(ts).slice(0,10)) : ''; }
+function psExtra(cols, extra){
+  if(!extra) return '';
+  return cols.filter(c=>!c.sys && extra[c.key]!=null && String(extra[c.key]).trim()!=='')
+    .map(c=> c.label + ' : ' + psTxt(extra[c.key])).join(' · ');
+}
+
+/* Journal complet (l'appli n'en garde que 400 lignes en mémoire) */
+async function psJournal(){
+  if(USE_SUPABASE){
+    try{
+      const r = await toutLire('activity', 'ts');
+      if(r && !r.error && Array.isArray(r.data)) return r.data;
+    }catch(e){ console.warn(e); }
+  }
+  return state.activity.slice();
+}
+function psIndexJournal(journal){
+  const idx = new Map();
+  journal.slice().sort((a,b)=> String(b.ts||'').localeCompare(String(a.ts||''))).forEach(e=>{
+    const cible = String(e.cible||'');
+    const m = cible.match(/«\s*(.+?)\s*»/);
+    if(!m) return;
+    const k = (e.board_id||'') + '|' + m[1];
+    if(!idx.has(k)) idx.set(k, []);
+    idx.get(k).push(e);
+  });
+  return idx;
+}
+function psMouvements(idx, boardId, titre){ return idx.get((boardId||'') + '|' + psTxt(titre)) || []; }
+function psDernier(mvts){
+  const e = mvts[0];
+  return e ? psFr(e.ts) + ' · ' + (e.auteur||'') + ' ' + (e.action||'') : '';
+}
+function psHistoReports(mvts){
+  return mvts.filter(e=>/repouss/i.test(e.action||''))
+    .slice().reverse()
+    .map(e=> psFr(e.ts) + ' (' + (e.auteur||'?') + ') : ' + psTxt(e.details).replace(/^échéance repoussée\s*/i, ''))
+    .join(' · ');
+}
+
+/* ---------- collecte de tous les sujets ---------- */
+function psCollecte(journal, filtreResp){
+  const idx = psIndexJournal(journal);
+  const auj = todayMid();
+  const espace = id => state.boards.find(b=>b.id===id);
+  const garde = r => !filtreResp || psTxt(r).toLowerCase() === filtreResp.toLowerCase();
+  const enCours = [], faits = [];
+  const limiteFaits = addDays(auj, -90);
+  const recent = d => d && dateFromStr(String(d).slice(0,10)) >= limiteFaits;
+  const actionsDet = [], projetsDet = [], a3Det = [];
+
+  /* 1. Actions des plans d'actions et des fiches A3 */
+  state.boards.filter(b=>b.type==='actions' || b.type==='resolution').forEach(b=>{
+    const cols = b.type==='actions' ? boardCols(b) : [];
+    const liste = state.actions.filter(a=>a.board_id===b.id).sort((x,y)=>(x.ordre||0)-(y.ordre||0));
+    let n = 0;
+    liste.forEach(a=>{
+      const fiche = a.a3_id ? state.a3.find(x=>x.id===a.a3_id) : null;
+      if(!a.a3_id) n++;
+      if(!garde(a.responsable)) return;
+      const fini = a.statut==='Fait';
+      const mv = psMouvements(idx, b.id, a.titre);
+      const s = {
+        module: fiche ? 'Résolution A3' : 'Plans d’actions', espace: b.nom,
+        type: fiche ? 'Action A3' : 'Action', ref: fiche ? (fiche.ref||'') : String(n),
+        sujet: psTxt(a.probleme) || psTxt(a.titre), detail: psTxt(a.titre),
+        resp: psTxt(a.responsable), statut: a.statut||'', prio: a.priorite||'',
+        ouverture: a.date_ouverture || (a.created_at||'').slice(0,10),
+        ech0: a.echeance_initiale || a.echeance || '', ech: a.echeance || '',
+        reports: a.nb_reports||0, retard: psRetard(a.echeance, fini), avancement: fini ? 100 : (a.avancement||0),
+        rattache: fiche ? ((fiche.ref ? fiche.ref + ' · ' : '') + (fiche.titre||'')) : '',
+        dernier: psDernier(mv), histo: psHistoReports(mv),
+        comm: psTxt(a.notes), extra: fiche ? psTxt(a.extra && a.extra.categorie) : psExtra(cols, a.extra),
+        cloture: a.date_cloture || '',
+      };
+      if(!fini){ enCours.push(s); actionsDet.push(s); }
+      else if(recent(a.date_cloture)) faits.push(s);
+    });
+  });
+
+  /* 2. Projets, sous-projets et tâches */
+  state.boards.filter(b=>b.type==='projet').forEach(b=>{
+    const champs = projChamps(b);
+    const termine = projStatutTermine(b);
+    const racines = state.projects.filter(p=>p.board_id===b.id && !p.parent_id)
+      .sort((x,y)=>(x.ordre||0)-(y.ordre||0) || String(x.created_at||'').localeCompare(String(y.created_at||'')));
+    const parcourir = (p, prof, parent)=>{
+      const fini = !!p.date_fin || p.statut===termine || p.statut==='Terminé';
+      const taches = state.tasks.filter(t=>t.project_id===p.id)
+        .sort((x,y)=>(x.ordre||0)-(y.ordre||0) || String(x.date_debut||'').localeCompare(String(y.date_debut||'')));
+      const ouvertes = taches.filter(t=>(t.avancement||0) < 100);
+      const prochaine = ouvertes.map(t=>t.engagement_date || t.date_fin || t.date_debut).filter(Boolean).sort()[0] || '';
+      const comm = state.comments.filter(c=>c.project_id===p.id).sort((x,y)=>String(y.ts||'').localeCompare(String(x.ts||'')))[0];
+      const mv = psMouvements(idx, b.id, p.nom);
+      const cible = projCible(p);
+      const s = {
+        module: 'Espace projet', espace: b.nom, type: prof ? 'Sous-projet' : 'Projet', ref: p.code||'',
+        sujet: psTxt(p.nom), detail: psTxt(p.notes), resp: psTxt(p.responsable), statut: p.statut||'', prio: p.priorite||'',
+        ouverture: p.date_debut||'', ech0: '', ech: cible||'', reports: 0,
+        retard: fini ? 0 : (projDepassementJours(p)||0), avancement: projAvancement(p),
+        rattache: parent ? psTxt(parent.nom) : '', dernier: psDernier(mv), histo: '',
+        comm: comm ? psFr(comm.ts) + ' ' + (comm.auteur||'') + ' : ' + psTxt(comm.texte) : '',
+        extra: champs.filter(c=>p.extra && p.extra[c.key]!=null && String(p.extra[c.key]).trim()!=='').map(c=>c.label + ' : ' + psTxt(p.extra[c.key])).join(' · '),
+        sante: p.sante||'', finPrevue: fmtDate(projSpan(p).f), tachesOuvertes: ouvertes.length, prochaine,
+        cloture: p.date_fin||'', profondeur: prof,
+      };
+      const gardeP = garde(p.responsable);
+      if(!fini && gardeP){ enCours.push(s); }
+      if(fini && gardeP && recent(p.date_fin)) faits.push(s);
+      const lignesTaches = [];
+      taches.forEach(t=>{
+        const tFini = (t.avancement||0) >= 100;
+        const respT = psTxt(t.responsable) || psTxt(p.responsable);
+        if(!garde(respT)) return;
+        const echT = t.engagement_date || t.date_fin || t.date_debut || '';
+        const aVenir = t.date_debut && dateFromStr(t.date_debut) > todayMid();
+        const st = {
+          module: 'Espace projet', espace: b.nom, type: t.jalon ? 'Jalon' : 'Tâche', ref: p.code||'',
+          sujet: psTxt(t.nom), detail: '', resp: respT,
+          statut: tFini ? 'Fait' : (aVenir ? 'À venir' : 'En cours'), prio: '',
+          ouverture: t.date_debut||'', ech0: '', ech: echT, reports: 0,
+          retard: psRetard(echT, tFini || fini), avancement: t.avancement||0,
+          rattache: psTxt(p.nom), dernier: psDernier(psMouvements(idx, b.id, t.nom)), histo: '', comm: '', extra: '',
+          cloture: '', profondeur: prof + 1,
+        };
+        if(!tFini && !fini){ enCours.push(st); lignesTaches.push(st); }
+      });
+      if(!fini) projetsDet.push({s, taches: lignesTaches, voir: gardeP || lignesTaches.length > 0});
+      projChildren(p.id).forEach(k=>parcourir(k, prof + 1, p));
+    };
+    racines.forEach(p=>parcourir(p, 0, null));
+  });
+
+  /* 3. Fiches A3 */
+  state.a3.forEach(x=>{
+    const b = espace(x.board_id);
+    if(!b || !garde(x.pilote)) return;
+    const fini = x.statut==='Clôturé';
+    const c = a3Content(x);
+    const acts = a3Actions(x.id);
+    const ouvertes = acts.filter(a=>a.statut!=='Fait');
+    const prochaine = ouvertes.map(a=>a.echeance).filter(Boolean).sort()[0] || '';
+    const retardMax = Math.max(0, ...ouvertes.map(a=>psRetard(a.echeance, false)));
+    const mv = psMouvements(idx, b.id, x.titre);
+    const s = {
+      module: 'Résolution A3', espace: b.nom, type: 'Fiche A3', ref: x.ref||'',
+      sujet: psTxt(x.titre), detail: psTxt(c.racines.occurrence) ? 'Cause racine : ' + psTxt(c.racines.occurrence) : psTxt(c.qqoqccp.quoi),
+      resp: psTxt(x.pilote), statut: x.statut||'', prio: x.gravite||'',
+      ouverture: x.date_ouverture||'', ech0: '', ech: prochaine, reports: ouvertes.reduce((n,a)=>n+(a.nb_reports||0), 0),
+      retard: retardMax, avancement: a3Progress(x), rattache: psTxt(x.secteur),
+      dernier: psDernier(mv), histo: '', comm: psTxt(c.synthese && c.synthese.retex), extra: '',
+      cloture: x.date_cloture||'',
+      age: a3AgeJours(x), equipe: psTxt(x.equipe), quoi: psTxt(c.qqoqccp.quoi),
+      racineOcc: psTxt(c.racines.occurrence), racineDet: psTxt(c.racines.detection),
+      nbActions: acts.length, nbSoldees: acts.length - ouvertes.length,
+      nbRetard: ouvertes.filter(a=>actionLate(a)).length,
+      causesRetenues: (c.causes||[]).filter(k=>k.retenue).map(k=>psTxt(k.texte)).join(' · '),
+    };
+    if(!fini){ enCours.push(s); a3Det.push(s); }
+    else if(recent(x.date_cloture)) faits.push(s);
+  });
+
+  const ordre = (a, b)=> (b.retard - a.retard)
+    || ((a.ech ? 0 : 1) - (b.ech ? 0 : 1))
+    || String(a.ech).localeCompare(String(b.ech))
+    || a.module.localeCompare(b.module);
+  enCours.sort(ordre);
+  faits.sort((a, b)=> String(b.cloture).localeCompare(String(a.cloture)));
+  actionsDet.sort((a, b)=> a.espace.localeCompare(b.espace, 'fr') || (Number(a.ref)||0) - (Number(b.ref)||0) || String(a.ref).localeCompare(String(b.ref)));
+  return {enCours, faits, actionsDet, projetsDet, a3Det};
+}
+
+/* ---------- mise en forme Excel ---------- */
+const PS_ROUGE = '#ffc7ce', PS_ROUGE_T = '#9c0006', PS_AMBRE = '#ffeb9c', PS_AMBRE_T = '#9c6500', PS_VERT = '#e2efda';
+function psCellule(v, col, r, i){
+  const fond = (r.fonds && r.fonds[i]) || r.fond || '#ffffff';
+  const encre = (r.encres && r.encres[i]) || r.encre || '#1f2a44';
+  const gras = r.gras===true || !!(r.gras && r.gras[i]);
+  const s = oxStyle(fond, encre, gras, (col.k==='txt' || col.k==='long') ? 'left' : 'center');
+  s.alignment.vertical = 'top';
+  if(r.retrait && i===r.retraitCol) s.alignment.indent = r.retrait;
+  if(v==null || v==='') return {v:'', t:'s', s};
+  if(col.k==='date'){
+    const d = v instanceof Date ? v : dateFromStr(String(v).slice(0,10));
+    return isNaN(d) ? {v:String(v), t:'s', s} : {v:oxDateExcel(d), t:'n', z:'dd/mm/yyyy', s};
+  }
+  if(col.k==='int') return {v:Number(v), t:'n', z:'0', s};
+  if(col.k==='pct') return {v:Number(v)/100, t:'n', z:'0%', s};
+  return {v:String(v), t:'s', s};
+}
+function psFeuille(X, cols, lignes, avant){
+  const st = oxStyle('#1f2a44', '#ffffff', true);
+  const aoa = (avant||[]).slice();
+  const ligneTete = aoa.length;
+  aoa.push(cols.map(c=>({v:c.t, t:'s', s:st})));
+  lignes.forEach(r=> aoa.push(r.cells.map((v, i)=> psCellule(v, cols[i], r, i))));
+  if(!lignes.length) aoa.push([{v:'Aucun sujet.', t:'s', s:oxStyle('#ffffff', '#6b7a90', false, 'left')}]);
+  const ws = X.utils.aoa_to_sheet(aoa);
+  ws['!cols'] = cols.map(c=>({wch:c.w}));
+  if(lignes.length) ws['!autofilter'] = {ref: X.utils.encode_range({s:{r:ligneTete, c:0}, e:{r:aoa.length-1, c:cols.length-1}})};
+  return ws;
+}
+/* Couleurs d'une ligne : retard en rouge, échéance proche en ambre, reports répétés en ambre */
+function psCouleurs(s, iEch, iRetard, iReports){
+  const r = {fonds:{}, encres:{}, gras:{}};
+  if(s.retard > 0){
+    [iEch, iRetard].forEach(i=>{ if(i!=null){ r.fonds[i] = PS_ROUGE; r.encres[i] = PS_ROUGE_T; r.gras[i] = true; } });
+  } else {
+    const d = psDansJours(s.ech);
+    if(d!=null && d <= 7 && iEch!=null){ r.fonds[iEch] = PS_AMBRE; r.encres[iEch] = PS_AMBRE_T; r.gras[iEch] = true; }
+  }
+  if(iReports!=null && s.reports >= 2){ r.fonds[iReports] = PS_AMBRE; r.encres[iReports] = PS_AMBRE_T; r.gras[iReports] = true; }
+  return r;
+}
+
+function psOngletTous(X, res){
+  const cols = [
+    {t:'Module', w:16, k:'txt'}, {t:'Espace', w:24, k:'txt'}, {t:'Type', w:11, k:'txt'}, {t:'Réf.', w:11, k:'txt'},
+    {t:'Sujet', w:40, k:'long'}, {t:'Action / détail', w:44, k:'long'}, {t:'Responsable', w:14, k:'txt'},
+    {t:'Statut', w:15, k:'txt'}, {t:'Priorité', w:10, k:'txt'}, {t:'Ouverture', w:11, k:'date'},
+    {t:'Échéance initiale', w:11, k:'date'}, {t:'Échéance', w:11, k:'date'}, {t:'Reports', w:8, k:'int'},
+    {t:'Retard (j)', w:9, k:'int'}, {t:'Avancement', w:11, k:'pct'}, {t:'Rattaché à', w:28, k:'long'},
+    {t:'Dernier mouvement', w:30, k:'long'}, {t:'Commentaire', w:40, k:'long'},
+  ];
+  const lignes = res.enCours.map(s=>Object.assign({cells:[
+    s.module, s.espace, s.type, s.ref, s.sujet, s.detail, s.resp || 'Non attribué', s.statut, s.prio, s.ouverture,
+    s.ech0, s.ech, s.reports || '', s.retard || '', s.avancement, s.rattache, s.dernier, s.comm,
+  ]}, psCouleurs(s, 11, 13, 12)));
+  return psFeuille(X, cols, lignes);
+}
+function psOngletActions(X, res){
+  const cols = [
+    {t:'Espace', w:24, k:'txt'}, {t:'N° / fiche', w:11, k:'txt'}, {t:'Problème', w:36, k:'long'}, {t:'Action', w:40, k:'long'},
+    {t:'Responsable', w:14, k:'txt'}, {t:'Ouverture', w:11, k:'date'}, {t:'Échéance initiale', w:11, k:'date'},
+    {t:'Échéance', w:11, k:'date'}, {t:'Reports', w:8, k:'int'}, {t:'Historique des reports', w:44, k:'long'},
+    {t:'Retard (j)', w:9, k:'int'}, {t:'Statut', w:11, k:'txt'}, {t:'Priorité', w:10, k:'txt'}, {t:'Avancement', w:11, k:'pct'},
+    {t:'Commentaire', w:36, k:'long'}, {t:'Champs personnalisés', w:30, k:'long'}, {t:'Dernier mouvement', w:30, k:'long'},
+  ];
+  const lignes = res.actionsDet.map(s=>Object.assign({cells:[
+    s.espace, s.ref, s.sujet, s.detail, s.resp || 'Non attribué', s.ouverture, s.ech0, s.ech, s.reports || '', s.histo,
+    s.retard || '', s.statut, s.prio, s.avancement, s.comm, s.extra, s.dernier,
+  ]}, psCouleurs(s, 7, 10, 8)));
+  return psFeuille(X, cols, lignes);
+}
+function psOngletProjets(X, res){
+  const cols = [
+    {t:'Espace', w:22, k:'txt'}, {t:'Code', w:9, k:'txt'}, {t:'Niveau', w:11, k:'txt'}, {t:'Nom', w:42, k:'long'},
+    {t:'Responsable', w:14, k:'txt'}, {t:'Statut', w:12, k:'txt'}, {t:'Santé', w:8, k:'txt'}, {t:'Début', w:11, k:'date'},
+    {t:'Fin prévue', w:11, k:'date'}, {t:'Engagement / échéance', w:12, k:'date'}, {t:'Retard (j)', w:9, k:'int'},
+    {t:'Avancement', w:11, k:'pct'}, {t:'Tâches ouvertes', w:9, k:'int'}, {t:'Prochaine échéance', w:12, k:'date'},
+    {t:'Dernier commentaire', w:40, k:'long'}, {t:'Notes', w:36, k:'long'}, {t:'Champs personnalisés', w:30, k:'long'},
+  ];
+  const SANTE = {vert:PS_VERT, orange:PS_AMBRE, rouge:PS_ROUGE};
+  const lignes = [];
+  res.projetsDet.filter(x=>x.voir).forEach(({s, taches})=>{
+    const r = psCouleurs(s, 9, 10, null);
+    r.fond = s.profondeur ? '#f6f8fb' : '#eef3fb'; r.gras = Object.assign(r.gras, {3:true});
+    if(SANTE[s.sante]) r.fonds[6] = SANTE[s.sante];
+    r.retrait = s.profondeur; r.retraitCol = 3;
+    r.cells = [s.espace, s.ref, s.type, s.sujet, s.resp || 'Non attribué', s.statut, s.sante, s.ouverture, s.finPrevue, s.ech,
+      s.retard || '', s.avancement, s.tachesOuvertes, s.prochaine, s.comm, s.detail, s.extra];
+    lignes.push(r);
+    taches.forEach(t=>{
+      const rt = psCouleurs(t, 9, 10, null);
+      rt.retrait = t.profondeur + 1; rt.retraitCol = 3;
+      rt.cells = [t.espace, t.ref, t.type, t.sujet, t.resp || 'Non attribué', t.statut, '', t.ouverture, t.ech, t.ech,
+        t.retard || '', t.avancement, '', '', '', '', ''];
+      lignes.push(rt);
+    });
+  });
+  return psFeuille(X, cols, lignes);
+}
+function psOngletA3(X, res){
+  const cols = [
+    {t:'Espace', w:22, k:'txt'}, {t:'Réf.', w:12, k:'txt'}, {t:'Titre', w:38, k:'long'}, {t:'Pilote', w:13, k:'txt'},
+    {t:'Équipe', w:18, k:'txt'}, {t:'Secteur', w:14, k:'txt'}, {t:'Statut', w:17, k:'txt'}, {t:'Gravité', w:10, k:'txt'},
+    {t:'Ouverture', w:11, k:'date'}, {t:'Âge (j)', w:8, k:'int'}, {t:'Problème (quoi)', w:40, k:'long'},
+    {t:'Causes retenues', w:36, k:'long'}, {t:'Cause racine (occurrence)', w:36, k:'long'}, {t:'Cause racine (non-détection)', w:36, k:'long'},
+    {t:'Actions soldées', w:10, k:'txt'}, {t:'Actions en retard', w:9, k:'int'}, {t:'Prochaine échéance', w:12, k:'date'},
+    {t:'Dernier mouvement', w:30, k:'long'},
+  ];
+  const lignes = res.a3Det.map(s=>{
+    const r = psCouleurs(s, 16, 15, null);
+    if(s.nbRetard){ r.fonds[15] = PS_ROUGE; r.encres[15] = PS_ROUGE_T; r.gras[15] = true; }
+    r.cells = [s.espace, s.ref, s.sujet, s.resp || 'Non attribué', s.equipe, s.rattache, s.statut, s.prio, s.ouverture, s.age,
+      s.quoi, s.causesRetenues, s.racineOcc, s.racineDet, s.nbSoldees + ' / ' + s.nbActions, s.nbRetard || '', s.ech, s.dernier];
+    return r;
+  });
+  return psFeuille(X, cols, lignes);
+}
+function psOngletFaits(X, res){
+  const cols = [
+    {t:'Module', w:16, k:'txt'}, {t:'Espace', w:24, k:'txt'}, {t:'Type', w:11, k:'txt'}, {t:'Réf.', w:11, k:'txt'},
+    {t:'Sujet', w:40, k:'long'}, {t:'Action / détail', w:44, k:'long'}, {t:'Responsable', w:14, k:'txt'},
+    {t:'Échéance', w:11, k:'date'}, {t:'Clôture', w:11, k:'date'}, {t:'Reports', w:8, k:'int'}, {t:'Dans les temps', w:10, k:'txt'},
+  ];
+  const lignes = res.faits.map(s=>{
+    const ok = s.ech && s.cloture ? (s.cloture <= s.ech) : null;
+    const r = {fonds:{}, encres:{}, gras:{}};
+    if(ok===false){ r.fonds[10] = PS_AMBRE; r.encres[10] = PS_AMBRE_T; }
+    if(ok===true){ r.fonds[10] = PS_VERT; }
+    r.cells = [s.module, s.espace, s.type, s.ref, s.sujet, s.detail, s.resp || 'Non attribué', s.ech, s.cloture, s.reports || '',
+      ok==null ? '' : (ok ? 'Oui' : 'Non')];
+    return r;
+  });
+  return psFeuille(X, cols, lignes);
+}
+function psOngletIndicateurs(X){
+  const cols = [
+    {t:'Espace', w:22, k:'txt'}, {t:'Indicateur', w:26, k:'txt'}, {t:'Objectif', w:9, k:'txt'},
+    {t:'Mois en cours', w:12, k:'txt'}, {t:'Mois précédent', w:12, k:'txt'}, {t:'Jours sous objectif (mois)', w:12, k:'int'},
+    {t:'Écarts à analyser (mois)', w:12, k:'int'}, {t:'Dernière saisie', w:12, k:'date'}, {t:'Mode de calcul', w:30, k:'txt'},
+  ];
+  const lignes = [];
+  const auj = todayMid();
+  const ym = fmtDate(auj).slice(0,7);
+  const d0 = new Date(auj.getFullYear(), auj.getMonth()-1, 1);
+  const ymPrec = fmtDate(d0).slice(0,7);
+  const pctTxt = v => v==null ? 'NA' : String(Math.round(v*10)/10).replace('.', ',') + ' %';
+  state.boards.filter(b=>b.type==='otd').forEach(b=>{
+    const acts = otdActivites(b);
+    let ecarts = {lignes:[]};
+    try{ ecarts = otdLignesEcarts(b, acts, [ym], 'activite'); }catch(e){ console.warn(e); }
+    acts.forEach(a=>{
+      const jM = moisJoursOuvres(ym).filter(d=>d<=auj);
+      const jP = moisJoursOuvres(ymPrec);
+      const vM = otdSyntheseVal(b.id, a, jM), vP = otdSyntheseVal(b.id, a, jP);
+      const sous = ecarts.lignes.filter(x=>x.a.key===a.key);
+      const dates = state.otd_values.filter(v=>v.board_id===b.id && v.activite===a.key && (v.pct!=null || v.quantite!=null)).map(v=>v.jour).sort();
+      const r = {fonds:{}, encres:{}, gras:{1:true}};
+      [[3, vM], [4, vP]].forEach(([i, v])=>{ const f = sqFill(v, a.objectif); r.fonds[i] = f.bg; r.encres[i] = f.c; r.gras[i] = true; });
+      r.cells = [b.nom, a.nom, a.objectif + ' %', pctTxt(vM), pctTxt(vP), sous.length || '', sous.filter(x=>!x.complete).length || '',
+        dates[dates.length-1] || '', otdLibValeur(a)];
+      lignes.push(r);
+    });
+  });
+  state.kpis.forEach(k=>{
+    let v = null; try{ v = evalKpi(k); }catch(e){}
+    const ok = kpiTargetState(k, v);
+    const u = kpiUnitOf(k);
+    const r = {fonds:{}, encres:{}, gras:{1:true}};
+    if(ok===false){ r.fonds[3] = PS_ROUGE; r.encres[3] = PS_ROUGE_T; }
+    if(ok===true){ r.fonds[3] = PS_VERT; }
+    r.cells = ['Studio d’indicateurs', k.nom, k.objectif==null || k.objectif==='' ? '' : (k.sens==='bas' ? '≤ ' : '≥ ') + k.objectif + (u ? ' ' + u : ''),
+      v==null ? '—' : String(Math.round(v*10)/10).replace('.', ',') + (u ? ' ' + u : ''), '', '', '', '', k.type==='manual' ? 'Saisie manuelle' : 'Calcul automatique'];
+    lignes.push(r);
+  });
+  return psFeuille(X, cols, lignes);
+}
+function psOngletSynthese(X, res, filtreResp){
+  const auj = todayMid();
+  const titre = (t, gros)=> ({v:t, t:'s', s:Object.assign(oxStyle('#ffffff', '#1f2a44', true, 'left'), {font:{name:'Calibri', sz:gros ? 15 : 11.5, bold:true, color:{rgb:'1F2A44'}}, border:{}})});
+  const texte = t => ({v:t, t:'s', s:Object.assign(oxStyle('#ffffff', '#46566d', false, 'left'), {border:{}})});
+  const st = oxStyle('#1f2a44', '#ffffff', true);
+  const c = (v, al, fond, encre, gras)=> {
+    const s = oxStyle(fond||'#ffffff', encre||'#1f2a44', gras, al||'center');
+    if(v==null || v==='') return {v:'', t:'s', s};
+    return typeof v==='number' ? {v, t:'n', s} : {v:String(v), t:'s', s};
+  };
+  const aoa = [
+    [titre('Passation du Plan Action', true)],
+    [texte('État au ' + auj.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'}) + ' · préparé par ' + (ui.userName||'—') + (filtreResp ? ' · sujets de ' + filtreResp : ' · tous les responsables'))],
+    [texte('Un sujet = une action, une action de fiche A3, un projet, une tâche ou une fiche A3 non terminé. Détail dans les onglets suivants.')],
+    [],
+    [titre('Par module')],
+    [{v:'Module', t:'s', s:st}, {v:'Sujets en cours', t:'s', s:st}, {v:'En retard', t:'s', s:st}, {v:'Échéance sous 30 j', t:'s', s:st}, {v:'Sans échéance', t:'s', s:st}, {v:'Reportés au moins 1 fois', t:'s', s:st}],
+  ];
+  const parMod = {};
+  res.enCours.forEach(s=>{
+    const k = s.module + (s.type==='Tâche' || s.type==='Jalon' ? ' · tâches' : '');
+    const m = parMod[k] = parMod[k] || {n:0, retard:0, d30:0, sans:0, rep:0};
+    m.n++; if(s.retard > 0) m.retard++;
+    const d = psDansJours(s.ech); if(d!=null && d >= 0 && d <= 30) m.d30++;
+    if(!s.ech) m.sans++; if(s.reports > 0) m.rep++;
+  });
+  let tot = {n:0, retard:0, d30:0, sans:0, rep:0};
+  Object.entries(parMod).sort((a,b)=>a[0].localeCompare(b[0],'fr')).forEach(([k, m])=>{
+    Object.keys(tot).forEach(x=> tot[x] += m[x]);
+    aoa.push([c(k, 'left', null, null, true), c(m.n), c(m.retard, null, m.retard ? PS_ROUGE : null, m.retard ? PS_ROUGE_T : null, !!m.retard), c(m.d30), c(m.sans), c(m.rep)]);
+  });
+  aoa.push([c('Total', 'left', '#eef3fb', null, true), c(tot.n, null, '#eef3fb', null, true), c(tot.retard, null, '#eef3fb', PS_ROUGE_T, true), c(tot.d30, null, '#eef3fb', null, true), c(tot.sans, null, '#eef3fb', null, true), c(tot.rep, null, '#eef3fb', null, true)]);
+
+  aoa.push([], [titre('Par responsable')],
+    [{v:'Responsable', t:'s', s:st}, {v:'Sujets en cours', t:'s', s:st}, {v:'En retard', t:'s', s:st}, {v:'Prochaine échéance', t:'s', s:st}, {v:'Modules', t:'s', s:st}]);
+  const parResp = {};
+  res.enCours.forEach(s=>{
+    const k = s.resp || 'Non attribué';
+    const m = parResp[k] = parResp[k] || {n:0, retard:0, proch:'', mods:new Set()};
+    m.n++; if(s.retard > 0) m.retard++;
+    m.mods.add(s.module);
+    if(s.ech && s.retard===0 && (!m.proch || s.ech < m.proch)) m.proch = s.ech;
+  });
+  Object.entries(parResp).sort((a,b)=> b[1].n - a[1].n).forEach(([k, m])=>{
+    aoa.push([c(k, 'left', null, null, true), c(m.n), c(m.retard, null, m.retard ? PS_ROUGE : null, m.retard ? PS_ROUGE_T : null, !!m.retard),
+      m.proch ? Object.assign(c(''), {v:oxDateExcel(dateFromStr(m.proch)), t:'n', z:'dd/mm/yyyy'}) : c(''), c([...m.mods].join(', '), 'left')]);
+  });
+
+  aoa.push([], [titre('Par espace')],
+    [{v:'Espace', t:'s', s:st}, {v:'Module', t:'s', s:st}, {v:'Sujets en cours', t:'s', s:st}, {v:'En retard', t:'s', s:st}, {v:'Dernière activité', t:'s', s:st}]);
+  state.boards.slice().sort((a,b)=> (TYPE_ORDRE.indexOf(a.type) - TYPE_ORDRE.indexOf(b.type)) || a.nom.localeCompare(b.nom, 'fr')).forEach(b=>{
+    const sujets = res.enCours.filter(s=>s.espace===b.nom);
+    const der = state.activity.filter(e=>e.board_id===b.id).sort((x,y)=>String(y.ts||'').localeCompare(String(x.ts||'')))[0];
+    let info = '';
+    if(b.type==='import'){
+      const h = state.imp_historique.filter(x=>x.board_id===b.id);
+      const p = Math.max(0, ...h.map(x=>x.passage||0));
+      info = h.length + ' identifiant(s) historisé(s), dernier passage n° ' + p;
+    }
+    const n = sujets.length, r = sujets.filter(s=>s.retard>0).length;
+    aoa.push([c(b.nom, 'left', null, null, true), c(TYPE_LABELS[b.type] || b.type, 'left'),
+      c(b.type==='otd' || b.type==='import' ? (info || '—') : n, b.type==='import' ? 'left' : 'center'),
+      c(b.type==='otd' || b.type==='import' ? '' : r, null, r ? PS_ROUGE : null, r ? PS_ROUGE_T : null, !!r),
+      c(der ? psFr(der.ts) + ' · ' + (der.auteur||'') : '—', 'left')]);
+  });
+  const ws = X.utils.aoa_to_sheet(aoa);
+  ws['!cols'] = [{wch:34}, {wch:24}, {wch:14}, {wch:18}, {wch:30}, {wch:22}];
+  ws['!merges'] = [{s:{r:1, c:0}, e:{r:1, c:5}}, {s:{r:2, c:0}, e:{r:2, c:5}}];
+  return ws;
+}
+
+/* Onglet GLOBAL : un projet par ligne (projets de premier niveau, en cours et livrés).
+   Une information absente de l'appli reste vide, à compléter dans Excel. */
+function psChampProjet(b, regle){
+  return projChamps(b).find(c=> regle.test(sansAccents(c.label||'')));
+}
+function psChargeProjet(p){
+  /* même règle que le Gantt : charge des projets sans sous-projet + charge de toutes les tâches */
+  let total = 0, saisie = false;
+  projSubtree(p).forEach(q=>{
+    if(!projHasChildren(q) && q.charge!=null && q.charge!=='' && !isNaN(Number(q.charge))){ total += Number(q.charge); saisie = true; }
+    state.tasks.filter(t=>t.project_id===q.id).forEach(t=>{
+      if(t.charge!=null && t.charge!=='' && !isNaN(Number(t.charge))){ total += Number(t.charge); saisie = true; }
+    });
+  });
+  return saisie && total > 0 ? Math.round(total*10)/10 : null;
+}
+function psOngletGlobal(X, filtreResp){
+  const st = oxStyle('#1f2a44', '#ffffff', true);
+  const aRemplir = '#fffbea';
+  const tete = ['Espace', 'Code', 'Projet', 'Charge (jours, saisie dans le Gantt)', 'Niveau de complexité', 'Date initiale de la demande client', 'Date de livraison du projet'];
+  const aoa = [tete.map(t=>({v:t, t:'s', s:st}))];
+  const garde = r => !filtreResp || psTxt(r).toLowerCase() === filtreResp.toLowerCase();
+  const cellule = (v, type, al)=>{
+    const vide = v==null || v==='';
+    const s = oxStyle(vide && type ? aRemplir : '#ffffff', '#1f2a44', type==null, al || 'center');
+    s.alignment.vertical = 'top';
+    if(type==='date'){
+      if(vide) return {v:'', t:'s', z:'dd/mm/yyyy', s};
+      const d = dateFromStr(String(v).slice(0,10));
+      return isNaN(d) ? {v:String(v), t:'s', s} : {v:oxDateExcel(d), t:'n', z:'dd/mm/yyyy', s};
+    }
+    if(type==='nombre') return vide ? {v:'', t:'s', z:'0.0', s} : {v:Number(v), t:'n', z:'0.0', s};
+    return {v:vide ? '' : String(v), t:'s', s};
+  };
+  let n = 0;
+  state.boards.filter(b=>b.type==='projet').sort((a, c)=> a.nom.localeCompare(c.nom, 'fr')).forEach(b=>{
+    const chComplex = psChampProjet(b, /complex/i);
+    const chDemande = psChampProjet(b, /demande/i);
+    const chLivr = psChampProjet(b, /livr/i);
+    const val = (p, ch)=> ch && p.extra && p.extra[ch.key]!=null ? String(p.extra[ch.key]).trim() : '';
+    state.projects.filter(p=>p.board_id===b.id && !p.parent_id && garde(p.responsable))
+      .sort((x, y)=>(x.ordre||0)-(y.ordre||0) || String(x.created_at||'').localeCompare(String(y.created_at||'')))
+      .forEach(p=>{
+        n++;
+        const livraison = val(p, chLivr) || p.date_fin || '';
+        aoa.push([
+          cellule(b.nom, null, 'left'),
+          cellule(p.code||'', null),
+          cellule(psTxt(p.nom), null, 'left'),
+          cellule(psChargeProjet(p), 'nombre'),
+          cellule(val(p, chComplex), 'texte'),
+          cellule(val(p, chDemande), chDemande && chDemande.type!=='date' && val(p, chDemande) && isNaN(dateFromStr(val(p, chDemande).slice(0,10))) ? 'texte' : 'date'),
+          cellule(livraison, 'date'),
+        ]);
+      });
+  });
+  if(!n) aoa.push([{v: filtreResp ? 'Aucun projet dont ' + filtreResp + ' est responsable.' : 'Aucun projet dans l’appli.', t:'s', s:oxStyle('#ffffff', '#6b7a90', false, 'left')}]);
+  const ws = X.utils.aoa_to_sheet(aoa);
+  ws['!cols'] = [{wch:24}, {wch:10}, {wch:44}, {wch:16}, {wch:16}, {wch:18}, {wch:16}];
+  ws['!rows'] = [{hpt:32}];
+  if(n) ws['!autofilter'] = {ref: X.utils.encode_range({s:{r:0, c:0}, e:{r:aoa.length-1, c:tete.length-1}})};
+  return ws;
+}
+async function exporterPassation(){
+  const btn = document.getElementById('ps-go');
+  const filtreResp = (document.getElementById('ps-resp')||{}).value || '';
+  const avecFaits = !!(document.getElementById('ps-faits')||{}).checked;
+  const avecInd = !!(document.getElementById('ps-ind')||{}).checked;
+  if(btn){ btn.disabled = true; btn.textContent = 'Préparation…'; }
+  const rendre = ()=>{ if(btn){ btn.disabled = false; btn.textContent = '⬇ Télécharger'; } };
+  let X;
+  try{ X = await chargerXlsx(); }
+  catch(e){ showToast('Export Excel impossible : ' + e.message); rendre(); return; }
+  try{
+    const journal = await psJournal();
+    const res = psCollecte(journal, filtreResp);
+    const wb = X.utils.book_new();
+    X.utils.book_append_sheet(wb, psOngletGlobal(X, filtreResp), 'GLOBAL');
+    X.utils.book_append_sheet(wb, psOngletSynthese(X, res, filtreResp), 'Synthèse');
+    X.utils.book_append_sheet(wb, psOngletTous(X, res), 'Tous les sujets');
+    X.utils.book_append_sheet(wb, psOngletActions(X, res), 'Actions');
+    X.utils.book_append_sheet(wb, psOngletProjets(X, res), 'Projets et tâches');
+    X.utils.book_append_sheet(wb, psOngletA3(X, res), 'Fiches A3');
+    if(avecInd) X.utils.book_append_sheet(wb, psOngletIndicateurs(X), 'Indicateurs');
+    if(avecFaits) X.utils.book_append_sheet(wb, psOngletFaits(X, res), 'Terminés 90 j');
+    const nom = ('Passation Plan Action ' + (filtreResp ? filtreResp + ' ' : '') + fmtDate(todayMid())).replace(/[\\/:*?"<>|]+/g, '-');
+    X.writeFile(wb, nom + '.xlsx');
+    closeModal();
+    const nRet = res.enCours.filter(s=>s.retard > 0).length;
+    showToast(res.enCours.length + ' sujet(s) en cours exporté(s)' + (nRet ? ' · ' + nRet + ' en retard' : ''));
+    logActivity('a exporté le fichier de passation', filtreResp ? '« ' + filtreResp + ' »' : 'tous les espaces', res.enCours.length + ' sujet(s) en cours');
+  }catch(e){
+    console.error(e);
+    showToast('Erreur pendant l’export : ' + (e.message || e));
+    rendre();
   }
 }
 </script>
